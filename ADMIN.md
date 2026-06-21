@@ -76,6 +76,20 @@ Set `img` to `"/media/builds/name.jpg"` once you have a photo, or leave `null` f
 > The card links point to pages you host (`/manuals/...`, `/builds/...`, `/notes/...`). Write those as
 > simple Markdown→HTML or plain HTML pages and drop them in the matching folder.
 
+### Preview build: "In progress" tags
+
+While you're still filling the site in, **`CONFIG.previewMode: true`** shows an amber **In progress**
+tag on every unfinished item and a small legend in the bottom-left corner (with a live count). It marks:
+
+- any `MANUALS` / `BUILDS_REF` / `POSTS` entry flagged **`wip: true`** (use this for cards whose page you
+  haven't written yet — the three that ship with real pages are already un-flagged),
+- the three Broadcast videos while their `data-video-id` is still `SET_VIDEO_ID`,
+- the discussion board until `CONFIG.giscus` is filled in, and the Discord card until `mspMeshDiscord`
+  points at a real invite (not `mspmesh.org`).
+
+When a page goes live, delete that entry's `wip: true`. When the whole site is ready, set
+**`previewMode: false`** — every tag and the legend vanish, and nothing else about the site changes.
+
 ---
 
 ## 4) The Minnesota map

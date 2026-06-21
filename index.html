@@ -373,6 +373,23 @@ code{font-family:var(--mono);color:var(--green-hi);font-size:.9em}
 .disc-placeholder{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.7}
 .disc-placeholder b{color:var(--green-hi)}
 
+/* --- preview build: in-progress markers (gated by CONFIG.previewMode) --- */
+.row,.card,.post,.disc-link{position:relative}
+.wip{display:inline-block;vertical-align:middle;margin-left:8px;font-family:var(--mono);font-size:9px;
+  letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:#0a0c08;background:var(--amber);
+  padding:2px 7px;border-radius:999px;line-height:1.5;white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.wip-abs{position:absolute;top:10px;right:10px;z-index:4;margin:0}
+.disc-link .wip-abs{top:11px;right:11px}
+.wip-legend{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--ink);
+  background:var(--glass-2);border:1px solid var(--amber);border-radius:999px;padding:7px 13px;
+  box-shadow:0 6px 22px rgba(0,0,0,.4);backdrop-filter:blur(8px)}
+.wip-legend .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none;
+  box-shadow:0 0 0 3px rgba(214,158,46,.2)}
+.wip-legend b{color:var(--amber);font-weight:700}
+@media (max-width:620px){.wip-legend{font-size:9.5px;padding:6px 10px}}
+
 /* MSP + support */
 .feature{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;padding:clamp(26px,4.5vw,46px);border-radius:var(--r);position:relative;overflow:hidden}
 .feature::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 100% 0%, rgba(143,209,80,.08), transparent 60%);pointer-events:none}
@@ -855,6 +872,9 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       are the only things you normally touch.)
    ===================================================================== */
 const CONFIG = {
+  // Preview build: show amber "IN PROGRESS" tags on every stub/unfinished item.
+  // Flip to false for launch and all the tags + legend disappear (nothing else changes).
+  previewMode:true,
   site:"midwestmeshlab.net",
   email:"contact@midwestmeshlab.net",
   instagram:"https://instagram.com/midwest_meshlab",
@@ -886,18 +906,18 @@ const STACK = [
 
 const MANUALS = [
   { hx:"0x1A", title:"Flash Meshtastic® on a Heltec V3", desc:"Box to first packet in about ten minutes.", url:"/manuals/flash-heltec-v3.html", tags:["Firmware","Beginner"] },
-  { hx:"0x2B", title:"Raspberry Pi® MQTT gateway", desc:"Bridge your local mesh to the wider network with a Pi 4.", url:"/manuals/pi-mqtt-gateway.html", tags:["Raspberry Pi","Gateway"] },
-  { hx:"0x3C", title:"Solar node power budget", desc:"Panel, battery, and duty cycle so it survives a cloudy week.", url:"/manuals/solar-power-budget.html", tags:["Solar","Power"] },
-  { hx:"0x4D", title:"Antennas & line-of-sight for flat country", desc:"Height beats power. Planning hops across open terrain.", url:"/manuals/antenna-los.html", tags:["Antenna","RF"] },
-  { hx:"0x5E", title:"Channels, keys & encryption", desc:"Public and private channels without locking yourself out.", url:"/manuals/channels-encryption.html", tags:["Security"] },
-  { hx:"0x6F", title:"Weatherproof node case (STLs)", desc:"Printable enclosure with gasket channel and antenna gland.", url:"/manuals/weatherproof-case.html", tags:["3D Print","Enclosure"] }
+  { hx:"0x2B", title:"Raspberry Pi® MQTT gateway", desc:"Bridge your local mesh to the wider network with a Pi 4.", url:"/manuals/pi-mqtt-gateway.html", tags:["Raspberry Pi","Gateway"], wip:true },
+  { hx:"0x3C", title:"Solar node power budget", desc:"Panel, battery, and duty cycle so it survives a cloudy week.", url:"/manuals/solar-power-budget.html", tags:["Solar","Power"], wip:true },
+  { hx:"0x4D", title:"Antennas & line-of-sight for flat country", desc:"Height beats power. Planning hops across open terrain.", url:"/manuals/antenna-los.html", tags:["Antenna","RF"], wip:true },
+  { hx:"0x5E", title:"Channels, keys & encryption", desc:"Public and private channels without locking yourself out.", url:"/manuals/channels-encryption.html", tags:["Security"], wip:true },
+  { hx:"0x6F", title:"Weatherproof node case (STLs)", desc:"Printable enclosure with gasket channel and antenna gland.", url:"/manuals/weatherproof-case.html", tags:["3D Print","Enclosure"], wip:true }
 ];
 
 const BUILDS_REF = [
   { ct:"Relay", title:"Solar Relay v2", desc:"Always-on repeater for the edge. Survives a cloudy week on a 6W panel.", url:"/builds/solar-relay-v2.html", parts:14, cost:"$68", time:"2h" },
-  { ct:"Gateway", title:"Pi MQTT Gateway", desc:"Raspberry Pi 4 + RAK module bridging your local mesh to the internet.", url:"/builds/pi-mqtt-gateway.html", parts:9, cost:"$120", time:"1h" },
-  { ct:"Handheld", title:"Pocket Node", desc:"T-Echo loadout for trails and travel. E-ink, GPS, printed clip.", url:"/builds/pocket-node.html", parts:6, cost:"$95", time:"30m" },
-  { ct:"Go-box", title:"Storm Go-Box", desc:"Pelican-case node with solar and a spare battery for storm season.", url:"/builds/storm-go-box.html", parts:17, cost:"$140", time:"3h" }
+  { ct:"Gateway", title:"Pi MQTT Gateway", desc:"Raspberry Pi 4 + RAK module bridging your local mesh to the internet.", url:"/builds/pi-mqtt-gateway.html", parts:9, cost:"$120", time:"1h", wip:true },
+  { ct:"Handheld", title:"Pocket Node", desc:"T-Echo loadout for trails and travel. E-ink, GPS, printed clip.", url:"/builds/pocket-node.html", parts:6, cost:"$95", time:"30m", wip:true },
+  { ct:"Go-box", title:"Storm Go-Box", desc:"Pelican-case node with solar and a spare battery for storm season.", url:"/builds/storm-go-box.html", parts:17, cost:"$140", time:"3h", wip:true }
 ];
 
 const TOOLS = [
@@ -911,8 +931,8 @@ const TOOLS = [
 
 const POSTS = [
   { date:"2026-06-12", title:"Why height beats wattage every time", excerpt:"A 5-meter mast did more for our range than doubling TX power ever could. The math and the field data.", url:"/notes/height-beats-wattage.html" },
-  { date:"2026-05-28", title:"Cloudy-week power budgets that actually hold", excerpt:"How we size panels and batteries so relays don't drop out after three gray days in a row.", url:"/notes/cloudy-week-power.html" },
-  { date:"2026-05-09", title:"Field notes: 14 km across open prairie", excerpt:"Two nodes, two tripods, one very flat horizon. What we learned about Fresnel zones the hard way.", url:"/notes/prairie-range-test.html" }
+  { date:"2026-05-28", title:"Cloudy-week power budgets that actually hold", excerpt:"How we size panels and batteries so relays don't drop out after three gray days in a row.", url:"/notes/cloudy-week-power.html", wip:true },
+  { date:"2026-05-09", title:"Field notes: 14 km across open prairie", excerpt:"Two nodes, two tripods, one very flat horizon. What we learned about Fresnel zones the hard way.", url:"/notes/prairie-range-test.html", wip:true }
 ];
 
 const SIGNAL = [
@@ -976,6 +996,11 @@ const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const setHref=(sel,h)=>{const e=$(sel);if(e)e.href=h;};
 const C=CONFIG;
 
+/* preview build: "IN PROGRESS" tag helpers (all no-ops when previewMode is false) */
+const PREVIEW=!!C.previewMode;
+const wipTag=on=>PREVIEW&&on?'<span class="wip">In progress</span>':'';
+const wipAbs=on=>PREVIEW&&on?'<span class="wip wip-abs">In progress</span>':'';
+
 setHref('#lnk-ig',C.instagram); setHref('#lnk-ig2',C.instagram); setHref('#lnk-ig3',C.instagram);
 setHref('#lnk-yt',C.youtube); setHref('#lnk-live',C.youtubeLive); setHref('#lnk-coffee',C.buyMeACoffee);
 setHref('#lnk-msp',C.mspMeshSite); setHref('#lnk-msp2',C.mspMeshSite); setHref('#lnk-msp3',C.mspMeshSite);
@@ -1016,11 +1041,11 @@ const stackIc=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 
 (function(){const g=$('#manuals-list');if(g)g.innerHTML=MANUALS.map(m=>`
   <a class="row glass" href="${esc(m.url)}"><span class="hx">${esc(m.hx)}</span>
-    <div class="main"><h3>${esc(m.title)}</h3><p>${esc(m.desc)}</p></div>
+    <div class="main"><h3>${esc(m.title)}${wipTag(m.wip)}</h3><p>${esc(m.desc)}</p></div>
     <div class="tags">${m.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></a>`).join('');})();
 
 (function(){const g=$('#builds-cards');if(g)g.innerHTML=BUILDS_REF.map(b=>`
-  <a class="card glass" href="${esc(b.url)}"><span class="ct">${esc(b.ct)}</span><h3>${esc(b.title)}</h3><p>${esc(b.desc)}</p>
+  <a class="card glass" href="${esc(b.url)}">${wipAbs(b.wip)}<span class="ct">${esc(b.ct)}</span><h3>${esc(b.title)}</h3><p>${esc(b.desc)}</p>
     <div class="meta"><span><b>${b.parts}</b> parts</span><span>~<b>${esc(b.cost)}</b></span><span><b>${esc(b.time)}</b> build</span></div>
     <span class="go">open build →</span></a>`).join('');})();
 
@@ -1028,7 +1053,7 @@ const stackIc=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
   <div class="tool glass"><span class="ti">${stackIc(t.ic)}</span><div><h3>${esc(t.title)}</h3><p>${esc(t.desc)}</p></div></div>`).join('');})();
 
 (function(){const g=$('#posts-grid');if(!g)return;const f=d=>new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  g.innerHTML=POSTS.map(p=>`<a class="post glass" href="${esc(p.url)}">
+  g.innerHTML=POSTS.map(p=>`<a class="post glass" href="${esc(p.url)}">${wipAbs(p.wip)}
     <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="#8FD150" stroke-width="1.3"><path d="M4 4h13v16H4z"/><path d="M8 9h7M8 13h7M8 17h4"/></svg></div>
     <div class="pin"><span class="dt">${f(p.date)}</span><h3>${esc(p.title)}</h3><p>${esc(p.excerpt)}</p><span class="more">read →</span></div></a>`).join('');})();
 
@@ -1054,6 +1079,8 @@ const fil=$('#filters');if(fil)fil.addEventListener('click',e=>{const b=e.target
 
 /* lazy YouTube */
 $$('.embed[data-video-id]').forEach(box=>{const ph=box.querySelector('.ph');if(!ph)return;
+  const vid=box.dataset.videoId;
+  if(PREVIEW&&(!vid||vid==='SET_VIDEO_ID'))box.insertAdjacentHTML('beforeend',wipAbs(true));
   ph.addEventListener('click',()=>{const id=box.dataset.videoId;
     if(!id||id==='SET_VIDEO_ID'){window.open(C.youtube,'_blank','noopener');return;}
     const f=document.createElement('iframe');
@@ -1095,6 +1122,13 @@ const cf=$('#contactForm');if(cf)cf.addEventListener('submit',e=>{e.preventDefau
   location.href=`mailto:${C.email}?subject=${encodeURIComponent('Lab contact — '+(n||'no callsign'))}&body=${encodeURIComponent(body)}`;
   toast('Opening your mail app…');});
 
+/* preview build: tag integrations that still need CONFIG values */
+if(PREVIEW){
+  const gw=C.giscus;
+  if(!gw.repo||!gw.repoId||!gw.categoryId){const dh=$('#disc-ph');if(dh){const b=dh.querySelector('b');if(b)b.insertAdjacentHTML('afterend',wipTag(true));}}
+  if(C.mspMeshDiscord===C.mspMeshSite){const dl=$('#lnk-discord');if(dl)dl.insertAdjacentHTML('beforeend',wipAbs(true));}
+}
+
 /* community discussion (giscus / GitHub Discussions) — loads on demand only */
 const loadBtn=$('#load-disc');
 if(loadBtn)loadBtn.addEventListener('click',()=>{const g=C.giscus;
@@ -1116,6 +1150,14 @@ if(!reduce){const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isInters
 
 /* toast */
 function toast(m){const t=$('#toast');if(!t)return;t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3800);}
+
+/* preview build: floating legend that explains the amber tags + counts open items */
+if(PREVIEW){
+  const open=$$('.wip').length;
+  const el=document.createElement('div');el.className='wip-legend';el.setAttribute('role','note');
+  el.innerHTML='<span class="dot"></span><span><b>Preview build</b> · amber tags = in progress'+(open?' ('+open+')':'')+'</span>';
+  document.body.appendChild(el);
+}
 
 /* =====================================================================
    4) MINNESOTA MAP — render nodes/links + animate packets (SVG)
