@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Midwest Mesh Lab — Off-grid mesh, Pi &amp; open hardware</title>
+<meta name="description" content="A field lab for off-grid mesh networking, Raspberry Pi, and open hardware. Manuals, build lists, a Minnesota mesh map, field notes, live streams, events, and a community of operators across the Midwest." />
+<meta name="theme-color" content="#07090A" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta property="og:title" content="Midwest Mesh Lab" />
+<meta property="og:description" content="Off-grid mesh, Raspberry Pi & open hardware. Manuals, builds, a Minnesota mesh map, field notes, streams, and events." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://midwestmeshlab.net" />
+<meta property="og:image" content="https://midwestmeshlab.net/media/og-card.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3Ccircle cx='5' cy='6' r='1.5' fill='%2386D46A'/%3E%3Ccircle cx='19' cy='7' r='1.5' fill='%2386D46A'/%3E%3Cpath d='M12 12 5 6M12 12l7-5' stroke='%2386D46A' stroke-width='0.8'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* =====================================================================
+   MIDWEST MESH LAB — single-file build. Edit CONFIG + DATA in <script>.
+   Palette: deep blackout, luminous ranger-green mesh, hazard amber.
+   ===================================================================== */
+:root{
+  --bg:#07090A; --bg2:#0B0E0F;
+  --ink:#F5F2E8;            /* headings */
+  --fg:#C7CCBE;             /* body */
+  --muted:#878D7B;          /* captions */
+  --faint:#5A6051;
+  --amber:#F4A93C; --amber-hi:#FFC368;
+  --green:#8FD150; --green-hi:#B6E87E; --green-dim:#5C7A3A;
+  --alert:#E2573B;
+  --line:rgba(180,200,150,.10);
+  --line-2:rgba(180,200,150,.16);
+  --glass:rgba(18,22,18,.55);
+  --glass-2:rgba(22,27,21,.72);
+  --shadow:0 30px 70px -36px rgba(0,0,0,.9);
+  --r:14px; --r-sm:9px;
+  --disp:"Chakra Petch",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --gut:clamp(18px,5vw,64px); --maxw:1240px;
+  --ease:cubic-bezier(.22,.72,.24,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:var(--body); font-size:17px; line-height:1.6;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+::selection{background:var(--amber);color:#1b1206}
+:focus-visible{outline:2px solid var(--green-hi);outline-offset:3px;border-radius:4px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gut)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+/* living mesh background */
+#fieldbg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.veil{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(143,209,80,.05), transparent 55%),
+    radial-gradient(90% 60% at 100% 110%, rgba(244,169,60,.05), transparent 55%),
+    linear-gradient(180deg, rgba(7,9,10,.30) 0%, rgba(7,9,10,.55) 38%, rgba(7,9,10,.80) 100%);}
+.scan{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.16) 2px 3px);
+  mix-blend-mode:multiply}
+.page{position:relative;z-index:1}
+
+/* type */
+h1,h2,h3,h4{font-family:var(--disp);color:var(--ink);font-weight:700;line-height:1.02;margin:0;letter-spacing:.005em}
+h2{font-size:clamp(28px,3.8vw,46px);text-transform:uppercase}
+h3{font-size:19px}
+p{margin:0 0 1rem}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--green);
+  display:inline-flex;align-items:center;gap:.7em}
+.kicker .n{color:var(--amber)}
+.lede{font-size:clamp(17px,1.7vw,20px);color:var(--fg)}
+code{font-family:var(--mono);color:var(--green-hi);font-size:.9em}
+.hot{color:var(--amber)}
+
+/* buttons */
+.btn{font-family:var(--disp);font-weight:600;font-size:14px;letter-spacing:.05em;text-transform:uppercase;
+  padding:13px 22px;border-radius:8px;display:inline-flex;align-items:center;gap:9px;cursor:pointer;border:1px solid transparent;
+  transition:transform .15s var(--ease),background .18s,border-color .18s,color .18s,box-shadow .2s}
+.btn svg{width:16px;height:16px}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--amber);color:#1b1206;box-shadow:0 14px 30px -14px rgba(244,169,60,.6)}
+.btn-primary:hover{background:var(--amber-hi)}
+.btn-ghost{background:rgba(255,255,255,.02);border-color:var(--line-2);color:var(--ink);backdrop-filter:blur(6px)}
+.btn-ghost:hover{border-color:var(--green);color:var(--green-hi)}
+.btn-mini{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);
+  background:rgba(255,255,255,.03);border:1px solid var(--line-2);padding:7px 11px;border-radius:6px;cursor:pointer;
+  transition:border-color .15s,color .15s;white-space:nowrap}
+.btn-mini:hover{border-color:var(--green);color:var(--green-hi)}
+
+/* glass card */
+.glass{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);backdrop-filter:blur(10px) saturate(120%)}
+
+/* ============ HUD / NAV ============ */
+.hud{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);
+  background:linear-gradient(180deg,rgba(7,9,10,.86),rgba(7,9,10,.55));border-bottom:1px solid var(--line)}
+.hud-strip{display:flex;align-items:center;gap:18px;height:32px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.08em;color:var(--muted);overflow:hidden;white-space:nowrap}
+.hud-strip .seg{display:flex;align-items:center;gap:7px}
+.hud-strip b{color:var(--green);font-weight:400}
+.hud-strip .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 9px var(--green)}
+.hud-strip .wx{color:var(--amber)}
+.hud-strip .push{margin-left:auto}
+@media (max-width:720px){.hud-strip .opt{display:none}}
+.hud-main{display:flex;align-items:center;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;color:var(--ink);
+  font-size:18px;letter-spacing:.02em;text-transform:uppercase}
+.brand svg{width:26px;height:26px;flex:none}
+.brand small{font-family:var(--mono);font-weight:400;color:var(--faint);font-size:10px;letter-spacing:.14em}
+.nav{margin-left:auto;display:flex;align-items:center;gap:2px}
+.nav a{font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;color:var(--muted);padding:8px 11px;border-radius:7px;
+  transition:color .16s,background .16s}
+.nav a:hover{color:var(--ink);background:rgba(255,255,255,.04)}
+.nav .cta{color:#1b1206;background:var(--amber);font-weight:600;font-family:var(--disp);text-transform:uppercase;letter-spacing:.04em}
+.nav .cta:hover{background:var(--amber-hi);color:#1b1206}
+.menu-btn{display:none;margin-left:auto;background:rgba(255,255,255,.03);border:1px solid var(--line-2);color:var(--ink);
+  font-family:var(--mono);font-size:12px;padding:9px 13px;border-radius:7px;cursor:pointer;letter-spacing:.08em}
+@media (max-width:980px){
+  .nav{display:none;position:absolute;top:94px;left:0;right:0;flex-direction:column;align-items:stretch;gap:2px;
+    background:rgba(8,11,11,.97);border-bottom:1px solid var(--line);padding:12px var(--gut);backdrop-filter:blur(14px)}
+  .nav.open{display:flex}
+  .nav a{padding:13px;font-size:14px}.nav .cta{text-align:center;margin-top:6px}
+  .menu-btn{display:block}
+}
+
+/* ============ HERO ============ */
+.hero{position:relative;padding:clamp(70px,13vh,150px) 0 clamp(60px,10vh,120px);overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(70% 65% at 30% 42%, rgba(7,9,10,.10), rgba(7,9,10,.62) 70%)}
+.hero-id{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:6px 18px;margin-bottom:22px}
+.hero-id b{color:var(--green);font-weight:400}
+.hero h1{font-size:clamp(42px,7.4vw,94px);font-weight:700;line-height:.96;text-transform:uppercase;
+  max-width:15ch;letter-spacing:.004em;text-shadow:0 4px 40px rgba(0,0,0,.5)}
+.hero h1 .hot{text-shadow:0 0 44px rgba(244,169,60,.45)}
+.hero .lede{margin-top:24px;max-width:58ch}
+.hero .ig-line{font-family:var(--mono);font-size:13px;color:var(--green);margin-top:16px}
+.hero .ig-line a{color:var(--amber);border-bottom:1px solid var(--line-2)}
+.hero .ig-line a:hover{border-color:var(--amber)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:13px;margin-top:30px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+.chip{font-family:var(--mono);font-size:12px;color:var(--fg);padding:9px 13px;border-radius:8px;
+  display:flex;align-items:center;gap:8px}
+.chip b{color:var(--green-hi);font-weight:500}
+.chip .pin{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.scrollcue{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--faint);
+  display:flex;align-items:center;gap:10px}
+.scrollcue .ln{width:42px;height:1px;background:linear-gradient(90deg,var(--green),transparent)}
+
+/* ============ SECTION ============ */
+.section{position:relative;padding:clamp(56px,8vh,104px) 0}
+.section-head{max-width:64ch;margin-bottom:38px}
+.section-head .kicker{margin-bottom:14px}
+.section-head p{color:var(--muted);margin-top:12px}
+.head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:34px}
+.head-row .section-head{margin-bottom:0}
+.desig{font-family:var(--mono);font-size:.42em;color:var(--amber);letter-spacing:.08em;margin-left:12px;vertical-align:middle;text-transform:none}
+
+/* stack strip */
+.stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stack a{padding:16px;border-radius:var(--r-sm);display:flex;flex-direction:column;gap:9px;
+  transition:transform .16s var(--ease),border-color .16s,background .16s}
+.stack a:hover{transform:translateY(-4px);border-color:var(--line-2);background:var(--glass-2)}
+.stack .ic{width:34px;height:34px;border-radius:7px;display:grid;place-items:center;color:var(--green);background:rgba(143,209,80,.1)}
+.stack .ic svg{width:18px;height:18px}
+.stack .t{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:15px;text-transform:uppercase;letter-spacing:.02em}
+.stack .d{font-size:12.5px;color:var(--muted)}
+
+/* ============ MN MAP ============ */
+.map-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:26px;align-items:stretch}
+@media (max-width:900px){.map-grid{grid-template-columns:1fr}}
+.map-stage{position:relative;border-radius:var(--r);overflow:hidden;padding:18px;
+  background:radial-gradient(120% 100% at 60% 0%, rgba(143,209,80,.06), transparent 55%), var(--glass);
+  border:1px solid var(--line)}
+.map-stage svg{width:100%;height:auto;display:block;max-height:560px}
+.mn-state{fill:rgba(143,209,80,.045);stroke:var(--green);stroke-width:1.4;stroke-linejoin:round;
+  filter:drop-shadow(0 0 14px rgba(143,209,80,.18))}
+.mn-grid{stroke:rgba(143,209,80,.08);stroke-width:.7}
+.mn-link{stroke:rgba(143,209,80,.35);stroke-width:1.1}
+.mn-node{fill:var(--green)}
+.mn-node.hub{fill:var(--amber)}
+.mn-ring{fill:none;stroke:var(--amber);stroke-width:1;opacity:.5}
+.mn-label{font-family:var(--mono);font-size:11px;fill:var(--fg)}
+.mn-packet{fill:var(--amber)}
+.map-side{display:flex;flex-direction:column;gap:14px}
+.map-card{padding:18px;border-radius:var(--r);flex:1}
+.map-card h3{margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em}
+.map-card p{font-size:14px;color:var(--muted)}
+.legend{display:flex;flex-direction:column;gap:9px;font-family:var(--mono);font-size:12px;color:var(--fg);margin-top:6px}
+.legend .li{display:flex;align-items:center;gap:10px}
+.legend .li a{color:var(--green-hi)}
+.legend .sw{width:11px;height:11px;border-radius:3px}
+.map-note{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.6}
+
+/* ============ LISTS / CARDS ============ */
+.list{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:16px 20px;border-radius:var(--r-sm);
+  transition:border-color .16s,background .16s,transform .14s var(--ease)}
+.row:hover{border-color:var(--line-2);background:var(--glass-2);transform:translateX(4px)}
+.row .hx{font-family:var(--mono);font-size:12px;color:var(--amber)}
+.row .main h3{font-size:17px;margin-bottom:3px}
+.row .main p{margin:0;color:var(--muted);font-size:14px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--green);
+  border:1px solid var(--line-2);border-radius:4px;padding:3px 8px;white-space:nowrap}
+@media (max-width:620px){.row{grid-template-columns:auto 1fr}.row .tags{display:none}}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:14px}
+.card{padding:22px;border-radius:var(--r);transition:transform .16s var(--ease),border-color .16s}
+.card:hover{transform:translateY(-5px);border-color:var(--line-2)}
+.card .ct{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--amber);text-transform:uppercase}
+.card h3{margin:11px 0 8px}
+.card p{color:var(--muted);font-size:14.5px;margin-bottom:15px}
+.card .meta{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:13px}
+.card .meta b{color:var(--green);font-weight:400}
+.card .go{font-family:var(--mono);font-size:12px;color:var(--amber);margin-top:14px;display:inline-block}
+
+/* tools */
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.tool{display:flex;gap:13px;padding:17px;border-radius:var(--r-sm);transition:transform .15s var(--ease),border-color .15s}
+.tool:hover{transform:translateY(-3px);border-color:var(--line-2)}
+.tool .ti{width:38px;height:38px;border-radius:8px;flex:none;display:grid;place-items:center;color:var(--amber);background:rgba(244,169,60,.1)}
+.tool .ti svg{width:19px;height:19px}
+.tool h3{font-size:15.5px;margin-bottom:3px}
+.tool p{margin:0;font-size:13px;color:var(--muted)}
+
+/* posts (blog) */
+.posts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.post{border-radius:var(--r);overflow:hidden;transition:transform .16s var(--ease),border-color .16s;display:flex;flex-direction:column}
+.post:hover{transform:translateY(-5px);border-color:var(--line-2)}
+.post .ph{aspect-ratio:16/9;background:radial-gradient(120% 120% at 30% 10%, rgba(143,209,80,.14), var(--bg2));display:grid;place-items:center}
+.post .ph svg{width:46px;height:46px;opacity:.5}
+.post .pin{padding:18px 20px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.post .dt{font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:.05em}
+.post h3{font-size:18px;line-height:1.15}
+.post p{font-size:14px;color:var(--muted);margin:0;flex:1}
+.post .more{font-family:var(--mono);font-size:12px;color:var(--green-hi)}
+
+/* signal ticker + cards */
+.ticker{overflow:hidden;border-radius:10px;border:1px solid var(--line);background:var(--glass);margin-bottom:22px}
+.ticker .track{display:flex;gap:42px;padding:11px 0;white-space:nowrap;font-family:var(--mono);font-size:12.5px;color:var(--fg);
+  animation:scroll 34s linear infinite;width:max-content}
+.ticker .track span b{color:var(--amber)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker .track{animation:none}}
+.signal{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px}
+.sig{padding:18px;border-radius:var(--r-sm);transition:transform .15s var(--ease),border-color .15s}
+.sig:hover{transform:translateY(-4px);border-color:var(--line-2)}
+.sig .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}
+.sig h3{font-size:16px;margin:9px 0 7px}
+.sig p{margin:0;font-size:13.5px;color:var(--muted)}
+
+/* community wall */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.filter{font-family:var(--mono);font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
+  background:rgba(255,255,255,.02);border:1px solid var(--line-2);padding:8px 14px;border-radius:6px;cursor:pointer;transition:.15s}
+.filter:hover{color:var(--ink)}
+.filter.active{color:#1b1206;background:var(--amber);border-color:var(--amber)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.build{border-radius:var(--r);overflow:hidden;transition:transform .16s var(--ease),border-color .16s}
+.build:hover{transform:translateY(-5px);border-color:var(--line-2)}
+.build .thumb{aspect-ratio:16/10;position:relative;display:grid;place-items:center;
+  background:radial-gradient(120% 120% at 30% 18%, rgba(143,209,80,.12), var(--bg2))}
+.build .thumb svg{width:54px;height:54px;opacity:.45}
+.build .thumb img{width:100%;height:100%;object-fit:cover}
+.build .nid{position:absolute;left:11px;bottom:11px;font-family:var(--mono);font-size:11px;color:var(--amber);
+  background:rgba(7,9,10,.7);padding:4px 8px;border-radius:5px}
+.build .loc{position:absolute;right:11px;top:11px;font-family:var(--mono);font-size:10px;color:var(--green);
+  background:rgba(7,9,10,.7);padding:4px 8px;border-radius:5px}
+.build .bi{padding:15px 17px}
+.build .bi h3{font-size:16px;margin-bottom:6px}
+.build .hw{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.build .by{font-size:12.5px;color:var(--faint)}
+.build .by b{color:var(--green);font-weight:600}
+
+/* ig */
+.ig-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.ig-h{display:flex;align-items:center;gap:13px}
+.ig-badge{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;color:var(--amber);background:rgba(244,169,60,.1);border:1px solid var(--line)}
+.ig-badge svg{width:24px;height:24px}
+.ig-h .h{font-family:var(--disp);font-weight:700;color:var(--ink);font-size:19px}
+.ig-h .s{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.iggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.igt{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:10px;overflow:hidden;display:grid;place-items:center;
+  background:radial-gradient(120% 120% at 40% 10%, rgba(143,209,80,.1), var(--bg2));transition:transform .16s var(--ease),border-color .16s}
+.igt:hover{transform:scale(1.03);border-color:var(--amber)}
+.igt img{width:100%;height:100%;object-fit:cover}
+.igt .ph{color:var(--faint);display:grid;place-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.1em}
+.igt .ph svg{width:24px;height:24px;opacity:.5}
+.igt .cap{position:absolute;inset:auto 0 0 0;background:linear-gradient(transparent,rgba(7,9,10,.9));color:var(--ink);
+  font-family:var(--mono);font-size:10.5px;padding:18px 9px 8px;opacity:0;transition:opacity .18s}
+.igt:hover .cap{opacity:1}
+
+/* broadcast */
+.live-banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-radius:var(--r);
+  border-left:3px solid var(--alert);padding:16px 20px;margin-bottom:22px}
+.live-tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#1a0c09;background:var(--alert);padding:4px 10px;border-radius:5px;display:flex;align-items:center;gap:7px}
+.live-tag .b{width:7px;height:7px;border-radius:50%;background:#1a0c09;animation:blip 1.3s steps(2) infinite}
+@keyframes blip{50%{opacity:.2}}@media (prefers-reduced-motion:reduce){.live-tag .b{animation:none}}
+.live-banner .lt{flex:1;min-width:200px}
+.live-banner .lt b{color:var(--ink);font-family:var(--disp)}
+.live-banner .lt span{display:block;color:var(--muted);font-size:13.5px}
+.videos{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+@media (max-width:820px){.videos{grid-template-columns:1fr}}
+.vcol{display:grid;gap:14px;align-content:start}
+.embed{position:relative;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--bg2)}
+.embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.embed .ph{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:11px;cursor:pointer;text-align:center;
+  background:radial-gradient(120% 120% at 70% 10%, rgba(244,169,60,.12), var(--bg2))}
+.embed .play{width:54px;height:54px;border-radius:50%;background:rgba(7,9,10,.78);border:1px solid var(--line-2);display:grid;place-items:center;color:var(--amber)}
+.embed .play svg{width:22px;height:22px}
+.embed .ph small{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted)}
+.vcap b{display:block;color:var(--ink);font-family:var(--disp);font-size:15px;margin-bottom:2px}
+.vcap{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* events */
+.cal-actions{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.events{display:grid;gap:10px}
+.event{display:grid;grid-template-columns:76px 1fr auto;gap:18px;align-items:center;padding:16px 20px;border-radius:var(--r-sm);transition:border-color .16s,background .16s}
+.event:hover{border-color:var(--line-2);background:var(--glass-2)}
+.event .date{text-align:center;border-right:1px solid var(--line);padding-right:14px}
+.event .date .mo{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--amber)}
+.event .date .dy{font-family:var(--disp);font-weight:700;font-size:30px;color:var(--ink);line-height:1}
+.event .ei h3{font-size:17px;margin-bottom:3px}
+.event .ei .when{font-family:var(--mono);font-size:12px;color:var(--green)}
+.event .ei p{margin:5px 0 0;color:var(--muted);font-size:13.5px}
+.event .ea{display:flex;flex-direction:column;gap:6px}
+@media (max-width:660px){.event{grid-template-columns:62px 1fr}.event .ea{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;margin-top:4px}}
+
+/* split panels */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.panel{padding:28px;border-radius:var(--r)}
+.panel h3{font-size:20px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em}
+.panel .sub{color:var(--muted);font-size:14.5px;margin-bottom:20px}
+.field{margin-bottom:13px}
+.field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.field input,.field textarea{width:100%;background:rgba(7,9,10,.6);border:1px solid var(--line-2);color:var(--ink);
+  font-family:var(--body);font-size:15px;padding:12px 13px;border-radius:8px;transition:border-color .15s}
+.field textarea{resize:vertical;min-height:92px}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+.field-2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media (max-width:480px){.field-2{grid-template-columns:1fr}}
+.form-foot{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-top:4px}
+.note{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.alt{margin-top:18px;padding-top:18px;border-top:1px dashed var(--line-2);font-size:13.5px;color:var(--muted)}
+.alt b{color:var(--green)}
+.contact-row{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:14px;color:var(--ink);
+  background:rgba(7,9,10,.5);border:1px solid var(--line-2);border-radius:8px;padding:13px 15px;margin-bottom:12px;word-break:break-all}
+.contact-row svg{width:18px;height:18px;color:var(--green);flex:none}
+.contact-row a{color:var(--amber)}
+
+/* community discussion */
+.disc{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+@media (max-width:860px){.disc{grid-template-columns:1fr}}
+.disc-links{display:grid;gap:10px}
+.disc-link{display:flex;align-items:center;gap:13px;padding:16px 18px;border-radius:var(--r-sm);transition:border-color .15s,transform .15s var(--ease)}
+.disc-link:hover{border-color:var(--line-2);transform:translateX(4px)}
+.disc-link .di{width:40px;height:40px;border-radius:9px;flex:none;display:grid;place-items:center;color:var(--green);background:rgba(143,209,80,.1)}
+.disc-link .di svg{width:20px;height:20px}
+.disc-link h3{font-size:15.5px;margin-bottom:2px}
+.disc-link p{margin:0;font-size:13px;color:var(--muted)}
+#giscus-box{min-height:80px;padding:22px}
+.disc-placeholder{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.7}
+.disc-placeholder b{color:var(--green-hi)}
+
+/* MSP + support */
+.feature{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;padding:clamp(26px,4.5vw,46px);border-radius:var(--r);position:relative;overflow:hidden}
+.feature::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 100% 0%, rgba(143,209,80,.08), transparent 60%);pointer-events:none}
+@media (max-width:820px){.feature{grid-template-columns:1fr}}
+.feature .partner{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.feature h2{margin-bottom:14px}.feature p{color:var(--fg);max-width:54ch}
+.feature .fcta{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.fstats{display:grid;gap:10px}
+.fstat{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding:11px 0;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.fstat b{color:var(--green-hi);font-weight:400;font-size:16px}
+.hazard{height:7px;border-radius:4px;margin-bottom:28px;opacity:.6;
+  background:repeating-linear-gradient(45deg,var(--amber) 0 14px,var(--bg) 14px 28px)}
+.support{display:grid;grid-template-columns:1.2fr .9fr;gap:28px;align-items:center;padding:clamp(26px,4.5vw,46px);border-radius:var(--r);
+  background:linear-gradient(120deg,rgba(244,169,60,.08),rgba(143,209,80,.05));border:1px solid var(--line)}
+@media (max-width:820px){.support{grid-template-columns:1fr}}
+.support h2{margin-bottom:13px}.support p{color:var(--fg);max-width:52ch}
+.coffee{display:inline-flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:.03em;
+  text-transform:uppercase;color:#1b1206;background:var(--amber);padding:15px 25px;border-radius:9px;margin-top:20px;
+  transition:transform .14s var(--ease),background .16s;box-shadow:0 16px 34px -14px rgba(244,169,60,.6)}
+.coffee:hover{transform:translateY(-3px);background:var(--amber-hi)}.coffee svg{width:21px;height:21px}
+.support-aside{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.support-aside .r{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line-2);padding:8px 0}
+.support-aside .r b{color:var(--green)}
+
+/* footer */
+footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradient(180deg,transparent,rgba(7,9,10,.7))}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:38px;margin-bottom:34px}
+@media (max-width:740px){.foot-grid{grid-template-columns:1fr;gap:26px}}
+.foot-grid h4{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 14px}
+.foot-grid a{display:block;color:var(--muted);font-size:14.5px;padding:5px 0;transition:color .15s}
+.foot-grid a:hover{color:var(--green-hi)}
+.foot-brand{font-family:var(--disp);font-weight:700;color:var(--ink);font-size:22px;text-transform:uppercase;letter-spacing:.03em;margin-bottom:12px}
+.foot-brand+p{color:var(--muted);font-size:14.5px;max-width:42ch}
+.disclaimer{font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.7;border-top:1px solid var(--line);padding-top:20px;margin-bottom:18px;max-width:90ch}
+.signoff{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+.signoff .node{color:var(--amber)}
+
+/* reveal + toast */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(150%);background:var(--glass-2);border:1px solid var(--green);
+  color:var(--ink);font-family:var(--mono);font-size:13px;padding:13px 20px;border-radius:9px;z-index:120;box-shadow:var(--shadow);
+  transition:transform .34s var(--ease);max-width:90vw;backdrop-filter:blur(10px)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<canvas id="fieldbg" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+
+<div class="page">
+
+<!-- ===== HUD ===== -->
+<header class="hud">
+  <div class="wrap hud-strip">
+    <span class="seg"><span class="dot"></span> <b>NET</b> ONLINE</span>
+    <span class="seg opt">GRID <b>15T</b></span>
+    <span class="seg opt">BAND <b>915MHz</b></span>
+    <span class="seg wx push" id="wx">MINNEAPOLIS WX · ACQUIRING…</span>
+    <span class="seg"><span id="zulu">--:--:--Z</span></span>
+  </div>
+  <div class="wrap hud-main">
+    <a class="brand" href="#top" aria-label="Midwest Mesh Lab home">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><circle cx="18" cy="18" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5M12 12l6 6" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab <small>0xMWML</small>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">MENU</button>
+    <nav class="nav" id="nav" aria-label="Primary">
+      <a href="#map">Map</a>
+      <a href="#manuals">Manuals</a>
+      <a href="#builds">Builds</a>
+      <a href="#notes">Field Notes</a>
+      <a href="#signal">Signal</a>
+      <a href="#community">Community</a>
+      <a href="#events">Events</a>
+      <a class="cta" href="#support">Buy me a coffee</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-id">
+      <span>STN <b>0xMWML</b></span><span>BAND <b>915 MHz</b></span>
+      <span>AO <b>US-MIDWEST</b></span><span>LICENSE <b>OPEN / FREE</b></span>
+    </div>
+    <h1>When the towers go quiet, the <span class="hot">mesh</span> keeps talking.</h1>
+    <p class="lede">A field lab for off-grid networks — manuals you can actually follow, build lists with real
+      parts and prices, a live Minnesota node map, field notes, streams, and a wall of community builds.
+      Everything here is free to copy, fork, and improve.</p>
+    <p class="ig-line">Field media on Instagram → <a id="lnk-ig" href="#" target="_blank" rel="noopener noreferrer me"><span class="js-handle">@midwest_meshlab</span></a></p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#manuals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h11l5 5v11H4z"/><path d="M14 4v5h5M8 13h7M8 17h5"/></svg>Start here</a>
+      <a class="btn btn-ghost" href="#map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg>See the map</a>
+    </div>
+    <div class="hero-chips">
+      <span class="chip glass"><span class="pin"></span> <b id="chip-nodes">128</b>&nbsp;nodes mapped</span>
+      <span class="chip glass"><span class="pin"></span> <b id="chip-builds">36</b>&nbsp;community builds</span>
+      <span class="chip glass"><span class="pin"></span> <b id="chip-docs">22</b>&nbsp;open manuals</span>
+    </div>
+    <div class="scrollcue"><span class="ln"></span> SCROLL TO RECON</div>
+  </div>
+</section>
+
+<!-- ===== STACK ===== -->
+<section class="section" id="hub">
+  <div class="wrap">
+    <div class="stack" id="stack"></div>
+  </div>
+</section>
+
+<!-- ===== MINNESOTA MESH MAP ===== -->
+<section class="section" id="map">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">01</span> SITUATION MAP</span>
+      <h2>Minnesota mesh map <span class="desig">MN-NET</span></h2>
+      <p>The network at a glance — nodes, gateways, and the links between them. Positions here are illustrative
+        and fully editable; for a live, MQTT-fed view, see the public maps linked on the right.</p>
+    </div>
+    <div class="map-grid">
+      <div class="map-stage reveal">
+        <svg id="mnmap" viewBox="0 0 520 640" role="img" aria-label="Stylized map of Minnesota mesh nodes">
+          <defs>
+            <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g id="mn-gridlines"></g>
+          <path id="mn-state" class="mn-state" d="M175,30 L165,72 L201,80 L250,92 L300,80 L463,165 L328,280 L298,413 L374,586 L92,595 L92,423 L73,260 L51,68 Z"/>
+          <g id="mn-links"></g>
+          <g id="mn-nodes"></g>
+          <g id="mn-packets"></g>
+        </svg>
+      </div>
+      <div class="map-side">
+        <div class="map-card glass reveal">
+          <h3>Legend</h3>
+          <div class="legend">
+            <span class="li"><span class="sw" style="background:#F4A93C"></span> Gateway / hub</span>
+            <span class="li"><span class="sw" style="background:#8FD150"></span> Node</span>
+            <span class="li"><span class="sw" style="background:rgba(143,209,80,.4)"></span> Heard link</span>
+          </div>
+          <p class="map-note">Sample topology for illustration — not live telemetry. Edit the <code>MN_NODES</code> /
+            <code>MN_LINKS</code> arrays to match your real network.</p>
+        </div>
+        <div class="map-card glass reveal">
+          <h3>Live maps</h3>
+          <p>Want the real, MQTT-fed picture? These community projects map nodes nationwide:</p>
+          <div class="legend">
+            <span class="li"><a id="lnk-meshmap" href="https://meshmap.net" target="_blank" rel="noopener">→ meshmap.net</a></span>
+            <span class="li"><a id="lnk-omap" href="https://map.meshtastic.org" target="_blank" rel="noopener">→ map.meshtastic.org</a></span>
+            <span class="li"><a id="lnk-msp3" href="#" target="_blank" rel="noopener">→ MSP Mesh (mspmesh.org)</a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MANUALS ===== -->
+<section class="section" id="manuals">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">02</span> INSTRUCTION MANUALS</span>
+      <h2>Step-by-step, no gatekeeping <span class="desig">MAN</span></h2>
+      <p>Field-tested guides from box to first packet. Each links to a page you host in <code>/manuals/</code>.</p>
+    </div>
+    <div class="list" id="manuals-list"></div>
+  </div>
+</section>
+
+<!-- ===== BUILD LIST ===== -->
+<section class="section" id="builds">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">03</span> BUILD LIST</span>
+      <h2>Reference builds with real BOMs <span class="desig">BLD</span></h2>
+      <p>Bills of materials, wiring, and ballpark costs. Clone one and change what you want.</p>
+    </div>
+    <div class="cards" id="builds-cards"></div>
+  </div>
+</section>
+
+<!-- ===== TOOLKIT ===== -->
+<section class="section" id="toolkit">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">04</span> GET THE TOOLS</span>
+      <h2>Toolkit &amp; gear <span class="desig">KIT</span></h2>
+      <p>The hardware and software worth owning before you start. Vendor-neutral — buy wherever you like.</p>
+    </div>
+    <div class="tools" id="tools-grid"></div>
+  </div>
+</section>
+
+<!-- ===== FIELD NOTES (BLOG) ===== -->
+<section class="section" id="notes">
+  <div class="wrap">
+    <div class="head-row reveal">
+      <div class="section-head">
+        <span class="kicker"><span class="n">05</span> FIELD NOTES</span>
+        <h2>From the bench &amp; the field <span class="desig">LOG</span></h2>
+      </div>
+      <a class="btn btn-ghost" href="#" id="lnk-allposts">All posts</a>
+    </div>
+    <div class="posts" id="posts-grid"></div>
+  </div>
+</section>
+
+<!-- ===== SIGNAL (TECH TALK) ===== -->
+<section class="section" id="signal">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">06</span> SIGNAL</span>
+      <h2>What's new &amp; worth a look <span class="desig">RF</span></h2>
+      <p>Trends, new gear, firmware, and ideas moving through the mesh world right now.</p>
+    </div>
+    <div class="ticker reveal" aria-hidden="true"><div class="track" id="ticker-track"></div></div>
+    <div class="signal" id="signal-grid"></div>
+  </div>
+</section>
+
+<!-- ===== BROADCAST ===== -->
+<section class="section" id="broadcast">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">07</span> BROADCAST</span>
+      <h2>Long-form builds &amp; live ops <span class="desig">CAST</span></h2>
+      <p>Full build logs and range tests, plus live streams with real-time Q&amp;A. Video loads only when you press play.</p>
+    </div>
+    <div class="live-banner glass reveal">
+      <span class="live-tag"><span class="b"></span>LIVE</span>
+      <span class="lt"><b>Live build streams &amp; Q&amp;A</b><span>Tap in when the light's on. Otherwise catch the replay.</span></span>
+      <a class="btn btn-primary" id="lnk-live" href="#" target="_blank" rel="noopener">Watch live</a>
+    </div>
+    <div class="videos">
+      <div class="vcol reveal">
+        <div class="embed" data-video-id="SET_VIDEO_ID" data-title="Solar Relay v2 build log">
+          <div class="ph"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><small>PRESS PLAY · LOADS YOUTUBE</small></div>
+        </div>
+        <div class="vcap"><b>Solar Relay v2 — full build</b>Bench build, weatherproofing, first deploy.</div>
+      </div>
+      <div class="vcol reveal">
+        <div class="embed" data-video-id="SET_VIDEO_ID" data-title="14 km range test">
+          <div class="ph"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><small>PRESS PLAY</small></div>
+        </div>
+        <div class="vcap"><b>14 km range test</b>What height and a clear horizon buy you.</div>
+        <div class="embed" data-video-id="SET_VIDEO_ID" data-title="Pi gateway walkthrough">
+          <div class="ph"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><small>PRESS PLAY</small></div>
+        </div>
+        <div class="vcap"><b>Pi gateway, no fluff</b>Flashed card to packets on the bridge.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== IG FEED ===== -->
+<section class="section" id="feed">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">08</span> FIELD FEED</span>
+      <h2>Straight from the field <span class="desig">IG</span></h2>
+    </div>
+    <div class="ig-head reveal">
+      <div class="ig-h">
+        <span class="ig-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+        <div><div class="h"><span class="js-handle">@midwest_meshlab</span></div><div class="s">Build logs · deploys · field media</div></div>
+      </div>
+      <a class="btn btn-ghost" id="lnk-ig2" href="#" target="_blank" rel="noopener noreferrer me">Follow on Instagram</a>
+    </div>
+    <div class="iggrid" id="iggrid"></div>
+  </div>
+</section>
+
+<!-- ===== COMMUNITY ===== -->
+<section class="section" id="community">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">09</span> COMMUNITY</span>
+      <h2>Talk shop, swap nodes, get help <span class="desig">NET</span></h2>
+      <p>Builds from operators across the network — filter, then add yours. Threaded discussion runs on
+        GitHub Discussions (no tracking, you moderate from GitHub).</p>
+    </div>
+
+    <div class="toolbar" id="filters" role="group" aria-label="Filter builds">
+      <button class="filter active" data-filter="all" type="button">All</button>
+      <button class="filter" data-filter="relay" type="button">Relays</button>
+      <button class="filter" data-filter="gateway" type="button">Gateways</button>
+      <button class="filter" data-filter="handheld" type="button">Handheld</button>
+      <button class="filter" data-filter="sensor" type="button">Sensors</button>
+    </div>
+    <div class="gallery" id="gallery"></div>
+
+    <div class="disc" style="margin-top:26px">
+      <div class="glass" id="giscus-box">
+        <div class="disc-placeholder" id="disc-ph">
+          <b>Discussion board</b><br>
+          Threaded comments load here once you connect GitHub Discussions (free, no database).
+          Set <code>giscus</code> in CONFIG, then this panel goes live.<br><br>
+          <button class="btn-mini" id="load-disc" type="button">Load discussion</button>
+        </div>
+      </div>
+      <div class="disc-links">
+        <a class="disc-link glass" id="lnk-discord" href="#" target="_blank" rel="noopener">
+          <span class="di"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 5a16 16 0 0 0-4-1l-.3.5a14 14 0 0 1 3.6 1.2 13 13 0 0 0-11 0A14 14 0 0 1 11 4.5L10.7 4A16 16 0 0 0 5 5C2.5 8.5 2 12.5 2.2 16.4A16 16 0 0 0 7 19l.9-1.4c-.8-.3-1.6-.7-2.3-1.2l.6-.4a11 11 0 0 0 9.6 0l.6.4c-.7.5-1.5.9-2.3 1.2L17 19a16 16 0 0 0 4.8-2.6C22 12 21.3 8 19 5zM9 14c-.8 0-1.4-.7-1.4-1.6S8.2 10.8 9 10.8s1.5.7 1.4 1.6S9.8 14 9 14zm6 0c-.8 0-1.4-.7-1.4-1.6s.6-1.6 1.4-1.6 1.5.7 1.4 1.6S15.8 14 15 14z"/></svg></span>
+          <div><h3>MSP Mesh Discord</h3><p>Minnesota's most active mesh room.</p></div>
+        </a>
+        <a class="disc-link glass" id="lnk-ghdisc" href="#" target="_blank" rel="noopener">
+          <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 12.7 3a8.5 8.5 0 0 1 8.3 8.5z"/></svg></span>
+          <div><h3>GitHub Discussions</h3><p>Q&amp;A, ideas, and build threads.</p></div>
+        </a>
+        <a class="disc-link glass" id="submit" href="#comms">
+          <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+          <div><h3>Submit a build</h3><p>Get your node on the community wall.</p></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EVENTS ===== -->
+<section class="section" id="events">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">10</span> OPERATIONS CALENDAR</span>
+      <h2>What's coming up <span class="desig">OPS</span></h2>
+      <p>Meetups, workshops, and field tests. Add one event or subscribe to the whole calendar — your own
+        device handles the reminders, and we never store your contact info.</p>
+    </div>
+    <div class="cal-actions reveal">
+      <a class="btn btn-primary" id="subscribe-cal" href="#">Subscribe to ops calendar</a>
+      <button class="btn btn-ghost" id="dl-all-ics" type="button">Download all (.ics)</button>
+    </div>
+    <div class="events" id="events-list"></div>
+  </div>
+</section>
+
+<!-- ===== COMMS ===== -->
+<section class="section" id="comms">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker"><span class="n">11</span> COMMS</span>
+      <h2>Get on the net <span class="desig">SUB</span></h2>
+      <p>Subscribe for new content and event alerts, or reach the lab directly.</p>
+    </div>
+    <div class="split">
+      <div class="panel glass reveal">
+        <h3>Subscribe</h3>
+        <p class="sub">New builds, videos, and upcoming events — straight to your inbox.</p>
+        <form id="subscribeForm" method="post" target="_blank" rel="noopener">
+          <div class="field"><label for="sub-email">Email address</label>
+            <input id="sub-email" type="email" name="email" required placeholder="you@example.com" autocomplete="email" /></div>
+          <div class="form-foot"><button class="btn btn-primary" type="submit">Subscribe</button>
+            <span class="note">double opt-in · leave anytime</span></div>
+        </form>
+        <div class="alt">Prefer no email? <b>Subscribe to the ops calendar</b> above — reminders fire from your own
+          device, no contact info required.</div>
+      </div>
+      <div class="panel glass reveal">
+        <h3>Collaborate &amp; contact</h3>
+        <p class="sub">Co-build a node, contribute a manual, or submit a build for the wall.</p>
+        <div class="contact-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <a class="js-email" href="#">contact@midwestmeshlab.net</a>
+        </div>
+        <form id="contactForm">
+          <div class="field-2">
+            <div class="field"><label for="c-name">Name / callsign</label><input id="c-name" name="name" required placeholder="KD0XXX" /></div>
+            <div class="field"><label for="c-link">Link (optional)</label><input id="c-link" name="link" placeholder="repo, photos, site" /></div>
+          </div>
+          <div class="field"><label for="c-msg">Message</label><textarea id="c-msg" name="message" required placeholder="What do you want to build, contribute, or ask?"></textarea></div>
+          <div class="form-foot"><button class="btn btn-primary" type="submit">Open email</button>
+            <span class="note">opens your mail app — nothing stored here</span></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MSP MESH ===== -->
+<section class="section" id="mspmesh">
+  <div class="wrap">
+    <div class="feature glass reveal">
+      <div>
+        <div class="partner">Featured network · Minnesota</div>
+        <h2>MSP Mesh</h2>
+        <p>If you're anywhere near the Twin Cities, this is the network to plug into. MSP Mesh is a
+          decentralized, volunteer-run group building Minnesota's mesh across the Minneapolis–St. Paul metro,
+          Greater Minnesota, and into western Wisconsin — free to use, no license needed. They put nodes on
+          the tall stuff to keep coverage dense and resilient, and their Discord is one of the most welcoming,
+          well-run rooms in the hobby. They deserve more eyes on the work.</p>
+        <div class="fcta">
+          <a class="btn btn-primary" id="lnk-discord2" href="#" target="_blank" rel="noopener">Join the MSP Mesh Discord</a>
+          <a class="btn btn-ghost" id="lnk-msp" href="#" target="_blank" rel="noopener">mspmesh.org</a>
+        </div>
+      </div>
+      <div class="fstats">
+        <div class="fstat"><span>Coverage</span><b>MSP metro + Greater MN</b></div>
+        <div class="fstat"><span>Cost to join</span><b>$0 · no license</b></div>
+        <div class="fstat"><span>Run by</span><b>volunteers</b></div>
+        <div class="fstat"><span>Community</span><b>active Discord</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUPPORT ===== -->
+<section class="section" id="support">
+  <div class="wrap">
+    <div class="hazard reveal" aria-hidden="true"></div>
+    <div class="support reveal">
+      <div>
+        <span class="kicker"><span class="n">12</span> SUPPORT</span>
+        <h2 style="margin-top:14px">Keep the docs free and the nodes lit</h2>
+        <p>Every manual, BOM, and STL here stays open and free. If something saved you a weekend of trial and
+          error, a coffee keeps the panels charged and the next build coming.</p>
+        <a class="coffee" id="lnk-coffee" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8h11v5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 9h2a2 2 0 0 1 0 4h-2M8 2v2.5M11 2v2.5M14 2v2.5"/></svg>
+          Buy me a coffee
+        </a>
+      </div>
+      <div class="support-aside">
+        <div class="r"><span>manuals &amp; STLs</span><b>free forever</b></div>
+        <div class="r"><span>code license</span><b>MIT</b></div>
+        <div class="r"><span>docs license</span><b>CC BY-SA</b></div>
+        <div class="r"><span>your support</span><b>powers the next node</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">Midwest Mesh Lab</div>
+        <p>An open hub for off-grid mesh, Raspberry Pi, and open hardware. Copy anything. Improve anything. Send it back.</p>
+      </div>
+      <div>
+        <h4>Sections</h4>
+        <a href="#map">Minnesota map</a><a href="#manuals">Manuals</a><a href="#builds">Build list</a>
+        <a href="#notes">Field notes</a><a href="#events">Events</a>
+      </div>
+      <div>
+        <h4>Connect</h4>
+        <a id="lnk-ig3" href="#" target="_blank" rel="noopener noreferrer me">Instagram</a>
+        <a id="lnk-yt" href="#" target="_blank" rel="noopener">YouTube</a>
+        <a id="lnk-msp2" href="#" target="_blank" rel="noopener">MSP Mesh</a>
+        <a class="js-email" href="#">Email the lab</a>
+        <a href="/.well-known/security.txt">Security</a>
+      </div>
+    </div>
+    <p class="disclaimer">
+      Midwest Mesh Lab is an independent, community project. It is not affiliated with, sponsored by, or endorsed
+      by Meshtastic LLC, Raspberry Pi Ltd, MSP Mesh, Instagram, YouTube, Discord, or any other third party.
+      "Meshtastic" is a registered trademark of Meshtastic LLC; "Raspberry Pi" is a trademark of Raspberry Pi Ltd —
+      both used here nominatively to refer to those projects. All other names and marks belong to their owners.
+      Map geometry is a stylized, original rendering from public-domain boundary data and does not depict live
+      telemetry. Weather by Open-Meteo (CC BY 4.0).
+    </p>
+    <div class="signoff">
+      <span>node <span class="node">0xMWML</span> · 915 MHz · US-Midwest</span>
+      <span>© <span id="year"></span> Midwest Mesh Lab — open &amp; free.</span>
+    </div>
+  </div>
+</footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   1) CONFIG — edit me. (Sole-admin: this block + the DATA arrays below
+      are the only things you normally touch.)
+   ===================================================================== */
+const CONFIG = {
+  site:"midwestmeshlab.net",
+  email:"contact@midwestmeshlab.net",
+  instagram:"https://instagram.com/midwest_meshlab",
+  instagramHandle:"@midwest_meshlab",
+  youtube:"https://youtube.com/@midwest_meshlab",
+  youtubeLive:"https://youtube.com/@midwest_meshlab/live",
+  buyMeACoffee:"https://buymeacoffee.com/midwestmeshlab",
+  newsletterAction:"https://buttondown.email/api/emails/embed-subscribe/midwestmeshlab",
+  mspMeshSite:"https://mspmesh.org",
+  mspMeshDiscord:"https://mspmesh.org",     // paste the real never-expiring Discord invite
+  githubDiscussions:"https://github.com/NordicDevelopment-org/Midwest-Meshlab-site/discussions",
+  allPostsUrl:"#notes",
+  wx:{ lat:44.9778, lon:-93.2650, label:"MINNEAPOLIS" },
+  // Community discussion (GitHub Discussions via giscus). repo is set; get repoId + categoryId from giscus.app.
+  giscus:{ repo:"NordicDevelopment-org/Midwest-Meshlab-site", repoId:"", category:"General", categoryId:"" }
+};
+
+/* =====================================================================
+   2) DATA — your content lives here. Add/edit freely.
+   ===================================================================== */
+const STACK = [
+  { t:"Manuals", d:"Box to first packet", href:"#manuals", ic:'<path d="M4 4h11l5 5v11H4z"/><path d="M14 4v5h5M8 13h7M8 17h5"/>' },
+  { t:"Build list", d:"Real BOMs & costs", href:"#builds", ic:'<path d="M3 7h18M3 12h18M3 17h12"/>' },
+  { t:"MN map", d:"The network live", href:"#map", ic:'<path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/>' },
+  { t:"Field notes", d:"Bench & field log", href:"#notes", ic:'<path d="M4 4h13v16H4z"/><path d="M8 9h7M8 13h7M8 17h4"/>' },
+  { t:"Toolkit", d:"Gear worth owning", href:"#toolkit", ic:'<path d="m14 7 3 3M5 19l9-9 1-4 4-1-1 4-9 9-4 1z"/>' },
+  { t:"Community", d:"Talk shop & get help", href:"#community", ic:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>' }
+];
+
+const MANUALS = [
+  { hx:"0x1A", title:"Flash Meshtastic® on a Heltec V3", desc:"Box to first packet in about ten minutes.", url:"/manuals/flash-heltec-v3.html", tags:["Firmware","Beginner"] },
+  { hx:"0x2B", title:"Raspberry Pi® MQTT gateway", desc:"Bridge your local mesh to the wider network with a Pi 4.", url:"/manuals/pi-mqtt-gateway.html", tags:["Raspberry Pi","Gateway"] },
+  { hx:"0x3C", title:"Solar node power budget", desc:"Panel, battery, and duty cycle so it survives a cloudy week.", url:"/manuals/solar-power-budget.html", tags:["Solar","Power"] },
+  { hx:"0x4D", title:"Antennas & line-of-sight for flat country", desc:"Height beats power. Planning hops across open terrain.", url:"/manuals/antenna-los.html", tags:["Antenna","RF"] },
+  { hx:"0x5E", title:"Channels, keys & encryption", desc:"Public and private channels without locking yourself out.", url:"/manuals/channels-encryption.html", tags:["Security"] },
+  { hx:"0x6F", title:"Weatherproof node case (STLs)", desc:"Printable enclosure with gasket channel and antenna gland.", url:"/manuals/weatherproof-case.html", tags:["3D Print","Enclosure"] }
+];
+
+const BUILDS_REF = [
+  { ct:"Relay", title:"Solar Relay v2", desc:"Always-on repeater for the edge. Survives a cloudy week on a 6W panel.", url:"/builds/solar-relay-v2.html", parts:14, cost:"$68", time:"2h" },
+  { ct:"Gateway", title:"Pi MQTT Gateway", desc:"Raspberry Pi 4 + RAK module bridging your local mesh to the internet.", url:"/builds/pi-mqtt-gateway.html", parts:9, cost:"$120", time:"1h" },
+  { ct:"Handheld", title:"Pocket Node", desc:"T-Echo loadout for trails and travel. E-ink, GPS, printed clip.", url:"/builds/pocket-node.html", parts:6, cost:"$95", time:"30m" },
+  { ct:"Go-box", title:"Storm Go-Box", desc:"Pelican-case node with solar and a spare battery for storm season.", url:"/builds/storm-go-box.html", parts:17, cost:"$140", time:"3h" }
+];
+
+const TOOLS = [
+  { title:"USB-C soldering iron", desc:"A decent temp-controlled iron (e.g. TS101-class). Non-negotiable.", ic:'<path d="m14 7 4 4M3 21l9-9M12 8l4-4 4 4-4 4z"/>' },
+  { title:"Multimeter", desc:"Continuity + current draw for power-budget sanity checks.", ic:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 16h4M12 8v.01"/>' },
+  { title:"Antenna analyzer / NanoVNA", desc:"Tune antennas and check SWR before you climb anything.", ic:'<path d="M3 12h4l3-8 4 16 3-8h4"/>' },
+  { title:"Raspberry Pi® Imager", desc:"Flash SD cards for gateways. Free, official, cross-platform.", ic:'<rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="12" cy="12" r="3"/>' },
+  { title:"Label printer", desc:"Future-you will thank present-you for labeled nodes and cables.", ic:'<rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 7V5h10v2M7 13h10"/>' },
+  { title:"3D printer access", desc:"Cases and mounts. A library or makerspace printer is plenty.", ic:'<path d="M5 8 12 4l7 4v8l-7 4-7-4z"/><path d="M12 12v8M5 8l7 4 7-4"/>' }
+];
+
+const POSTS = [
+  { date:"2026-06-12", title:"Why height beats wattage every time", excerpt:"A 5-meter mast did more for our range than doubling TX power ever could. The math and the field data.", url:"/notes/height-beats-wattage.html" },
+  { date:"2026-05-28", title:"Cloudy-week power budgets that actually hold", excerpt:"How we size panels and batteries so relays don't drop out after three gray days in a row.", url:"/notes/cloudy-week-power.html" },
+  { date:"2026-05-09", title:"Field notes: 14 km across open prairie", excerpt:"Two nodes, two tripods, one very flat horizon. What we learned about Fresnel zones the hard way.", url:"/notes/prairie-range-test.html" }
+];
+
+const SIGNAL = [
+  { tag:"Firmware", title:"New Meshtastic® release", desc:"Worth reading the changelog before you flash your gateways." },
+  { tag:"Hardware", title:"Cheaper LoRa boards landing", desc:"More sub-$25 options showing up for relay duty." },
+  { tag:"Protocol", title:"MeshCore vs Meshtastic®", desc:"The off-grid space now has two serious LoRa stacks worth knowing." },
+  { tag:"Power", title:"LiFePO4 prices keep dropping", desc:"Makes always-on solar relays easier to justify than ever." }
+];
+
+const TICKER = [
+  "915 MHz is the US ISM band for LoRa",
+  "Height > power for range",
+  "Default channel + 'OK to MQTT' puts you on the public map",
+  "No license required to run a node",
+  "Solar + LiFePO4 = set-and-forget relays",
+  "Twin Cities mesh is growing fast"
+];
+
+const IG_POSTS = [
+  { img:null, cap:"Solar relay deploy" }, { img:null, cap:"14 km range test" },
+  { img:null, cap:"Pi gateway build" },  { img:null, cap:"Storm go-box" },
+  { img:null, cap:"Antenna day" },       { img:null, cap:"Node case prints" },
+  { img:null, cap:"Field SITREP" },      { img:null, cap:"On the mesh" }
+];
+
+const BUILDS = [
+  { id:"0x7A3F", title:"Prairie Relay", type:"relay", hw:"Heltec V3 · 18650 · 6W solar", loc:"Cedar Rapids, IA", by:"@kd0grain", img:null },
+  { id:"0x1C09", title:"Basement Gateway", type:"gateway", hw:"Raspberry Pi 4 · RAK WisBlock", loc:"Madison, WI", by:"@mesh_marv", img:null },
+  { id:"0xB17E", title:"Trail Pocket Node", type:"handheld", hw:"LilyGO T-Echo · printed mount", loc:"Ozarks, MO", by:"@switchback", img:null },
+  { id:"0x4D2A", title:"Rooftop Beacon", type:"relay", hw:"RAK19007 · 5.8 dBi antenna", loc:"Minneapolis, MN", by:"@triple_decker", img:null },
+  { id:"0x9F11", title:"Pi Weather Mesh", type:"sensor", hw:"Pi Zero 2 W · BME280", loc:"Lincoln, NE", by:"@plainswx", img:null },
+  { id:"0x33C4", title:"Storm Go-Box", type:"gateway", hw:"T-Beam · solar · Pelican case", loc:"Tornado Alley", by:"@stormchase", img:null },
+  { id:"0x58D7", title:"Lake House Relay", type:"relay", hw:"RAK4631 · LiFePO4 · 10W panel", loc:"Lake of the Woods", by:"@dockside", img:null },
+  { id:"0xE2A1", title:"Soil Sensor Node", type:"sensor", hw:"Heltec V3 · capacitive probe", loc:"Iowa City, IA", by:"@rowcrop", img:null }
+];
+
+const EVENTS = [
+  { title:"Twin Cities Mesh Meetup", start:"2026-07-09T18:30:00", end:"2026-07-09T20:30:00", loc:"Minneapolis, MN", desc:"Build night + network planning. New operators welcome." },
+  { title:"Solar Node Workshop", start:"2026-07-19T13:00:00", end:"2026-07-19T16:00:00", loc:"Midwest Mesh Lab", desc:"Hands-on: power budget, panel sizing, weatherproofing." },
+  { title:"Range Test — Open Fields", start:"2026-08-02T10:00:00", end:"2026-08-02T14:00:00", loc:"Greater MN", desc:"Line-of-sight hop trials. Bring a node and a tripod." },
+  { title:"Live Build Stream", start:"2026-08-14T19:00:00", end:"2026-08-14T20:30:00", loc:"YouTube / @midwest_meshlab", desc:"Pi MQTT gateway, start to finish, live Q&A." }
+];
+
+/* Minnesota map — stylized coords in the 520x640 viewBox (edit freely). */
+const MN_NODES = [
+  { name:"Minneapolis", x:264, y:453, hub:true }, { name:"St. Paul", x:278, y:455, hub:true },
+  { name:"Duluth", x:322, y:288 }, { name:"Rochester", x:307, y:545 },
+  { name:"St. Cloud", x:216, y:398 }, { name:"Mankato", x:225, y:532 },
+  { name:"Moorhead", x:86, y:272 }, { name:"Bemidji", x:177, y:215 },
+  { name:"Brainerd", x:214, y:321 }, { name:"Grand Marais", x:424, y:188 },
+  { name:"Int'l Falls", x:257, y:107 }
+];
+const MN_LINKS = [[0,1],[0,4],[0,3],[0,5],[1,3],[4,8],[8,2],[8,7],[4,6],[7,10],[2,9],[7,8],[2,3],[5,4]];
+
+/* =====================================================================
+   3) WIRING (no need to edit below)
+   ===================================================================== */
+const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const setHref=(sel,h)=>{const e=$(sel);if(e)e.href=h;};
+const C=CONFIG;
+
+setHref('#lnk-ig',C.instagram); setHref('#lnk-ig2',C.instagram); setHref('#lnk-ig3',C.instagram);
+setHref('#lnk-yt',C.youtube); setHref('#lnk-live',C.youtubeLive); setHref('#lnk-coffee',C.buyMeACoffee);
+setHref('#lnk-msp',C.mspMeshSite); setHref('#lnk-msp2',C.mspMeshSite); setHref('#lnk-msp3',C.mspMeshSite);
+setHref('#lnk-discord',C.mspMeshDiscord); setHref('#lnk-discord2',C.mspMeshDiscord);
+setHref('#lnk-ghdisc',C.githubDiscussions); setHref('#lnk-allposts',C.allPostsUrl);
+$$('.js-handle').forEach(e=>e.textContent=C.instagramHandle);
+$$('.js-email').forEach(e=>{e.textContent=C.email;e.href='mailto:'+C.email;});
+const yEl=$('#year'); if(yEl) yEl.textContent=new Date().getFullYear();
+const sf=$('#subscribeForm'); if(sf) sf.action=C.newsletterAction;
+setHref('#subscribe-cal','webcal://'+C.site+'/events.ics');
+
+/* clock */
+(function(){const el=$('#zulu');if(!el)return;const t=()=>el.textContent=new Date().toISOString().slice(11,19)+'Z';t();setInterval(t,1000);})();
+
+/* weather (Open-Meteo, keyless) */
+(function(){const out=$('#wx');if(!out)return;
+  const wmo=c=>({0:['CLR','○'],1:['CLR','○'],2:['PT CLDY','◐'],3:['OVC','●'],45:['FOG','▒'],48:['FOG','▒'],
+    51:['DRZL','░'],53:['DRZL','░'],55:['DRZL','░'],61:['RAIN','▓'],63:['RAIN','▓'],65:['HVY RAIN','▓'],
+    71:['SNOW','❄'],73:['SNOW','❄'],75:['HVY SNOW','❄'],80:['SHWRS','▓'],81:['SHWRS','▓'],82:['HVY SHWRS','▓'],
+    95:['TSTORM','⚡'],96:['TSTORM','⚡'],99:['TSTORM','⚡']}[c]||['—','·']);
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${C.wx.lat}&longitude=${C.wx.lon}&current=temperature_2m,weather_code,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph`;
+  const load=()=>fetch(url,{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(d=>{
+    const c=d.current||{},[lab,gl]=wmo(c.weather_code);
+    out.textContent=`${gl} ${C.wx.label} ${Math.round(c.temperature_2m)}°F ${lab} · WIND ${Math.round(c.wind_speed_10m)}MPH`;
+  }).catch(()=>out.textContent=`${C.wx.label} WX — LINK DOWN`);
+  load(); setInterval(load,600000);
+})();
+
+/* count-up chips */
+(function(){const set=(id,n)=>{const e=$(id);if(!e)return;if(reduce){e.textContent=n;return;}
+  let v=0;const step=Math.max(1,Math.round(n/40));const t=setInterval(()=>{v+=step;if(v>=n){v=n;clearInterval(t);}e.textContent=v;},22);};
+  set('#chip-nodes',128); set('#chip-builds',36); set('#chip-docs',22);
+})();
+
+/* renderers */
+const stackIc=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+(function(){const g=$('#stack');if(g)g.innerHTML=STACK.map(s=>`<a class="glass" href="${esc(s.href)}"><span class="ic">${stackIc(s.ic)}</span><span class="t">${esc(s.t)}</span><span class="d">${esc(s.d)}</span></a>`).join('');})();
+
+(function(){const g=$('#manuals-list');if(g)g.innerHTML=MANUALS.map(m=>`
+  <a class="row glass" href="${esc(m.url)}"><span class="hx">${esc(m.hx)}</span>
+    <div class="main"><h3>${esc(m.title)}</h3><p>${esc(m.desc)}</p></div>
+    <div class="tags">${m.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></a>`).join('');})();
+
+(function(){const g=$('#builds-cards');if(g)g.innerHTML=BUILDS_REF.map(b=>`
+  <a class="card glass" href="${esc(b.url)}"><span class="ct">${esc(b.ct)}</span><h3>${esc(b.title)}</h3><p>${esc(b.desc)}</p>
+    <div class="meta"><span><b>${b.parts}</b> parts</span><span>~<b>${esc(b.cost)}</b></span><span><b>${esc(b.time)}</b> build</span></div>
+    <span class="go">open build →</span></a>`).join('');})();
+
+(function(){const g=$('#tools-grid');if(g)g.innerHTML=TOOLS.map(t=>`
+  <div class="tool glass"><span class="ti">${stackIc(t.ic)}</span><div><h3>${esc(t.title)}</h3><p>${esc(t.desc)}</p></div></div>`).join('');})();
+
+(function(){const g=$('#posts-grid');if(!g)return;const f=d=>new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  g.innerHTML=POSTS.map(p=>`<a class="post glass" href="${esc(p.url)}">
+    <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="#8FD150" stroke-width="1.3"><path d="M4 4h13v16H4z"/><path d="M8 9h7M8 13h7M8 17h4"/></svg></div>
+    <div class="pin"><span class="dt">${f(p.date)}</span><h3>${esc(p.title)}</h3><p>${esc(p.excerpt)}</p><span class="more">read →</span></div></a>`).join('');})();
+
+(function(){const g=$('#signal-grid');if(g)g.innerHTML=SIGNAL.map(s=>`
+  <div class="sig glass"><span class="st">${esc(s.tag)}</span><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p></div>`).join('');
+  const tk=$('#ticker-track');if(tk){const one=TICKER.map(t=>`<span>${esc(t)}</span>`).join('');tk.innerHTML=one+one;}})();
+
+const igPh='<div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.2" fill="currentColor"/></svg>POST</div>';
+(function(){const g=$('#iggrid');if(g)g.innerHTML=IG_POSTS.map(p=>`
+  <a class="igt" href="${esc(C.instagram)}" target="_blank" rel="noopener noreferrer me" aria-label="${esc(p.cap)} on Instagram">
+    ${p.img?`<img src="${esc(p.img)}" alt="${esc(p.cap)}">`:igPh}<span class="cap">${esc(p.cap)}</span></a>`).join('');})();
+
+const nodeGlyph='<svg viewBox="0 0 24 24" fill="none" stroke="#5A6051" stroke-width="1.4"><rect x="9" y="9" width="6" height="6"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="11.2"/></svg>';
+function renderBuilds(f){const g=$('#gallery');if(!g)return;
+  g.innerHTML=BUILDS.filter(b=>f==='all'||b.type===f).map(b=>`
+  <article class="build glass" data-type="${esc(b.type)}"><div class="thumb">
+    ${b.img?`<img src="${esc(b.img)}" alt="${esc(b.title)}">`:nodeGlyph}
+    <span class="loc">${esc(b.loc)}</span><span class="nid">${esc(b.id)}</span></div>
+    <div class="bi"><h3>${esc(b.title)}</h3><div class="hw">${esc(b.hw)}</div><div class="by">build by <b>${esc(b.by)}</b></div></div></article>`).join('');}
+renderBuilds('all');
+const fil=$('#filters');if(fil)fil.addEventListener('click',e=>{const b=e.target.closest('.filter');if(!b)return;
+  $$('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderBuilds(b.dataset.filter);});
+
+/* lazy YouTube */
+$$('.embed[data-video-id]').forEach(box=>{const ph=box.querySelector('.ph');if(!ph)return;
+  ph.addEventListener('click',()=>{const id=box.dataset.videoId;
+    if(!id||id==='SET_VIDEO_ID'){window.open(C.youtube,'_blank','noopener');return;}
+    const f=document.createElement('iframe');
+    f.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
+    f.title=box.dataset.title||'Video';f.allow='accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture';
+    f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');f.setAttribute('allowfullscreen','');
+    box.innerHTML='';box.appendChild(f);});});
+
+/* events + ICS (built-in reminders => user's own device notifies them) */
+const MO=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const pad=n=>String(n).padStart(2,'0');
+const icsDate=iso=>{const d=new Date(iso);return d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+'T'+pad(d.getUTCHours())+pad(d.getUTCMinutes())+pad(d.getUTCSeconds())+'Z';};
+const tEsc=s=>String(s).replace(/[\\;,]/g,m=>'\\'+m).replace(/\n/g,'\\n');
+const hash=s=>{let h=0;for(let i=0;i<s.length;i++){h=(h<<5)-h+s.charCodeAt(i);h|=0;}return Math.abs(h);};
+function vevent(ev){return['BEGIN:VEVENT','UID:'+icsDate(ev.start)+'-'+hash(ev.title)+'@'+C.site,'DTSTAMP:'+icsDate(new Date().toISOString()),
+  'DTSTART:'+icsDate(ev.start),'DTEND:'+icsDate(ev.end||ev.start),'SUMMARY:'+tEsc(ev.title),'LOCATION:'+tEsc(ev.loc||''),
+  'DESCRIPTION:'+tEsc(ev.desc||''),'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+tEsc(ev.title),'TRIGGER:-P1D','END:VALARM',
+  'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+tEsc(ev.title),'TRIGGER:-PT1H','END:VALARM','END:VEVENT'].join('\r\n');}
+function ics(list){return['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Midwest Mesh Lab//Ops//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Midwest Mesh Lab — Ops',...list.map(vevent),'END:VCALENDAR'].join('\r\n');}
+function dlICS(list,name){const b=new Blob([ics(list)],{type:'text/calendar;charset=utf-8'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+function gcal(ev){const p=new URLSearchParams({action:'TEMPLATE',text:ev.title,dates:icsDate(ev.start)+'/'+icsDate(ev.end||ev.start),location:ev.loc||'',details:ev.desc||''});return'https://calendar.google.com/calendar/render?'+p;}
+function fmtT(d){let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(d.getMinutes())+' '+ap;}
+(function(){const w=$('#events-list');if(!w)return;const s=[...EVENTS].sort((a,b)=>new Date(a.start)-new Date(b.start));
+  w.innerHTML=s.map((ev,i)=>{const d=new Date(ev.start);return`<article class="event glass">
+    <div class="date"><div class="mo">${MO[d.getMonth()]}</div><div class="dy">${d.getDate()}</div></div>
+    <div class="ei"><h3>${esc(ev.title)}</h3><div class="when">${DOW[d.getDay()]} · ${fmtT(d)} · ${esc(ev.loc||'')}</div><p>${esc(ev.desc||'')}</p></div>
+    <div class="ea"><a class="btn-mini" href="${esc(gcal(ev))}" target="_blank" rel="noopener">Google</a>
+      <button class="btn-mini js-ics" data-i="${i}" type="button">.ics</button></div></article>`;}).join('');
+  w.addEventListener('click',e=>{const b=e.target.closest('.js-ics');if(!b)return;const ev=s[+b.dataset.i];
+    dlICS([ev],ev.title.replace(/\s+/g,'-').toLowerCase()+'.ics');toast('Event downloaded — your calendar will remind you.');});})();
+const dla=$('#dl-all-ics');if(dla)dla.addEventListener('click',()=>{dlICS(EVENTS,'midwest-mesh-lab-ops.ics');toast('Full ops calendar downloaded.');});
+
+/* forms */
+if(sf)sf.addEventListener('submit',()=>toast('Confirm in the new tab to get content + event alerts.'));
+const cf=$('#contactForm');if(cf)cf.addEventListener('submit',e=>{e.preventDefault();const f=e.target;
+  const n=f.elements.name.value.trim(),l=f.elements.link.value.trim(),m=f.elements.message.value.trim();
+  const body=[`Name / callsign: ${n}`,l?`Link: ${l}`:'','',m].filter(Boolean).join('\n');
+  location.href=`mailto:${C.email}?subject=${encodeURIComponent('Lab contact — '+(n||'no callsign'))}&body=${encodeURIComponent(body)}`;
+  toast('Opening your mail app…');});
+
+/* community discussion (giscus / GitHub Discussions) — loads on demand only */
+const loadBtn=$('#load-disc');
+if(loadBtn)loadBtn.addEventListener('click',()=>{const g=C.giscus;
+  if(!g.repo||!g.repoId||!g.categoryId){toast('Set CONFIG.giscus first (see ADMIN.md).');window.open(C.githubDiscussions,'_blank','noopener');return;}
+  const s=document.createElement('script');s.src='https://giscus.app/client.js';s.async=true;s.crossOrigin='anonymous';
+  s.setAttribute('data-repo',g.repo);s.setAttribute('data-repo-id',g.repoId);s.setAttribute('data-category',g.category);
+  s.setAttribute('data-category-id',g.categoryId);s.setAttribute('data-mapping','pathname');s.setAttribute('data-theme','dark_dimmed');
+  s.setAttribute('data-reactions-enabled','1');s.setAttribute('data-input-position','top');
+  const box=$('#giscus-box');box.innerHTML='';box.appendChild(s);});
+
+/* menu */
+const mb=$('#menuBtn'),nv=$('#nav');
+if(mb&&nv){mb.addEventListener('click',()=>{const o=nv.classList.toggle('open');mb.setAttribute('aria-expanded',String(o));});
+  nv.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nv.classList.remove('open');mb.setAttribute('aria-expanded','false');}));}
+
+/* reveal */
+if(!reduce){const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}}),{threshold:.1});
+  $$('.reveal').forEach(el=>io.observe(el));}else $$('.reveal').forEach(el=>el.classList.add('in'));
+
+/* toast */
+function toast(m){const t=$('#toast');if(!t)return;t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3800);}
+
+/* =====================================================================
+   4) MINNESOTA MAP — render nodes/links + animate packets (SVG)
+   ===================================================================== */
+(function(){
+  const NS='http://www.w3.org/2000/svg';
+  const grid=$('#mn-gridlines'),linkG=$('#mn-links'),nodeG=$('#mn-nodes'),pktG=$('#mn-packets');
+  if(!nodeG)return;
+  for(let x=40;x<=480;x+=48){const l=document.createElementNS(NS,'line');l.setAttribute('x1',x);l.setAttribute('y1',20);l.setAttribute('x2',x);l.setAttribute('y2',620);l.setAttribute('class','mn-grid');grid.appendChild(l);}
+  for(let y=40;y<=620;y+=48){const l=document.createElementNS(NS,'line');l.setAttribute('x1',40);l.setAttribute('y1',y);l.setAttribute('x2',480);l.setAttribute('y2',y);l.setAttribute('class','mn-grid');grid.appendChild(l);}
+  MN_LINKS.forEach(([a,b])=>{const A=MN_NODES[a],B=MN_NODES[b];if(!A||!B)return;
+    const l=document.createElementNS(NS,'line');l.setAttribute('x1',A.x);l.setAttribute('y1',A.y);l.setAttribute('x2',B.x);l.setAttribute('y2',B.y);l.setAttribute('class','mn-link');linkG.appendChild(l);});
+  MN_NODES.forEach(n=>{
+    if(n.hub){const r=document.createElementNS(NS,'circle');r.setAttribute('cx',n.x);r.setAttribute('cy',n.y);r.setAttribute('r',6);r.setAttribute('class','mn-ring');nodeG.appendChild(r);
+      if(!reduce){const an=document.createElementNS(NS,'animate');an.setAttribute('attributeName','r');an.setAttribute('values','6;13;6');an.setAttribute('dur','2.6s');an.setAttribute('repeatCount','indefinite');r.appendChild(an);
+        const ao=document.createElementNS(NS,'animate');ao.setAttribute('attributeName','opacity');ao.setAttribute('values','.6;0;.6');ao.setAttribute('dur','2.6s');ao.setAttribute('repeatCount','indefinite');r.appendChild(ao);}}
+    const c=document.createElementNS(NS,'circle');c.setAttribute('cx',n.x);c.setAttribute('cy',n.y);c.setAttribute('r',n.hub?4.6:3.2);
+    c.setAttribute('class','mn-node'+(n.hub?' hub':''));c.setAttribute('filter','url(#glow)');nodeG.appendChild(c);
+    const t=document.createElementNS(NS,'text');t.setAttribute('x',n.x+8);t.setAttribute('y',n.y+3.5);t.setAttribute('class','mn-label');t.textContent=n.name;nodeG.appendChild(t);});
+  if(reduce)return;
+  const packets=[];const spawn=()=>{const [a,b]=MN_LINKS[(Math.random()*MN_LINKS.length)|0];const c=document.createElementNS(NS,'circle');
+    c.setAttribute('r',2.6);c.setAttribute('class','mn-packet');c.setAttribute('filter','url(#glow)');pktG.appendChild(c);
+    packets.push({a:MN_NODES[a],b:MN_NODES[b],t:0,sp:0.004+Math.random()*0.006,el:c});};
+  for(let i=0;i<5;i++)spawn();
+  let raf;function step(){for(let i=packets.length-1;i>=0;i--){const p=packets[i];p.t+=p.sp;
+    if(p.t>=1){p.el.remove();packets.splice(i,1);continue;}
+    p.el.setAttribute('cx',p.a.x+(p.b.x-p.a.x)*p.t);p.el.setAttribute('cy',p.a.y+(p.b.y-p.a.y)*p.t);}
+    while(packets.length<5)spawn();raf=requestAnimationFrame(step);}
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else raf=requestAnimationFrame(step);});
+  raf=requestAnimationFrame(step);
+})();
+
+/* =====================================================================
+   5) LIVING MESH BACKGROUND (canvas) — the centerpiece
+   ===================================================================== */
+(function(){
+  const cv=$('#fieldbg');if(!cv)return;const ctx=cv.getContext('2d',{alpha:true});
+  let W,H,dpr,nodes=[],packets=[],linkDist,raf,mx=-999,my=-999,running=true;
+  const GREEN='143,209,80',AMBER='244,169,60';
+  function build(){
+    W=innerWidth;H=innerHeight;dpr=Math.min(devicePixelRatio||1,2);
+    cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    let count=Math.round(W*H/20000);count=Math.max(26,Math.min(count,reduce?40:90));
+    linkDist=Math.max(120,Math.min(W,H)*0.16);
+    nodes=[];for(let i=0;i<count;i++){const gw=Math.random()<0.12;
+      nodes.push({x:Math.random()*W,y:Math.random()*H,z:0.5+Math.random()*0.9,
+        vx:(Math.random()-.5)*0.16,vy:(Math.random()-.5)*0.16,r:gw?2.6:(1+Math.random()*1.4),gw,ph:Math.random()*6.28});}
+    packets=[];
+  }
+  function neighbors(n){const o=[];for(const m of nodes){if(m===n)continue;if(Math.hypot(m.x-n.x,m.y-n.y)<linkDist)o.push(m);}return o;}
+  function spawn(){if(nodes.length<2)return;const a=nodes[(Math.random()*nodes.length)|0];const nb=neighbors(a);if(!nb.length)return;
+    const b=nb[(Math.random()*nb.length)|0];packets.push({from:a,to:b,t:0,hops:1+((Math.random()*3)|0),gw:a.gw||b.gw,trail:[]});}
+  let last=0,acc=0;
+  function frame(ts){const dt=Math.min(50,ts-last)||16;last=ts;ctx.clearRect(0,0,W,H);
+    if(!reduce)for(const n of nodes){n.x+=n.vx*dt*0.06*n.z;n.y+=n.vy*dt*0.06*n.z;
+      if(n.x<-20)n.x=W+20;if(n.x>W+20)n.x=-20;if(n.y<-20)n.y=H+20;if(n.y>H+20)n.y=-20;}
+    // links
+    for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){const a=nodes[i],b=nodes[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<linkDist){const o=(1-d/linkDist)*0.34;ctx.strokeStyle='rgba('+GREEN+','+o.toFixed(3)+')';ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
+    // mouse glow link
+    if(mx>0){for(const n of nodes){const d=Math.hypot(n.x-mx,n.y-my);if(d<linkDist*1.3){const o=(1-d/(linkDist*1.3))*0.5;
+      ctx.strokeStyle='rgba('+AMBER+','+o.toFixed(3)+')';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(n.x,n.y);ctx.stroke();}}}
+    // packets
+    if(!reduce){acc+=dt;if(acc>500){acc=0;if(packets.length<10)spawn();}
+      for(let i=packets.length-1;i>=0;i--){const p=packets[i];p.t+=dt*0.0013;
+        if(p.t>=1){p.hops--;if(p.hops>0){const nb=neighbors(p.to).filter(x=>x!==p.from);if(nb.length){p.from=p.to;p.to=nb[(Math.random()*nb.length)|0];p.t=0;}else{packets.splice(i,1);continue;}}else{packets.splice(i,1);continue;}}
+        const x=p.from.x+(p.to.x-p.from.x)*p.t,y=p.from.y+(p.to.y-p.from.y)*p.t;
+        p.trail.push([x,y]);if(p.trail.length>8)p.trail.shift();
+        const col=p.gw?AMBER:GREEN;
+        for(let k=0;k<p.trail.length;k++){const a=k/p.trail.length*0.5;ctx.fillStyle='rgba('+col+','+a.toFixed(3)+')';
+          ctx.beginPath();ctx.arc(p.trail[k][0],p.trail[k][1],1.4,0,6.283);ctx.fill();}
+        const gr=ctx.createRadialGradient(x,y,0,x,y,7);gr.addColorStop(0,'rgba('+col+',1)');gr.addColorStop(1,'rgba('+col+',0)');
+        ctx.fillStyle=gr;ctx.beginPath();ctx.arc(x,y,7,0,6.283);ctx.fill();
+        ctx.fillStyle='rgba('+col+',1)';ctx.beginPath();ctx.arc(x,y,1.6,0,6.283);ctx.fill();}}
+    // nodes
+    const tsec=ts*0.001;
+    for(const n of nodes){if(n.gw){const pu=0.5+0.5*Math.sin(tsec*1.4+n.ph);
+        ctx.strokeStyle='rgba('+AMBER+','+(0.08+0.16*pu).toFixed(3)+')';ctx.lineWidth=1;
+        ctx.beginPath();ctx.arc(n.x,n.y,6+pu*7,0,6.283);ctx.stroke();
+        ctx.fillStyle='rgba('+AMBER+',0.95)';ctx.shadowColor='rgba('+AMBER+',1)';ctx.shadowBlur=9;
+        ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,6.283);ctx.fill();ctx.shadowBlur=0;
+      }else{ctx.fillStyle='rgba('+GREEN+','+(0.5*n.z).toFixed(3)+')';ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,6.283);ctx.fill();}}
+    if(running)raf=requestAnimationFrame(frame);
+  }
+  addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;},{passive:true});
+  addEventListener('mouseout',()=>{mx=-999;my=-999;});
+  let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(build,180);},{passive:true});
+  document.addEventListener('visibilitychange',()=>{running=!document.hidden;if(running){last=performance.now();raf=requestAnimationFrame(frame);}else cancelAnimationFrame(raf);});
+  build();
+  if(reduce){frame(0);}else raf=requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

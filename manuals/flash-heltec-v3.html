@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!-- TEMPLATE: copy this file, rename it, and edit the content. Keep it in /manuals/. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flash Meshtastic on a Heltec V3 — Midwest Mesh Lab</title>
+<meta name="description" content="Box to first packet in about ten minutes: flashing Meshtastic firmware onto a Heltec WiFi LoRa 32 V3 with the official web flasher." />
+<meta name="theme-color" content="#07090A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/page.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab
+    </a>
+    <a class="back" href="/#manuals">← all manuals</a>
+  </div>
+</header>
+
+<main class="doc">
+  <div class="eyebrow">Instruction Manual <span class="desig">// MAN-0x1A</span></div>
+  <h1>Flash Meshtastic® on a Heltec V3</h1>
+  <div class="meta"><span>Level <b>Beginner</b></span><span>Time <b>~10 min</b></span><span>Updated <b>Jun 2026</b></span><span>Tags <b>Firmware · Heltec</b></span></div>
+
+  <p>This gets a brand-new <strong>Heltec WiFi LoRa 32 V3</strong> from sealed box to sending its first packet
+    on the mesh. The V3 is an ESP32-S3 board with an SX1262 LoRa radio — a great, cheap first node. We'll use
+    the official browser-based flasher, so there's nothing to install.</p>
+
+  <div class="note">
+    <div class="h">Before you start</div>
+    <p>Use a desktop <strong>Chrome, Edge, or Opera</strong> browser — flashing needs Web Serial, which Safari
+      and Firefox don't support. You'll also need a USB-C cable that carries <strong>data</strong>, not just power
+      (a lot of charge-only cables will leave you staring at a device that never shows up).</p>
+  </div>
+
+  <h2>What you need</h2>
+  <ul>
+    <li>Heltec WiFi LoRa 32 V3 (with its antenna attached — <strong>never power the radio without an antenna</strong>)</li>
+    <li>A data-capable USB-C cable</li>
+    <li>A desktop computer with Chrome/Edge/Opera</li>
+    <li>A phone with the Meshtastic app (iOS or Android) for configuration afterward</li>
+  </ul>
+
+  <h2>Steps</h2>
+  <ol class="steps">
+    <li><b>Attach the antenna.</b> Screw on the 915 MHz antenna before anything else. Transmitting without one can damage the radio.</li>
+    <li><b>Plug it in.</b> Connect the board to your computer with the USB-C data cable. The onboard LED should light.</li>
+    <li><b>Open the web flasher.</b> Go to <a href="https://flasher.meshtastic.org" target="_blank" rel="noopener">flasher.meshtastic.org</a> in Chrome/Edge/Opera.</li>
+    <li><b>Pick the device.</b> Select <code>Heltec V3</code> as the hardware and the latest <strong>stable</strong> firmware.</li>
+    <li><b>Flash.</b> Click flash/connect, choose the board's serial port in the browser prompt, and let it run. Don't unplug until it finishes.</li>
+    <li><b>Set your region.</b> On first boot the node needs a region or it won't transmit. In the US that's <code>US</code> (915 MHz). Set it in the flasher's settings or in the phone app.</li>
+    <li><b>Pair the app.</b> Open the Meshtastic app, scan for the node over Bluetooth, and connect. Give it a short + long name.</li>
+    <li><b>Send a packet.</b> Type a message on the default channel. If another node is in range, you're on the mesh.</li>
+  </ol>
+
+  <div class="note warn">
+    <div class="h">Heads up</div>
+    <p>Flasher menus and firmware names change over time. If a step looks different from the screenshot in your head,
+      trust the live tool and cross-check the current walkthrough at
+      <a href="https://meshtastic.org/docs/getting-started/flashing-firmware/" target="_blank" rel="noopener">meshtastic.org/docs</a>.
+      Region matters: a node with no region set will look "alive" but stay silent.</p>
+  </div>
+
+  <h2>Where to go next</h2>
+  <p>Once it's talking, the fun starts. Bridge it to the wider network with the
+    <a href="/manuals/pi-mqtt-gateway.html">Raspberry Pi MQTT gateway</a> manual, plan real range with
+    <a href="/manuals/antenna-los.html">antennas &amp; line-of-sight</a>, or lock down a private channel with
+    <a href="/manuals/channels-encryption.html">channels, keys &amp; encryption</a>.</p>
+
+  <div class="prevnext">
+    <a href="/#manuals"><span class="k">← BACK</span>All manuals</a>
+    <a href="/manuals/pi-mqtt-gateway.html"><span class="k">NEXT →</span>Raspberry Pi MQTT gateway</a>
+  </div>
+</main>
+
+<footer class="pagefoot">
+  <span>Midwest Mesh Lab · open &amp; free · CC BY-SA</span>
+  <a href="/">midwestmeshlab.net</a>
+</footer>
+
+</body>
+</html>

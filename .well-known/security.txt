@@ -1,0 +1,13 @@
+# Midwest Mesh Lab — security contact (RFC 9116)
+# Served at https://midwestmeshlab.net/.well-known/security.txt
+# Update Expires before it lapses (keep it within ~1 year).
+
+Contact: mailto:contact@midwestmeshlab.net
+Expires: 2027-06-01T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://midwestmeshlab.net/.well-known/security.txt
+Policy: https://midwestmeshlab.net/.well-known/security.txt
+
+# Good-faith research is welcome. Please give us a reasonable window to
+# remediate before public disclosure. No automated mass-scanning, no
+# social engineering of the people behind the lab, no data exfiltration.

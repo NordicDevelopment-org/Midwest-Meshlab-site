@@ -1,0 +1,100 @@
+/* =====================================================================
+   Midwest Mesh Lab — shared styles for content pages
+   (manuals / builds / notes). Matches the main site's tactical theme.
+   Restyle once here and every sub-page updates.
+   ===================================================================== */
+:root{
+  --bg:#07090A; --bg2:#0B0E0F;
+  --ink:#F5F2E8; --fg:#C7CCBE; --muted:#878D7B; --faint:#5A6051;
+  --amber:#F4A93C; --amber-hi:#FFC368;
+  --green:#8FD150; --green-hi:#B6E87E;
+  --alert:#E2573B;
+  --line:rgba(180,200,150,.10); --line-2:rgba(180,200,150,.16);
+  --glass:rgba(18,22,18,.55);
+  --disp:"Chakra Petch",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --gut:clamp(18px,5vw,40px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:
+  radial-gradient(900px 500px at 80% -10%, rgba(143,209,80,.05), transparent 60%),
+  radial-gradient(700px 460px at 0% 0%, rgba(244,169,60,.04), transparent 55%), var(--bg);
+  color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--amber);text-decoration:none}a:hover{text-decoration:underline}
+img{max-width:100%;display:block;border-radius:10px;border:1px solid var(--line)}
+::selection{background:var(--amber);color:#1b1206}
+:focus-visible{outline:2px solid var(--green-hi);outline-offset:3px;border-radius:4px}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);
+  background:linear-gradient(180deg,rgba(7,9,10,.9),rgba(7,9,10,.6));border-bottom:1px solid var(--line)}
+.topbar .in{max-width:880px;margin:0 auto;padding:14px var(--gut);display:flex;align-items:center;gap:14px}
+.topbar .brand{display:flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;color:var(--ink);
+  text-transform:uppercase;letter-spacing:.03em;font-size:15px}
+.topbar .brand svg{width:22px;height:22px}
+.topbar .back{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none}
+.topbar .back:hover{color:var(--green-hi)}
+
+/* article */
+.doc{max-width:880px;margin:0 auto;padding:clamp(30px,6vw,60px) var(--gut) 80px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:14px}
+.eyebrow .desig{color:var(--amber)}
+.doc h1{font-family:var(--disp);font-weight:700;color:var(--ink);font-size:clamp(30px,5.5vw,48px);
+  line-height:1.05;text-transform:uppercase;letter-spacing:.005em;margin:0 0 14px}
+.doc .meta{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 18px;
+  border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:30px}
+.doc .meta b{color:var(--green);font-weight:400}
+.doc h2{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:24px;text-transform:uppercase;
+  letter-spacing:.02em;margin:42px 0 14px;padding-top:6px}
+.doc h3{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:18px;margin:28px 0 10px}
+.doc p{margin:0 0 18px}
+.doc ul,.doc ol{margin:0 0 18px;padding-left:22px}
+.doc li{margin-bottom:8px}
+.doc strong{color:var(--ink)}
+.doc code{font-family:var(--mono);font-size:.88em;color:var(--green-hi);
+  background:rgba(143,209,80,.08);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+.doc pre{background:#0d100c;border:1px solid var(--line-2);border-radius:10px;padding:16px 18px;overflow:auto;margin:0 0 18px}
+.doc pre code{background:none;border:none;padding:0;color:var(--fg);font-size:13.5px;line-height:1.6}
+
+/* callout */
+.note{background:var(--glass);border:1px solid var(--line);border-left:3px solid var(--green);
+  border-radius:10px;padding:16px 18px;margin:0 0 22px;font-size:15px}
+.note.warn{border-left-color:var(--amber)}
+.note .h{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:6px}
+.note.warn .h{color:var(--amber)}
+.note p:last-child{margin:0}
+
+/* steps */
+.steps{counter-reset:s;list-style:none;padding:0;margin:0 0 22px}
+.steps>li{counter-increment:s;position:relative;padding:16px 18px 16px 58px;margin-bottom:10px;
+  background:var(--glass);border:1px solid var(--line);border-radius:10px}
+.steps>li::before{content:counter(s);position:absolute;left:16px;top:16px;width:28px;height:28px;border-radius:7px;
+  display:grid;place-items:center;font-family:var(--disp);font-weight:700;color:#1b1206;background:var(--amber);font-size:14px}
+.steps>li b{color:var(--ink)}
+
+/* BOM table */
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;margin:0 0 22px}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:480px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.02)}
+td b{color:var(--ink)}
+tr:last-child td{border-bottom:none}
+tfoot td{font-family:var(--mono);color:var(--green-hi);background:rgba(143,209,80,.05)}
+
+/* spec chips */
+.specs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 26px}
+.spec{font-family:var(--mono);font-size:12px;color:var(--fg);background:var(--glass);border:1px solid var(--line);
+  border-radius:8px;padding:9px 13px}
+.spec b{color:var(--green-hi)}
+
+/* footer */
+.pagefoot{max-width:880px;margin:0 auto;padding:26px var(--gut) 50px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:12px;color:var(--faint);display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between}
+.pagefoot a{color:var(--muted)}
+.prevnext{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.prevnext a{flex:1;min-width:200px;background:var(--glass);border:1px solid var(--line);border-radius:10px;
+  padding:15px 18px;color:var(--ink);text-decoration:none;transition:border-color .15s}
+.prevnext a:hover{border-color:var(--line-2);text-decoration:none}
+.prevnext .k{font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:.08em;display:block;margin-bottom:4px}
