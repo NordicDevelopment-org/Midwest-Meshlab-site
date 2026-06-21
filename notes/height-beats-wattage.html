@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!-- TEMPLATE: copy this file, rename it, and edit the content. Keep it in /notes/. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Why height beats wattage every time — Midwest Mesh Lab</title>
+<meta name="description" content="A five-meter mast did more for our range than doubling transmit power ever could. The reasoning, and what we measured in the field." />
+<meta name="theme-color" content="#07090A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/page.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab
+    </a>
+    <a class="back" href="/#notes">← field notes</a>
+  </div>
+</header>
+
+<main class="doc">
+  <div class="eyebrow">Field Notes <span class="desig">// LOG</span></div>
+  <h1>Why height beats wattage every time</h1>
+  <div class="meta"><span>Jun 12, 2026</span><span>Read <b>4 min</b></span><span>Tags <b>RF · Range</b></span></div>
+
+  <p>We spent a Saturday trying to brute-force range with power, and a different Saturday raising an antenna a few
+    meters. The mast won, and it wasn't close. Here's why that keeps happening, and what we actually measured.</p>
+
+  <h2>LoRa is patient; terrain is not</h2>
+  <p>LoRa is already extraordinarily good at digging a weak signal out of the noise — that's the whole point of the
+    modulation. So once you're link-budget-limited, pouring on more transmit power buys you a little, but the
+    radio was rarely the bottleneck. <strong>Obstructions were.</strong> A hill, a tree line, or the curve of the
+    earth doesn't care how loud you are.</p>
+
+  <h2>Line of sight does most of the work</h2>
+  <p>Get both antennas up where they can "see" each other and range opens up dramatically. Raising a node from
+    bench height to the top of a short mast clears the near-field clutter — fences, cars, your own roofline — that
+    quietly eats the first hop. In flat country especially, every meter of height pushes the horizon out and adds
+    nodes you simply could not hear before.</p>
+
+  <div class="note">
+    <div class="h">The rule of thumb</div>
+    <p>Spend your first dollar on height, your second on a better antenna and a clean feedline, and only then think
+      about power. Most "dead" links are really just blocked ones.</p>
+  </div>
+
+  <h2>What we measured</h2>
+  <p>Same two nodes, same firmware, same day. On the bench-to-bench test we struggled to hold a link across town.
+    Put one node on a five-meter painter's pole with a clear shot down the valley and the same pair held a solid
+    link many kilometers out — a multiple of the bench result, with margin to spare. We didn't touch the transmit
+    power once.</p>
+
+  <h2>Practical takeaways</h2>
+  <ul>
+    <li>Mount relays as high as you safely can — rooftops, masts, and tall structures earn their keep.</li>
+    <li>Keep the antenna vertical and the feedline short; a bad connector undoes a good location.</li>
+    <li>Plan hops around what each node can <em>see</em>, not how far apart they are on a map.</li>
+    <li>When a link won't hold, raise it before you turn it up.</li>
+  </ul>
+
+  <p>If you're planning a network, the <a href="/manuals/antenna-los.html">antennas &amp; line-of-sight manual</a>
+    goes deeper on Fresnel zones and hop planning, and the <a href="/builds/solar-relay-v2.html">Solar Relay v2</a>
+    build is the node we usually send up the pole.</p>
+
+  <div class="prevnext">
+    <a href="/#notes"><span class="k">← BACK</span>All field notes</a>
+    <a href="/notes/cloudy-week-power.html"><span class="k">NEXT →</span>Cloudy-week power budgets</a>
+  </div>
+</main>
+
+<footer class="pagefoot">
+  <span>Midwest Mesh Lab · open &amp; free · CC BY-SA</span>
+  <a href="/">midwestmeshlab.net</a>
+</footer>
+
+</body>
+</html>

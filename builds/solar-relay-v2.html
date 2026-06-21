@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!-- TEMPLATE: copy this file, rename it, and edit the content. Keep it in /builds/. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Solar Relay v2 — Midwest Mesh Lab</title>
+<meta name="description" content="An always-on solar mesh relay for the edge of the network. Bill of materials, wiring, and a power budget that survives a cloudy week." />
+<meta name="theme-color" content="#07090A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/page.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab
+    </a>
+    <a class="back" href="/#builds">← build list</a>
+  </div>
+</header>
+
+<main class="doc">
+  <div class="eyebrow">Build · Relay <span class="desig">// BLD-RELAY-02</span></div>
+  <h1>Solar Relay v2</h1>
+  <div class="meta"><span>Parts <b>14</b></span><span>Cost <b>~$68</b></span><span>Build time <b>~2h</b></span><span>Skill <b>Intermediate</b></span></div>
+
+  <p>An always-on repeater you can bolt to a fence post, rooftop, or grain bin and forget about. It runs entirely
+    on a small solar panel and a single 18650 cell, and it's sized to ride out a cloudy week without dropping off
+    the mesh. This is the workhorse that fills the gaps between bigger gateways.</p>
+
+  <div class="specs">
+    <span class="spec">MCU/Radio <b>Heltec V3 · SX1262</b></span>
+    <span class="spec">Band <b>915 MHz</b></span>
+    <span class="spec">Power <b>6W solar + 18650</b></span>
+    <span class="spec">Role <b>Router / repeater</b></span>
+  </div>
+
+  <div class="note warn">
+    <div class="h">Note on costs</div>
+    <p>Prices below are <strong>ballpark examples</strong> and move around a lot by vendor and season. Treat them as a
+      starting point and check current pricing where you actually buy. Buy wherever you like — nothing here is sponsored.</p>
+  </div>
+
+  <h2>Bill of materials</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Item</th><th>Qty</th><th>~Cost</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><b>Heltec WiFi LoRa 32 V3</b></td><td>1</td><td>$18</td><td>ESP32-S3 + SX1262</td></tr>
+        <tr><td>915 MHz antenna (3–5 dBi)</td><td>1</td><td>$8</td><td>SMA, weatherproof base</td></tr>
+        <tr><td>6 W solar panel</td><td>1</td><td>$14</td><td>5–6 V output</td></tr>
+        <tr><td>TP4056 / solar charge board</td><td>1</td><td>$3</td><td>with protection</td></tr>
+        <tr><td>18650 cell + holder</td><td>1</td><td>$7</td><td>quality cell, not a no-name</td></tr>
+        <tr><td>Weatherproof enclosure</td><td>1</td><td>$10</td><td>IP65 or printed (see manual)</td></tr>
+        <tr><td>Cable glands, wire, hardware</td><td>—</td><td>$8</td><td>gland for the antenna lead</td></tr>
+      </tbody>
+      <tfoot><tr><td>Approx. total</td><td>14</td><td>~$68</td><td>per node</td></tr></tfoot>
+    </table>
+  </div>
+
+  <h2>Power budget (why it survives the clouds)</h2>
+  <p>A relay sips power because it mostly listens and forwards. Budget for the worst case — several gray days with
+    little charging — and size the battery so the node keeps running while the panel barely keeps up. The full math
+    (panel watts, daily charge, average draw, days of autonomy) lives in the
+    <a href="/manuals/solar-power-budget.html">solar power budget manual</a>; this build targets roughly a week of
+    autonomy on a single healthy 18650.</p>
+
+  <h2>Assembly</h2>
+  <ol class="steps">
+    <li><b>Flash first.</b> Get Meshtastic on the Heltec before it goes in the box — see <a href="/manuals/flash-heltec-v3.html">Flash a Heltec V3</a>. Set the role to <code>ROUTER</code> for a dedicated relay.</li>
+    <li><b>Wire the power chain.</b> Solar panel → charge board (IN) → 18650 (BAT) → board (OUT) → Heltec 5V/USB input. Double-check polarity before connecting the cell.</li>
+    <li><b>Mount the antenna.</b> Run the antenna through a cable gland so the seal stays intact. Keep the lead short and the antenna vertical and as high as you can.</li>
+    <li><b>Seal the box.</b> Panel and antenna outside, electronics inside, gasket seated. Add a little desiccant.</li>
+    <li><b>Aim the panel.</b> Face it toward the equator (south, in the Midwest) at a steep-ish tilt so snow sheds and low winter sun still hits it.</li>
+    <li><b>Soak test.</b> Leave it on the bench for 24–48h and watch the battery voltage recover each day before you climb anything.</li>
+  </ol>
+
+  <div class="note">
+    <div class="h">Field-tested tip</div>
+    <p>Height beats power every single time. A relay 5 meters up with a clear horizon will out-range a louder node
+      sitting on a desk — see the field notes on <a href="/notes/height-beats-wattage.html">why height beats wattage</a>.</p>
+  </div>
+
+  <div class="prevnext">
+    <a href="/#builds"><span class="k">← BACK</span>Build list</a>
+    <a href="/builds/pi-mqtt-gateway.html"><span class="k">NEXT →</span>Pi MQTT Gateway</a>
+  </div>
+</main>
+
+<footer class="pagefoot">
+  <span>Midwest Mesh Lab · open &amp; free · CC BY-SA</span>
+  <a href="/">midwestmeshlab.net</a>
+</footer>
+
+</body>
+</html>
