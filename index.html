@@ -4,11 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Midwest Mesh Lab — Off-grid mesh, Pi &amp; open hardware</title>
-<meta name="description" content="A field lab for off-grid mesh networking, Raspberry Pi, and open hardware. Manuals, build lists, a Minnesota mesh map, field notes, live streams, events, and a community of operators across the Midwest." />
+<meta name="description" content="A field lab for off-grid mesh networking, Raspberry Pi, and open hardware — step-by-step manuals, build lists with real parts and prices, an accurately projected Minnesota map, and field notes. Midwest-based, open, and free to copy." />
 <meta name="theme-color" content="#07090A" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta property="og:title" content="Midwest Mesh Lab" />
-<meta property="og:description" content="Off-grid mesh, Raspberry Pi & open hardware. Manuals, builds, a Minnesota mesh map, field notes, streams, and events." />
+<meta property="og:description" content="Off-grid mesh, Raspberry Pi &amp; open hardware. Manuals, builds with real BOMs, an accurately projected Minnesota map, and field notes." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://midwestmeshlab.net" />
 <meta property="og:image" content="https://midwestmeshlab.net/media/og-card.png" />
@@ -181,16 +181,24 @@ code{font-family:var(--mono);color:var(--green-hi);font-size:.9em}
 .map-stage{position:relative;border-radius:var(--r);overflow:hidden;padding:18px;
   background:radial-gradient(120% 100% at 60% 0%, rgba(143,209,80,.06), transparent 55%), var(--glass);
   border:1px solid var(--line)}
-.map-stage svg{width:100%;height:auto;display:block;max-height:560px}
-.mn-state{fill:rgba(143,209,80,.045);stroke:var(--green);stroke-width:1.4;stroke-linejoin:round;
-  filter:drop-shadow(0 0 14px rgba(143,209,80,.18))}
-.mn-grid{stroke:rgba(143,209,80,.08);stroke-width:.7}
+.map-stage svg{width:100%;height:auto;display:block;max-height:620px}
+.mn-state{fill:rgba(143,209,80,.045);stroke:var(--green);stroke-width:1.3;stroke-linejoin:round;
+  stroke-linecap:round;filter:drop-shadow(0 0 14px rgba(143,209,80,.18))}
+.mn-grid{stroke:rgba(143,209,80,.07);stroke-width:.6}
+.mn-city{fill:var(--green);opacity:.85}
+.mn-city.major{fill:var(--amber);opacity:1}
+.mn-label{font-family:var(--mono);font-size:10.5px;fill:var(--muted)}
+.mn-label.major{fill:var(--ink);font-size:11px}
 .mn-link{stroke:rgba(143,209,80,.35);stroke-width:1.1}
 .mn-node{fill:var(--green)}
 .mn-node.hub{fill:var(--amber)}
 .mn-ring{fill:none;stroke:var(--amber);stroke-width:1;opacity:.5}
-.mn-label{font-family:var(--mono);font-size:11px;fill:var(--fg)}
-.mn-packet{fill:var(--amber)}
+.map-empty{display:flex;align-items:flex-start;gap:9px;margin-top:12px;
+  font-family:var(--mono);font-size:10.5px;line-height:1.55;color:var(--muted);
+  background:rgba(7,9,10,.6);border:1px solid var(--line-2);border-radius:10px;padding:10px 13px}
+.map-empty b{color:var(--amber);font-weight:700}
+.map-scale{font-family:var(--mono);font-size:9.5px;fill:var(--muted);letter-spacing:.06em}
+.map-scale-bar{stroke:var(--muted);stroke-width:1.2;opacity:.75}
 .map-side{display:flex;flex-direction:column;gap:14px}
 .map-card{padding:18px;border-radius:var(--r);flex:1}
 .map-card h3{margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em}
@@ -373,6 +381,41 @@ code{font-family:var(--mono);color:var(--green-hi);font-size:.9em}
 .disc-placeholder{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.7}
 .disc-placeholder b{color:var(--green-hi)}
 
+/* --- empty states: shown wherever real data does not exist yet --- */
+.is-empty{display:block!important}
+.empty-state{grid-column:1/-1;margin:0;padding:20px 22px;border:1px dashed var(--line-2);
+  border-radius:var(--r);background:rgba(143,209,80,.03);color:var(--muted);
+  font-size:14px;line-height:1.65;text-align:left}
+.empty-state b{color:var(--ink)}
+.empty-state a{color:var(--green-hi);text-decoration:underline;text-underline-offset:2px}
+.empty-state code{font-family:var(--mono);font-size:12.5px;color:var(--amber)}
+.sig-src{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11px;
+  color:var(--green-hi);letter-spacing:.03em}
+.sig-src:hover{color:var(--amber)}
+.meta-tbd{font-family:var(--mono);font-size:11.5px;color:var(--faint);font-style:normal}
+.lede-wip{color:var(--amber);font-family:var(--mono);font-size:.88em;letter-spacing:.03em}
+/* Netlify Forms honeypot — must stay in the DOM but never be seen or focused. */
+.hp{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+  clip-path:inset(50%);white-space:nowrap;border:0;padding:0;margin:-1px}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.42;pointer-events:none;filter:grayscale(.55)}
+
+/* --- preview build: in-progress markers (gated by CONFIG.previewMode) --- */
+.row,.card,.post,.disc-link{position:relative}
+.wip{display:inline-block;vertical-align:middle;margin-left:8px;font-family:var(--mono);font-size:9px;
+  letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:#0a0c08;background:var(--amber);
+  padding:2px 7px;border-radius:999px;line-height:1.5;white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.wip-abs{position:absolute;top:10px;right:10px;z-index:4;margin:0}
+.disc-link .wip-abs{top:11px;right:11px}
+.wip-legend{position:fixed;left:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--ink);
+  background:var(--glass-2);border:1px solid var(--amber);border-radius:999px;padding:7px 13px;
+  box-shadow:0 6px 22px rgba(0,0,0,.4);backdrop-filter:blur(8px)}
+.wip-legend .dot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none;
+  box-shadow:0 0 0 3px rgba(214,158,46,.2)}
+.wip-legend b{color:var(--amber);font-weight:700}
+@media (max-width:620px){.wip-legend{font-size:9.5px;padding:6px 10px}}
+
 /* MSP + support */
 .feature{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;padding:clamp(26px,4.5vw,46px);border-radius:var(--r);position:relative;overflow:hidden}
 .feature::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 100% 0%, rgba(143,209,80,.08), transparent 60%);pointer-events:none}
@@ -449,6 +492,7 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       <a href="#builds">Builds</a>
       <a href="#notes">Field Notes</a>
       <a href="#signal">Signal</a>
+      <a href="/troubleshoot.html">Troubleshoot</a>
       <a href="#community">Community</a>
       <a href="#events">Events</a>
       <a class="cta" href="#support">Buy me a coffee</a>
@@ -464,19 +508,19 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       <span>AO <b>US-MIDWEST</b></span><span>LICENSE <b>OPEN / FREE</b></span>
     </div>
     <h1>When the towers go quiet, the <span class="hot">mesh</span> keeps talking.</h1>
-    <p class="lede">A field lab for off-grid networks — manuals you can actually follow, build lists with real
-      parts and prices, a live Minnesota node map, field notes, streams, and a wall of community builds.
-      Everything here is free to copy, fork, and improve.</p>
+    <p class="lede">A field lab for off-grid networks — manuals you can actually follow, build lists with
+      real parts and prices, and field notes from the bench. Everything here is free to copy, fork, and
+      improve. This site is early: what is written is written, and what isn&rsquo;t is marked
+      <span class="lede-wip">in&nbsp;progress</span> rather than faked.</p>
     <p class="ig-line">Field media on Instagram → <a id="lnk-ig" href="#" target="_blank" rel="noopener noreferrer me"><span class="js-handle">@midwest_meshlab</span></a></p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="#manuals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h11l5 5v11H4z"/><path d="M14 4v5h5M8 13h7M8 17h5"/></svg>Start here</a>
       <a class="btn btn-ghost" href="#map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg>See the map</a>
     </div>
-    <div class="hero-chips">
-      <span class="chip glass"><span class="pin"></span> <b id="chip-nodes">128</b>&nbsp;nodes mapped</span>
-      <span class="chip glass"><span class="pin"></span> <b id="chip-builds">36</b>&nbsp;community builds</span>
-      <span class="chip glass"><span class="pin"></span> <b id="chip-docs">22</b>&nbsp;open manuals</span>
-    </div>
+    <!-- Chips are filled from real data at runtime (see "honest hero chips" in
+         the script). Counts come from what is actually published; the constants
+         are verified facts. Nothing here is hand-typed marketing. -->
+    <div class="hero-chips" id="hero-chips"></div>
     <div class="scrollcue"><span class="ln"></span> SCROLL TO RECON</div>
   </div>
 </section>
@@ -493,35 +537,44 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
   <div class="wrap">
     <div class="section-head reveal">
       <span class="kicker"><span class="n">01</span> SITUATION MAP</span>
-      <h2>Minnesota mesh map <span class="desig">MN-NET</span></h2>
-      <p>The network at a glance — nodes, gateways, and the links between them. Positions here are illustrative
-        and fully editable; for a live, MQTT-fed view, see the public maps linked on the right.</p>
+      <h2>Minnesota reference map <span class="desig">MN-NET</span></h2>
+      <p>An accurately projected map of Minnesota — Albers Equal Area Conic, drawn from public-domain
+        boundary data, with real city coordinates for orientation. It is a geographic reference, not a
+        telemetry feed: for live node data, use the community maps linked on the right.</p>
     </div>
     <div class="map-grid">
       <div class="map-stage reveal">
-        <svg id="mnmap" viewBox="0 0 520 640" role="img" aria-label="Stylized map of Minnesota mesh nodes">
+        <svg id="mnmap" viewBox="0 0 520 593" role="img"
+             aria-label="Map of Minnesota, accurately projected, showing major cities as geographic reference">
           <defs>
             <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
               <feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
           <g id="mn-gridlines"></g>
-          <path id="mn-state" class="mn-state" d="M175,30 L165,72 L201,80 L250,92 L300,80 L463,165 L328,280 L298,413 L374,586 L92,595 L92,423 L73,260 L51,68 Z"/>
+          <!-- Minnesota boundary: US Census/public-domain data, Albers Equal Area Conic
+               (standard parallels 44.48N / 48.40N, central meridian 93.364W).
+               The viewBox matches the true projected aspect ratio, so it is not distorted.
+               Regenerate with tools/build-map.js — do not hand-edit this path. -->
+          <path id="mn-state" class="mn-state" d="M334.2 274.5L332.9 276.6L329.1 276.5L327.7 275.4L328.3 331.4L326.1 332.2L304.6 346L301.2 348.8L299.5 351.4L296.2 361.3L290.6 365.7L289.4 374.2L289.7 379.3L290.6 380L295.1 380.5L300.2 383.4L303.4 389.7L304.5 396.5L301.8 402.8L298.7 406.1L298.1 407.4L297.8 415.5L296.1 426.5L296.2 429.6L297.8 433.2L299.1 439.9L298.1 449.5L295.7 458.2L300.1 460.8L307.3 467.2L308.1 469.1L312.9 474.1L316.9 475L327.1 475.9L328.9 477.5L330.5 482.5L334.5 486.2L342.6 488.9L353 493.9L356.1 497.6L358.3 504.2L358 506.2L359.3 509.1L363.9 512.9L369.9 515.6L378.9 524.8L384.8 525.8L389.9 527.8L398.5 539.9L400.4 541.8L402 546.9L401.6 558.7L402 563.7L405.9 574.6L297.4 576.5L228 576.6L109.4 574.6L44.7 572.4L51.4 401.7L49.2 396L47.1 394.1L40.8 390.8L36.7 390.4L35.9 389.7L33.4 385.7L31.5 379.6L25.7 371.3L27.3 367.2L33.5 362.6L38.5 359.8L44.7 351.8L46.5 340.9L45.9 332.1L47.2 329.2L47.6 326.7L46 317.8L45.4 309.6L45.7 304.9L43.6 300.9L38.1 292.5L38.4 292.1L37.4 282.6L34.8 274.2L34.4 256.9L37 248.2L36.2 245.9L33.6 241.8L34.1 216.4L33 198.8L33.9 191L34.6 190.6L34.5 182.1L27.1 161.1L26.1 156.7L24.7 155.4L21.4 137.6L19.4 132.7L18.1 126.9L18.4 120L19.6 119.4L20.5 116.6L20.8 112.4L19.6 109.6L19.2 105.3L20.8 103.1L21 93.7L18.8 91.4L23.9 78.5L21.3 72L16.3 52.9L16 50.9L16.5 48.1L146.2 52.6L147 16L148.6 17.5L152.8 19.1L155.6 18.8L157.2 17.7L159.1 17.6L167.2 23.6L170.1 41.5L171.5 43.5L171.3 53L173.3 53L175.3 64.1L174.8 66L174.7 74.2L178.5 77.9L184.4 81.6L188.5 82.1L191.8 80.8L198.6 80.9L201.5 82.3L202.1 83.5L202.1 86.1L203.8 86.8L214.6 87.4L227.8 89L229.9 93.8L229.2 98.3L230.7 99.7L239 99.7L246.4 98.5L251.3 96.9L252 95.4L251.5 92.5L255.3 91L257.6 91L258.8 89.2L264.7 87.7L267.6 87.7L269.4 89.4L281.9 89.3L297.8 97.4L302.2 96.7L303.7 97L304.2 100.7L299.7 101.6L298.9 104.6L300.4 106.4L302.4 107.1L311.8 105.9L315.1 109.1L317.8 120.5L319.8 125.3L323.5 125.8L325.4 122.1L324.7 117.6L325.7 115.7L327.4 114.6L340.4 114L345.5 124.6L347 124.1L350 125.3L352.5 127.1L357.5 129L360.5 128.3L362.2 128.8L363.3 133.9L362.6 136.8L367.1 138.3L371.7 138.6L376.9 140.9L387 140.4L391 139.6L398.9 132.4L405.3 128.6L408.9 125.7L414.6 123L417 123L417.6 123.5L420 129.3L421 132.5L420.7 133.3L423.6 137.4L435.1 135.5L439.8 136L445.6 135.3L449.4 136.2L451.4 135.1L462.5 134L466.5 134.8L469.8 136.3L471.5 138.8L472 141.5L478.2 145.1L479.7 145.3L481.3 144.5L483 142.3L486.5 141.4L493.5 142.6L499.3 142.7L504 141.4L503.7 142.6L500.8 143.6L500 145.4L498.9 146.1L497.9 146.3L495.5 144.8L494.6 146.3L494.7 147.6L491.1 149L485.2 154L477 157.1L476.5 158.6L473.9 160.3L467.8 162.4L467.6 163.1L462.2 164.4L460.6 165.8L456.7 166.5L452 168.5L451.4 169.2L444.8 170.9L443.5 171.9L438.5 173.8L437.6 175L426.1 181.7L417.8 188.4L414.6 192L413.4 192.6L407.5 198.1L406.7 198.3L403.5 202.4L399.8 205.9L397.8 209.6L394.7 213L393.2 215.5L379.7 230.5L378.4 230.8L377.1 232.2L373.6 234L372.5 236.1L370.2 237.9L369.1 240.2L367.7 241.3L365.3 242.3L360.5 248L353.9 251.9L340.9 262.8L340.4 263.4L340.8 264.7L342.4 267.4L345.6 271L344.4 270.8L340.7 267.1L339 267.1L334.3 270.2L333.8 271.7L334.4 272.8Z"/>
+          <g id="mn-cities"></g>
           <g id="mn-links"></g>
           <g id="mn-nodes"></g>
-          <g id="mn-packets"></g>
+          <g id="mn-scale"></g>
         </svg>
+        <div class="map-empty" id="map-empty" hidden></div>
       </div>
       <div class="map-side">
         <div class="map-card glass reveal">
           <h3>Legend</h3>
           <div class="legend">
-            <span class="li"><span class="sw" style="background:#F4A93C"></span> Gateway / hub</span>
-            <span class="li"><span class="sw" style="background:#8FD150"></span> Node</span>
-            <span class="li"><span class="sw" style="background:rgba(143,209,80,.4)"></span> Heard link</span>
+            <span class="li"><span class="sw" style="background:#F4A93C"></span> Major city (reference)</span>
+            <span class="li"><span class="sw" style="background:#8FD150"></span> City (reference)</span>
+            <span class="li"><span class="sw" style="background:rgba(143,209,80,.4)"></span> Heard link (when node data is connected)</span>
           </div>
-          <p class="map-note">Sample topology for illustration — not live telemetry. Edit the <code>MN_NODES</code> /
-            <code>MN_LINKS</code> arrays to match your real network.</p>
+          <p class="map-note">Projection: Albers Equal Area Conic, standard parallels 44.48&deg;N / 48.40&deg;N.
+            City markers are real coordinates and are <b>not</b> mesh nodes. Node and link layers stay empty
+            until a real data source is connected &mdash; see <code>ADMIN.md</code>.</p>
         </div>
         <div class="map-card glass reveal">
           <h3>Live maps</h3>
@@ -530,6 +583,16 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
             <span class="li"><a id="lnk-meshmap" href="https://meshmap.net" target="_blank" rel="noopener">→ meshmap.net</a></span>
             <span class="li"><a id="lnk-omap" href="https://map.meshtastic.org" target="_blank" rel="noopener">→ map.meshtastic.org</a></span>
             <span class="li"><a id="lnk-msp3" href="#" target="_blank" rel="noopener">→ MSP Mesh (mspmesh.org)</a></span>
+          </div>
+        </div>
+        <div class="map-card glass reveal">
+          <h3>Regional builders &amp; groups</h3>
+          <p>Other Minnesota outfits working on the same problem. Independent of this lab &mdash; listed
+            because they&rsquo;re real and nearby, not as endorsements.</p>
+          <div class="legend">
+            <span class="li"><a href="https://mesh-lab.com" target="_blank" rel="noopener noreferrer">→ Mesh Lab — MN hardware builder (formerly Yeti Wurks)</a></span>
+            <span class="li"><a href="https://groups.io/g/Southeast-MN-Meshtastic" target="_blank" rel="noopener noreferrer">→ Southeast MN Meshtastic group</a></span>
+            <span class="li"><a href="https://regionmesh.com" target="_blank" rel="noopener noreferrer">→ Region Mesh — MeshCore Minnesota</a></span>
           </div>
         </div>
       </div>
@@ -543,7 +606,7 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
     <div class="section-head reveal">
       <span class="kicker"><span class="n">02</span> INSTRUCTION MANUALS</span>
       <h2>Step-by-step, no gatekeeping <span class="desig">MAN</span></h2>
-      <p>Field-tested guides from box to first packet. Each links to a page you host in <code>/manuals/</code>.</p>
+      <p>Step-by-step guides from box to first packet, written to be followed exactly once and then kept as reference.</p>
     </div>
     <div class="list" id="manuals-list"></div>
   </div>
@@ -606,29 +669,35 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
     <div class="section-head reveal">
       <span class="kicker"><span class="n">07</span> BROADCAST</span>
       <h2>Long-form builds &amp; live ops <span class="desig">CAST</span></h2>
-      <p>Full build logs and range tests, plus live streams with real-time Q&amp;A. Video loads only when you press play.</p>
+      <p>Long-form build logs and range tests, plus live streams with real-time Q&amp;A. Nothing is published
+        yet &mdash; these three slots are reserved, and the play buttons open the channel until real video IDs
+        are set. Video loads only when you press play; nothing from YouTube is requested before that.</p>
     </div>
     <div class="live-banner glass reveal">
       <span class="live-tag"><span class="b"></span>LIVE</span>
-      <span class="lt"><b>Live build streams &amp; Q&amp;A</b><span>Tap in when the light's on. Otherwise catch the replay.</span></span>
+      <span class="lt"><b>Live build streams &amp; Q&amp;A</b><span>Nothing scheduled yet &mdash; this opens the channel.</span></span>
       <a class="btn btn-primary" id="lnk-live" href="#" target="_blank" rel="noopener">Watch live</a>
     </div>
     <div class="videos">
+      <!-- A YouTube *channel homepage* cannot be iframed — the embed player only
+           accepts a video or playlist ID. So each slot embeds the channel's
+           uploads/topic playlist, which keeps it current with no maintenance.
+           Nothing is requested from YouTube until the visitor clicks play. -->
       <div class="vcol reveal">
-        <div class="embed" data-video-id="SET_VIDEO_ID" data-title="Solar Relay v2 build log">
+        <div class="embed" data-playlist-id="PLshzThxhw4O5JTOACGHzYSSd3soDhoXKK" data-title="Constellation Response — Getting Started with Meshtastic">
           <div class="ph"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><small>PRESS PLAY · LOADS YOUTUBE</small></div>
         </div>
-        <div class="vcap"><b>Solar Relay v2 — full build</b>Bench build, weatherproofing, first deploy.</div>
+        <div class="vcap"><b>Constellation Response — Getting Started with Meshtastic</b>Their beginner playlist, newest first.</div>
       </div>
       <div class="vcol reveal">
-        <div class="embed" data-video-id="SET_VIDEO_ID" data-title="14 km range test">
+        <div class="embed" data-playlist-id="UUTq1zHztiV69Ur8t6jco4CQ" data-title="S2 Underground — latest uploads">
           <div class="ph"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><small>PRESS PLAY</small></div>
         </div>
-        <div class="vcap"><b>14 km range test</b>What height and a clear horizon buy you.</div>
-        <div class="embed" data-video-id="SET_VIDEO_ID" data-title="Pi gateway walkthrough">
+        <div class="vcap"><b>S2 Underground — latest uploads</b>Comms and signals tradecraft; Meshtastic comes up throughout.</div>
+        <div class="embed" data-video-id="egAZP4KKHNo" data-title="Atlavox — How to Set Up Private Meshtastic Channels (The Right Way)">
           <div class="ph"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><small>PRESS PLAY</small></div>
         </div>
-        <div class="vcap"><b>Pi gateway, no fluff</b>Flashed card to packets on the bridge.</div>
+        <div class="vcap"><b>Atlavox — private Meshtastic channels, done right</b>Encrypted channels that still hop via other people&rsquo;s nodes.</div>
       </div>
     </div>
   </div>
@@ -658,8 +727,9 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
     <div class="section-head reveal">
       <span class="kicker"><span class="n">09</span> COMMUNITY</span>
       <h2>Talk shop, swap nodes, get help <span class="desig">NET</span></h2>
-      <p>Builds from operators across the network — filter, then add yours. Threaded discussion runs on
-        GitHub Discussions (no tracking, you moderate from GitHub).</p>
+      <p>A wall for real builds from real operators — filter, then add yours. It starts empty rather than
+        seeded with examples. Threaded discussion runs on GitHub Discussions (no tracking, moderated from
+        GitHub).</p>
     </div>
 
     <div class="toolbar" id="filters" role="group" aria-label="Filter builds">
@@ -683,7 +753,7 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       <div class="disc-links">
         <a class="disc-link glass" id="lnk-discord" href="#" target="_blank" rel="noopener">
           <span class="di"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 5a16 16 0 0 0-4-1l-.3.5a14 14 0 0 1 3.6 1.2 13 13 0 0 0-11 0A14 14 0 0 1 11 4.5L10.7 4A16 16 0 0 0 5 5C2.5 8.5 2 12.5 2.2 16.4A16 16 0 0 0 7 19l.9-1.4c-.8-.3-1.6-.7-2.3-1.2l.6-.4a11 11 0 0 0 9.6 0l.6.4c-.7.5-1.5.9-2.3 1.2L17 19a16 16 0 0 0 4.8-2.6C22 12 21.3 8 19 5zM9 14c-.8 0-1.4-.7-1.4-1.6S8.2 10.8 9 10.8s1.5.7 1.4 1.6S9.8 14 9 14zm6 0c-.8 0-1.4-.7-1.4-1.6s.6-1.6 1.4-1.6 1.5.7 1.4 1.6S15.8 14 15 14z"/></svg></span>
-          <div><h3>MSP Mesh Discord</h3><p>Minnesota's most active mesh room.</p></div>
+          <div><h3>MSP Mesh</h3><p>Minnesota&rsquo;s regional mesh group &mdash; guides, coverage map, and a Discord invite on their site.</p></div>
         </a>
         <a class="disc-link glass" id="lnk-ghdisc" href="#" target="_blank" rel="noopener">
           <span class="di"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 12.7 3a8.5 8.5 0 0 1 8.3 8.5z"/></svg></span>
@@ -727,11 +797,14 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       <div class="panel glass reveal">
         <h3>Subscribe</h3>
         <p class="sub">New builds, videos, and upcoming events — straight to your inbox.</p>
-        <form id="subscribeForm" method="post" target="_blank" rel="noopener">
+        <form id="subscribeForm" name="subscribe" method="POST" action="/thanks.html"
+              data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="subscribe" />
+          <p class="hp"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
           <div class="field"><label for="sub-email">Email address</label>
             <input id="sub-email" type="email" name="email" required placeholder="you@example.com" autocomplete="email" /></div>
           <div class="form-foot"><button class="btn btn-primary" type="submit">Subscribe</button>
-            <span class="note">double opt-in · leave anytime</span></div>
+            <span class="note">stored by Netlify · leave anytime</span></div>
         </form>
         <div class="alt">Prefer no email? <b>Subscribe to the ops calendar</b> above — reminders fire from your own
           device, no contact info required.</div>
@@ -739,18 +812,21 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       <div class="panel glass reveal">
         <h3>Collaborate &amp; contact</h3>
         <p class="sub">Co-build a node, contribute a manual, or submit a build for the wall.</p>
-        <div class="contact-row">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-          <a class="js-email" href="#">contact@midwestmeshlab.net</a>
-        </div>
-        <form id="contactForm">
+        <!-- Netlify Forms: the POST is handled by Netlify, so there is no mail
+             server and no address to publish. `form-name` must match the form's
+             name attribute; `bot-field` is the honeypot named in data-netlify-honeypot. -->
+        <form id="contactForm" name="contact" method="POST" action="/thanks.html"
+              data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="hp"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
           <div class="field-2">
             <div class="field"><label for="c-name">Name / callsign</label><input id="c-name" name="name" required placeholder="KD0XXX" /></div>
             <div class="field"><label for="c-link">Link (optional)</label><input id="c-link" name="link" placeholder="repo, photos, site" /></div>
           </div>
+          <div class="field"><label for="c-reply">Email (optional, if you want a reply)</label><input id="c-reply" type="email" name="reply-to" placeholder="you@example.com" autocomplete="email" /></div>
           <div class="field"><label for="c-msg">Message</label><textarea id="c-msg" name="message" required placeholder="What do you want to build, contribute, or ask?"></textarea></div>
-          <div class="form-foot"><button class="btn btn-primary" type="submit">Open email</button>
-            <span class="note">opens your mail app — nothing stored here</span></div>
+          <div class="form-foot"><button class="btn btn-primary" type="submit">Send message</button>
+            <span class="note">goes straight to the lab — no mail app needed</span></div>
         </form>
       </div>
     </div>
@@ -764,13 +840,14 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       <div>
         <div class="partner">Featured network · Minnesota</div>
         <h2>MSP Mesh</h2>
-        <p>If you're anywhere near the Twin Cities, this is the network to plug into. MSP Mesh is a
-          decentralized, volunteer-run group building Minnesota's mesh across the Minneapolis–St. Paul metro,
-          Greater Minnesota, and into western Wisconsin — free to use, no license needed. They put nodes on
-          the tall stuff to keep coverage dense and resilient, and their Discord is one of the most welcoming,
-          well-run rooms in the hobby. They deserve more eyes on the work.</p>
+        <p>If you're anywhere near the Twin Cities, this is the network to plug into. MSP Mesh describes
+          itself as a decentralized, loosely organized group of enthusiasts across the Minneapolis&ndash;St. Paul
+          metro, Greater Minnesota, and western Wisconsin — free to use, no licence needed. They put nodes on
+          existing tall infrastructure — buildings, radio towers, grain silos — to keep coverage dense and
+          resilient, run a virtual &ldquo;Node Night&rdquo; on Wednesday evenings, and hold in-person metro
+          meetups roughly monthly. They deserve more eyes on the work.</p>
         <div class="fcta">
-          <a class="btn btn-primary" id="lnk-discord2" href="#" target="_blank" rel="noopener">Join the MSP Mesh Discord</a>
+          <a class="btn btn-primary" id="lnk-discord2" href="#" target="_blank" rel="noopener">Visit mspmesh.org</a>
           <a class="btn btn-ghost" id="lnk-msp" href="#" target="_blank" rel="noopener">mspmesh.org</a>
         </div>
       </div>
@@ -827,7 +904,7 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
         <a id="lnk-ig3" href="#" target="_blank" rel="noopener noreferrer me">Instagram</a>
         <a id="lnk-yt" href="#" target="_blank" rel="noopener">YouTube</a>
         <a id="lnk-msp2" href="#" target="_blank" rel="noopener">MSP Mesh</a>
-        <a class="js-email" href="#">Email the lab</a>
+        <a href="#contact">Contact the lab</a>
         <a href="/.well-known/security.txt">Security</a>
       </div>
     </div>
@@ -836,11 +913,12 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       by Meshtastic LLC, Raspberry Pi Ltd, MSP Mesh, Instagram, YouTube, Discord, or any other third party.
       "Meshtastic" is a registered trademark of Meshtastic LLC; "Raspberry Pi" is a trademark of Raspberry Pi Ltd —
       both used here nominatively to refer to those projects. All other names and marks belong to their owners.
-      Map geometry is a stylized, original rendering from public-domain boundary data and does not depict live
-      telemetry. Weather by Open-Meteo (CC BY 4.0).
+      The Minnesota map is rendered from public-domain boundary data through an Albers Equal Area Conic
+      projection; city markers are real coordinates. It is a geographic reference and does not depict live
+      telemetry or node locations. Weather by Open-Meteo (CC BY 4.0).
     </p>
     <div class="signoff">
-      <span>node <span class="node">0xMWML</span> · 915 MHz · US-Midwest</span>
+      <span>node <span class="node">0xMWML</span> · 902–928 MHz · US-Midwest</span>
       <span>© <span id="year"></span> Midwest Mesh Lab — open &amp; free.</span>
     </div>
   </div>
@@ -855,16 +933,18 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       are the only things you normally touch.)
    ===================================================================== */
 const CONFIG = {
+  // Preview build: show amber "IN PROGRESS" tags on every stub/unfinished item.
+  // Flip to false for launch and all the tags + legend disappear (nothing else changes).
+  previewMode:true,
   site:"midwestmeshlab.net",
-  email:"contact@midwestmeshlab.net",
   instagram:"https://instagram.com/midwest_meshlab",
   instagramHandle:"@midwest_meshlab",
   youtube:"https://youtube.com/@midwest_meshlab",
   youtubeLive:"https://youtube.com/@midwest_meshlab/live",
   buyMeACoffee:"https://buymeacoffee.com/midwestmeshlab",
-  newsletterAction:"https://buttondown.email/api/emails/embed-subscribe/midwestmeshlab",
+  // MSP Mesh is a Minnesota mesh *website*, not a Discord link. They do run a
+  // Discord, but the invite lives on their site — we don't republish a guess.
   mspMeshSite:"https://mspmesh.org",
-  mspMeshDiscord:"https://mspmesh.org",     // paste the real never-expiring Discord invite
   githubDiscussions:"https://github.com/NordicDevelopment-org/Midwest-Meshlab-site/discussions",
   allPostsUrl:"#notes",
   wx:{ lat:44.9778, lon:-93.2650, label:"MINNEAPOLIS" },
@@ -877,27 +957,31 @@ const CONFIG = {
    ===================================================================== */
 const STACK = [
   { t:"Manuals", d:"Box to first packet", href:"#manuals", ic:'<path d="M4 4h11l5 5v11H4z"/><path d="M14 4v5h5M8 13h7M8 17h5"/>' },
-  { t:"Build list", d:"Real BOMs & costs", href:"#builds", ic:'<path d="M3 7h18M3 12h18M3 17h12"/>' },
-  { t:"MN map", d:"The network live", href:"#map", ic:'<path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/>' },
+  { t:"Build list", d:"BOMs & real costs", href:"#builds", ic:'<path d="M3 7h18M3 12h18M3 17h12"/>' },
+  { t:"MN map", d:"Accurate state reference", href:"#map", ic:'<path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/>' },
   { t:"Field notes", d:"Bench & field log", href:"#notes", ic:'<path d="M4 4h13v16H4z"/><path d="M8 9h7M8 13h7M8 17h4"/>' },
   { t:"Toolkit", d:"Gear worth owning", href:"#toolkit", ic:'<path d="m14 7 3 3M5 19l9-9 1-4 4-1-1 4-9 9-4 1z"/>' },
-  { t:"Community", d:"Talk shop & get help", href:"#community", ic:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>' }
+  { t:"Community", d:"Talk shop & get help", href:"#community", ic:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>' },
+  { t:"Troubleshoot", d:"Find the root cause", href:"/troubleshoot.html", ic:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v3M11 14v.01"/>' }
 ];
 
 const MANUALS = [
   { hx:"0x1A", title:"Flash Meshtastic® on a Heltec V3", desc:"Box to first packet in about ten minutes.", url:"/manuals/flash-heltec-v3.html", tags:["Firmware","Beginner"] },
-  { hx:"0x2B", title:"Raspberry Pi® MQTT gateway", desc:"Bridge your local mesh to the wider network with a Pi 4.", url:"/manuals/pi-mqtt-gateway.html", tags:["Raspberry Pi","Gateway"] },
-  { hx:"0x3C", title:"Solar node power budget", desc:"Panel, battery, and duty cycle so it survives a cloudy week.", url:"/manuals/solar-power-budget.html", tags:["Solar","Power"] },
-  { hx:"0x4D", title:"Antennas & line-of-sight for flat country", desc:"Height beats power. Planning hops across open terrain.", url:"/manuals/antenna-los.html", tags:["Antenna","RF"] },
-  { hx:"0x5E", title:"Channels, keys & encryption", desc:"Public and private channels without locking yourself out.", url:"/manuals/channels-encryption.html", tags:["Security"] },
-  { hx:"0x6F", title:"Weatherproof node case (STLs)", desc:"Printable enclosure with gasket channel and antenna gland.", url:"/manuals/weatherproof-case.html", tags:["3D Print","Enclosure"] }
+  { hx:"0x2B", title:"Raspberry Pi® MQTT gateway", desc:"Bridge your local mesh to the wider network with a Pi 4.", url:"/manuals/pi-mqtt-gateway.html", tags:["Raspberry Pi","Gateway"], wip:true },
+  { hx:"0x3C", title:"Solar node power budget", desc:"Panel, battery, and duty cycle so it survives a cloudy week.", url:"/manuals/solar-power-budget.html", tags:["Solar","Power"], wip:true },
+  { hx:"0x4D", title:"Antennas & line-of-sight for flat country", desc:"Height beats power. Planning hops across open terrain.", url:"/manuals/antenna-los.html", tags:["Antenna","RF"], wip:true },
+  { hx:"0x5E", title:"Channels, keys & encryption", desc:"Public and private channels without locking yourself out.", url:"/manuals/channels-encryption.html", tags:["Security"], wip:true },
+  { hx:"0x6F", title:"Weatherproof node case (STLs)", desc:"Printable enclosure with gasket channel and antenna gland.", url:"/manuals/weatherproof-case.html", tags:["3D Print","Enclosure"], wip:true }
 ];
 
+/* Builds. parts/cost/time are only filled in for a build whose page exists and
+   carries a real bill of materials \u2014 a planned build shows no numbers, because
+   there is nothing yet to base them on. */
 const BUILDS_REF = [
-  { ct:"Relay", title:"Solar Relay v2", desc:"Always-on repeater for the edge. Survives a cloudy week on a 6W panel.", url:"/builds/solar-relay-v2.html", parts:14, cost:"$68", time:"2h" },
-  { ct:"Gateway", title:"Pi MQTT Gateway", desc:"Raspberry Pi 4 + RAK module bridging your local mesh to the internet.", url:"/builds/pi-mqtt-gateway.html", parts:9, cost:"$120", time:"1h" },
-  { ct:"Handheld", title:"Pocket Node", desc:"T-Echo loadout for trails and travel. E-ink, GPS, printed clip.", url:"/builds/pocket-node.html", parts:6, cost:"$95", time:"30m" },
-  { ct:"Go-box", title:"Storm Go-Box", desc:"Pelican-case node with solar and a spare battery for storm season.", url:"/builds/storm-go-box.html", parts:17, cost:"$140", time:"3h" }
+  { ct:"Relay", title:"Solar Relay v2", desc:"Always-on repeater for the edge, sized to keep running through a cloudy week on a small panel.", url:"/builds/solar-relay-v2.html", parts:14, cost:"$68", time:"2h" },
+  { ct:"Gateway", title:"Pi MQTT Gateway", desc:"Raspberry Pi + LoRa module bridging a local mesh to the wider network over MQTT.", url:"/builds/pi-mqtt-gateway.html", wip:true },
+  { ct:"Handheld", title:"Pocket Node", desc:"A pocketable node for trails and travel \u2014 e-ink, GPS, printed clip.", url:"/builds/pocket-node.html", wip:true },
+  { ct:"Go-box", title:"Storm Go-Box", desc:"A hard-case node with solar and a spare battery, for storm season.", url:"/builds/storm-go-box.html", wip:true }
 ];
 
 const TOOLS = [
@@ -910,62 +994,96 @@ const TOOLS = [
 ];
 
 const POSTS = [
-  { date:"2026-06-12", title:"Why height beats wattage every time", excerpt:"A 5-meter mast did more for our range than doubling TX power ever could. The math and the field data.", url:"/notes/height-beats-wattage.html" },
-  { date:"2026-05-28", title:"Cloudy-week power budgets that actually hold", excerpt:"How we size panels and batteries so relays don't drop out after three gray days in a row.", url:"/notes/cloudy-week-power.html" },
-  { date:"2026-05-09", title:"Field notes: 14 km across open prairie", excerpt:"Two nodes, two tripods, one very flat horizon. What we learned about Fresnel zones the hard way.", url:"/notes/prairie-range-test.html" }
+  { date:"2026-08-29", title:"What's new in Meshtastic 2.7", excerpt:"BaseUI rebuilds the default interface, plus multi-message batching, a configurable API port, and new hardware support.", url:"/notes/whats-new-in-2-7.html" },
+  { date:"2026-08-29", title:"Known issues worth checking before you flash", excerpt:"How to read the issue tracker before a firmware update, and the board-specific bugs open at the end of August 2026.", url:"/notes/known-issues-before-you-flash.html" },
+  { date:"2026-08-29", title:"Set your region first, or nothing transmits", excerpt:"A freshly flashed node has no region set and won't transmit until you pick one. The most common reason a new node looks dead.", url:"/notes/set-your-region-first.html" },
+  { kind:"Reference note", title:"Why height beats wattage every time", excerpt:"Radio horizon and Fresnel-zone maths, worked through, on why raising an antenna beats turning up the power.", url:"/notes/height-beats-wattage.html" },
+  { title:"Cloudy-week power budgets", excerpt:"Sizing panels and batteries so a relay keeps running through a run of gray days.", url:"/notes/cloudy-week-power.html", wip:true }
 ];
 
+/* Signal — verified, sourced reference facts. Every entry must be checkable
+   against the `src` link. If you cannot source it, it does not go here. */
 const SIGNAL = [
-  { tag:"Firmware", title:"New Meshtastic® release", desc:"Worth reading the changelog before you flash your gateways." },
-  { tag:"Hardware", title:"Cheaper LoRa boards landing", desc:"More sub-$25 options showing up for relay duty." },
-  { tag:"Protocol", title:"MeshCore vs Meshtastic®", desc:"The off-grid space now has two serious LoRa stacks worth knowing." },
-  { tag:"Power", title:"LiFePO4 prices keep dropping", desc:"Makes always-on solar relays easier to justify than ever." }
+  { tag:"Regulatory", title:"US LoRa runs 902\u2013928 MHz", desc:"Meshtastic's US region is 902.0\u2013928.0 MHz \u2014 the 915 MHz ISM band \u2014 at up to 30 dBm with no duty-cycle limit.",
+    src:"https://meshtastic.org/docs/configuration/radio/lora/" },
+  { tag:"Licensing", title:"No amateur licence needed", desc:"Standard Meshtastic operation is unlicensed Part 15 use of the ISM band. A ham licence is not required to run a node.",
+    src:"https://meshtastic.org/docs/overview/radio-settings/" },
+  { tag:"Privacy", title:"You choose whether you're mapped", desc:"Public maps only see you if you use the default channel and switch on \u201cOK to MQTT\u201d. It is opt-in, and it is a flag others choose to respect.",
+    src:"https://github.com/brianshea2/meshmap.net" },
+  { tag:"Local", title:"MSP Mesh covers this region", desc:"An established group for the Twin Cities, Greater Minnesota and western Wisconsin, with a weekly virtual Node Night and regular metro meetups.",
+    src:"https://mspmesh.org/" }
 ];
 
+/* Ticker — short, checkable statements only. No hype, no invented metrics. */
 const TICKER = [
-  "915 MHz is the US ISM band for LoRa",
-  "Height > power for range",
-  "Default channel + 'OK to MQTT' puts you on the public map",
-  "No license required to run a node",
-  "Solar + LiFePO4 = set-and-forget relays",
-  "Twin Cities mesh is growing fast"
+  "US LoRa region: 902\u2013928 MHz, up to 30 dBm",
+  "No licence required for standard Meshtastic use",
+  "Antenna height usually beats transmit power for range",
+  "Public mapping is opt-in: default channel + \u201cOK to MQTT\u201d",
+  "LoRa trades data rate for range and battery life",
+  "A clear Fresnel zone matters more than a louder radio"
 ];
 
-const IG_POSTS = [
-  { img:null, cap:"Solar relay deploy" }, { img:null, cap:"14 km range test" },
-  { img:null, cap:"Pi gateway build" },  { img:null, cap:"Storm go-box" },
-  { img:null, cap:"Antenna day" },       { img:null, cap:"Node case prints" },
-  { img:null, cap:"Field SITREP" },      { img:null, cap:"On the mesh" }
+/* Instagram tiles. EMPTY until real posts with real images exist.
+   { img:"/media/ig/your-photo.jpg", cap:"What it shows", url:"https://instagram.com/p/..." } */
+const IG_POSTS = [];
+
+/* Community build wall. EMPTY ON PURPOSE — these must be real builds
+   submitted by real operators. Never seed this with invented nodes.
+   { id:"!a1b2c3d4", title:"Name", type:"relay", hw:"board \u00b7 power \u00b7 antenna",
+     loc:"City, ST", by:"@handle", img:null } */
+const BUILDS = [];
+
+/* Events. EMPTY ON PURPOSE — the four events previously listed here were
+   invented. Add only real, scheduled events, and keep events.ics in sync
+   (the .ics is what people's calendars subscribe to).
+   { title:"...", start:"2026-09-10T18:30:00", end:"2026-09-10T20:30:00",
+     loc:"Venue, City, ST", desc:"One line." }
+   For MSP Mesh's own Node Night / meetups, link to mspmesh.org rather than
+   re-publishing their schedule here. */
+const EVENTS = [];
+
+/* =====================================================================
+   Minnesota map — REAL geography, not decoration.
+   x/y are precomputed by tools/build-map.js: each city's true lat/lon run
+   through the same Albers projection as the state outline, so markers and
+   boundary line up exactly. Regenerate with `node tools/build-map.js`
+   rather than nudging numbers by hand.
+   ===================================================================== */
+const MN_CITIES = [
+  { name:"Minneapolis", x:264.4, y:436.2, lat:44.9778, lon:-93.265,major:true,la:'w' },
+  { name:"St. Paul", x:276.2, y:438.4, lat:44.9537, lon:-93.09,major:true },
+  { name:"Duluth", x:340, y:263.5, lat:46.7867, lon:-92.1005,major:true },
+  { name:"Rochester", x:318.2, y:527.6, lat:44.0121, lon:-92.4802,major:true,la:'w' },
+  { name:"St. Cloud", x:204.6, y:380.8, lat:45.5579, lon:-94.1632,major:true },
+  { name:"Moorhead", x:36.8, y:251.1, lat:46.8738, lon:-96.7678,major:true },
+  { name:"Mankato", x:214.5, y:513.4, lat:44.1636, lon:-93.9994 },
+  { name:"Bemidji", x:160.3, y:198.1, lat:47.4716, lon:-94.8827 },
+  { name:"Brainerd", x:202.9, y:304.6, lat:46.358, lon:-94.2008 },
+  { name:"Grand Marais", x:451.3, y:168.8, lat:47.7504, lon:-90.3343,la:'w' },
+  { name:"Int'l Falls", x:254.8, y:91.7, lat:48.6009, lon:-93.411 },
+  { name:"Alexandria", x:124.7, y:348.2, lat:45.8852, lon:-95.3775 },
+  { name:"Willmar", x:145.2, y:421.3, lat:45.1219, lon:-95.0433 },
+  { name:"Winona", x:375.6, y:523.1, lat:44.05, lon:-91.6393 },
+  { name:"Thief River Falls", x:79.1, y:134.3, lat:48.1191, lon:-96.1811 },
+  { name:"Hibbing", x:285.2, y:203.2, lat:47.4271, lon:-92.9377,la:'w' },
+  { name:"Marshall", x:93.3, y:484.1, lat:44.4469, lon:-95.7889 },
+  { name:"Fergus Falls", x:79.7, y:309, lat:46.283, lon:-96.0776 },
+  { name:"Worthington", x:104.1, y:563.1, lat:43.6199, lon:-95.5964 },
+  { name:"Virginia", x:310.9, y:193.9, lat:47.5232, lon:-92.5366 },
+  { name:"Grand Rapids", x:247.1, y:221.3, lat:47.2372, lon:-93.5303 },
+  { name:"Ely", x:353.1, y:157.1, lat:47.9032, lon:-91.8671 },
+  { name:"Red Wing", x:314, y:475.4, lat:44.5625, lon:-92.5338 }
 ];
 
-const BUILDS = [
-  { id:"0x7A3F", title:"Prairie Relay", type:"relay", hw:"Heltec V3 · 18650 · 6W solar", loc:"Cedar Rapids, IA", by:"@kd0grain", img:null },
-  { id:"0x1C09", title:"Basement Gateway", type:"gateway", hw:"Raspberry Pi 4 · RAK WisBlock", loc:"Madison, WI", by:"@mesh_marv", img:null },
-  { id:"0xB17E", title:"Trail Pocket Node", type:"handheld", hw:"LilyGO T-Echo · printed mount", loc:"Ozarks, MO", by:"@switchback", img:null },
-  { id:"0x4D2A", title:"Rooftop Beacon", type:"relay", hw:"RAK19007 · 5.8 dBi antenna", loc:"Minneapolis, MN", by:"@triple_decker", img:null },
-  { id:"0x9F11", title:"Pi Weather Mesh", type:"sensor", hw:"Pi Zero 2 W · BME280", loc:"Lincoln, NE", by:"@plainswx", img:null },
-  { id:"0x33C4", title:"Storm Go-Box", type:"gateway", hw:"T-Beam · solar · Pelican case", loc:"Tornado Alley", by:"@stormchase", img:null },
-  { id:"0x58D7", title:"Lake House Relay", type:"relay", hw:"RAK4631 · LiFePO4 · 10W panel", loc:"Lake of the Woods", by:"@dockside", img:null },
-  { id:"0xE2A1", title:"Soil Sensor Node", type:"sensor", hw:"Heltec V3 · capacitive probe", loc:"Iowa City, IA", by:"@rowcrop", img:null }
-];
+/* Live mesh nodes. EMPTY ON PURPOSE — this site does not invent node data.
+   Fill it from a real source (see ADMIN.md §4) and the map draws it:
+     { id:"!a1b2c3d4", name:"Node name", lat:44.9778, lon:-93.2650, hub:false }
+   Until then the map renders geography only and says so. */
+const MN_NODES = [];
 
-const EVENTS = [
-  { title:"Twin Cities Mesh Meetup", start:"2026-07-09T18:30:00", end:"2026-07-09T20:30:00", loc:"Minneapolis, MN", desc:"Build night + network planning. New operators welcome." },
-  { title:"Solar Node Workshop", start:"2026-07-19T13:00:00", end:"2026-07-19T16:00:00", loc:"Midwest Mesh Lab", desc:"Hands-on: power budget, panel sizing, weatherproofing." },
-  { title:"Range Test — Open Fields", start:"2026-08-02T10:00:00", end:"2026-08-02T14:00:00", loc:"Greater MN", desc:"Line-of-sight hop trials. Bring a node and a tripod." },
-  { title:"Live Build Stream", start:"2026-08-14T19:00:00", end:"2026-08-14T20:30:00", loc:"YouTube / @midwest_meshlab", desc:"Pi MQTT gateway, start to finish, live Q&A." }
-];
-
-/* Minnesota map — stylized coords in the 520x640 viewBox (edit freely). */
-const MN_NODES = [
-  { name:"Minneapolis", x:264, y:453, hub:true }, { name:"St. Paul", x:278, y:455, hub:true },
-  { name:"Duluth", x:322, y:288 }, { name:"Rochester", x:307, y:545 },
-  { name:"St. Cloud", x:216, y:398 }, { name:"Mankato", x:225, y:532 },
-  { name:"Moorhead", x:86, y:272 }, { name:"Bemidji", x:177, y:215 },
-  { name:"Brainerd", x:214, y:321 }, { name:"Grand Marais", x:424, y:188 },
-  { name:"Int'l Falls", x:257, y:107 }
-];
-const MN_LINKS = [[0,1],[0,4],[0,3],[0,5],[1,3],[4,8],[8,2],[8,7],[4,6],[7,10],[2,9],[7,8],[2,3],[5,4]];
+/* Heard links between MN_NODES entries, as pairs of array indexes: [[0,1],…] */
+const MN_LINKS = [];
 
 /* =====================================================================
    3) WIRING (no need to edit below)
@@ -976,15 +1094,18 @@ const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const setHref=(sel,h)=>{const e=$(sel);if(e)e.href=h;};
 const C=CONFIG;
 
+/* preview build: "IN PROGRESS" tag helpers (all no-ops when previewMode is false) */
+const PREVIEW=!!C.previewMode;
+const wipTag=on=>PREVIEW&&on?'<span class="wip">In progress</span>':'';
+const wipAbs=on=>PREVIEW&&on?'<span class="wip wip-abs">In progress</span>':'';
+
 setHref('#lnk-ig',C.instagram); setHref('#lnk-ig2',C.instagram); setHref('#lnk-ig3',C.instagram);
 setHref('#lnk-yt',C.youtube); setHref('#lnk-live',C.youtubeLive); setHref('#lnk-coffee',C.buyMeACoffee);
 setHref('#lnk-msp',C.mspMeshSite); setHref('#lnk-msp2',C.mspMeshSite); setHref('#lnk-msp3',C.mspMeshSite);
-setHref('#lnk-discord',C.mspMeshDiscord); setHref('#lnk-discord2',C.mspMeshDiscord);
+setHref('#lnk-discord',C.mspMeshSite); setHref('#lnk-discord2',C.mspMeshSite);
 setHref('#lnk-ghdisc',C.githubDiscussions); setHref('#lnk-allposts',C.allPostsUrl);
 $$('.js-handle').forEach(e=>e.textContent=C.instagramHandle);
-$$('.js-email').forEach(e=>{e.textContent=C.email;e.href='mailto:'+C.email;});
 const yEl=$('#year'); if(yEl) yEl.textContent=new Date().getFullYear();
-const sf=$('#subscribeForm'); if(sf) sf.action=C.newsletterAction;
 setHref('#subscribe-cal','webcal://'+C.site+'/events.ics');
 
 /* clock */
@@ -1005,9 +1126,29 @@ setHref('#subscribe-cal','webcal://'+C.site+'/events.ics');
 })();
 
 /* count-up chips */
-(function(){const set=(id,n)=>{const e=$(id);if(!e)return;if(reduce){e.textContent=n;return;}
-  let v=0;const step=Math.max(1,Math.round(n/40));const t=setInterval(()=>{v+=step;if(v>=n){v=n;clearInterval(t);}e.textContent=v;},22);};
-  set('#chip-nodes',128); set('#chip-builds',36); set('#chip-docs',22);
+/* honest hero chips — derived from real data, never hand-typed.
+   A count only appears once it is real; until then the chip states a
+   verified fact instead of a number the site cannot back up. */
+(function(){
+  const box=$('#hero-chips'); if(!box) return;
+  const live=a=>a.filter(x=>!x.wip).length;          // only pages that actually exist
+  const guides=live(MANUALS)+live(BUILDS_REF)+live(POSTS);
+  const chips=[];
+  if(guides)          chips.push({n:guides, t:'guides published'});
+  if(BUILDS.length)   chips.push({n:BUILDS.length, t:'community builds'});
+  if(MN_NODES.length) chips.push({n:MN_NODES.length, t:'nodes on the map'});
+  chips.push({t:'902–928 MHz · no licence needed'});
+  chips.push({t:'open source · free to fork'});
+  box.innerHTML=chips.slice(0,3).map(c=>
+    '<span class="chip glass"><span class="pin"></span> '+
+    (c.n!=null?'<b data-n="'+c.n+'">0</b>&nbsp;':'')+esc(c.t)+'</span>').join('');
+  /* count up only the derived numbers */
+  $$('#hero-chips b[data-n]').forEach(e=>{
+    const n=+e.dataset.n;
+    if(reduce){e.textContent=n;return;}
+    let v=0;const step=Math.max(1,Math.round(n/40));
+    const t=setInterval(()=>{v+=step;if(v>=n){v=n;clearInterval(t);}e.textContent=v;},22);
+  });
 })();
 
 /* renderers */
@@ -1016,36 +1157,58 @@ const stackIc=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 
 (function(){const g=$('#manuals-list');if(g)g.innerHTML=MANUALS.map(m=>`
   <a class="row glass" href="${esc(m.url)}"><span class="hx">${esc(m.hx)}</span>
-    <div class="main"><h3>${esc(m.title)}</h3><p>${esc(m.desc)}</p></div>
+    <div class="main"><h3>${esc(m.title)}${wipTag(m.wip)}</h3><p>${esc(m.desc)}</p></div>
     <div class="tags">${m.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></a>`).join('');})();
 
 (function(){const g=$('#builds-cards');if(g)g.innerHTML=BUILDS_REF.map(b=>`
-  <a class="card glass" href="${esc(b.url)}"><span class="ct">${esc(b.ct)}</span><h3>${esc(b.title)}</h3><p>${esc(b.desc)}</p>
-    <div class="meta"><span><b>${b.parts}</b> parts</span><span>~<b>${esc(b.cost)}</b></span><span><b>${esc(b.time)}</b> build</span></div>
-    <span class="go">open build →</span></a>`).join('');})();
+  <a class="card glass" href="${esc(b.url)}">${wipAbs(b.wip)}<span class="ct">${esc(b.ct)}</span><h3>${esc(b.title)}</h3><p>${esc(b.desc)}</p>
+    ${(b.parts||b.cost||b.time)?`<div class="meta">${b.parts?`<span><b>${b.parts}</b> parts</span>`:''}${b.cost?`<span>~<b>${esc(b.cost)}</b></span>`:''}${b.time?`<span><b>${esc(b.time)}</b> build</span>`:''}</div>`:`<div class="meta"><span class="meta-tbd">BOM &amp; costs once it&rsquo;s built</span></div>`}
+    <span class="go">${b.wip?'planned':'open build'} →</span></a>`).join('');})();
 
 (function(){const g=$('#tools-grid');if(g)g.innerHTML=TOOLS.map(t=>`
   <div class="tool glass"><span class="ti">${stackIc(t.ic)}</span><div><h3>${esc(t.title)}</h3><p>${esc(t.desc)}</p></div></div>`).join('');})();
 
-(function(){const g=$('#posts-grid');if(!g)return;const f=d=>new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  g.innerHTML=POSTS.map(p=>`<a class="post glass" href="${esc(p.url)}">
+(function(){const g=$('#posts-grid');if(!g)return;
+  const f=p=>p.wip?'Planned':(p.date?new Date(p.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):(p.kind||'Reference note'));
+  g.innerHTML=POSTS.map(p=>`<a class="post glass" href="${esc(p.url)}">${wipAbs(p.wip)}
     <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="#8FD150" stroke-width="1.3"><path d="M4 4h13v16H4z"/><path d="M8 9h7M8 13h7M8 17h4"/></svg></div>
-    <div class="pin"><span class="dt">${f(p.date)}</span><h3>${esc(p.title)}</h3><p>${esc(p.excerpt)}</p><span class="more">read →</span></div></a>`).join('');})();
+    <div class="pin"><span class="dt">${esc(f(p))}</span><h3>${esc(p.title)}</h3><p>${esc(p.excerpt)}</p><span class="more">${p.wip?'planned':'read'} →</span></div></a>`).join('');})();
 
+/* Signal cards carry a source link — every claim must be checkable. */
 (function(){const g=$('#signal-grid');if(g)g.innerHTML=SIGNAL.map(s=>`
-  <div class="sig glass"><span class="st">${esc(s.tag)}</span><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p></div>`).join('');
+  <div class="sig glass"><span class="st">${esc(s.tag)}</span><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p>
+    ${s.src?`<a class="sig-src" href="${esc(s.src)}" target="_blank" rel="noopener noreferrer">source →</a>`:''}</div>`).join('');
   const tk=$('#ticker-track');if(tk){const one=TICKER.map(t=>`<span>${esc(t)}</span>`).join('');tk.innerHTML=one+one;}})();
 
 const igPh='<div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.2" fill="currentColor"/></svg>POST</div>';
-(function(){const g=$('#iggrid');if(g)g.innerHTML=IG_POSTS.map(p=>`
-  <a class="igt" href="${esc(C.instagram)}" target="_blank" rel="noopener noreferrer me" aria-label="${esc(p.cap)} on Instagram">
-    ${p.img?`<img src="${esc(p.img)}" alt="${esc(p.cap)}">`:igPh}<span class="cap">${esc(p.cap)}</span></a>`).join('');})();
+(function(){const g=$('#iggrid');if(!g)return;
+  if(!IG_POSTS.length){
+    g.classList.add('is-empty');
+    g.innerHTML=`<p class="empty-state">No field media posted here yet. Follow
+      <a href="${esc(C.instagram)}" target="_blank" rel="noopener noreferrer me">${esc(C.instagramHandle)}</a>
+      \u2014 tiles appear once real photos are added to <code>IG_POSTS</code>.</p>`;
+    return;
+  }
+  g.innerHTML=IG_POSTS.map(p=>`
+  <a class="igt" href="${esc(p.url||C.instagram)}" target="_blank" rel="noopener noreferrer me" aria-label="${esc(p.cap)} on Instagram">
+    ${p.img?`<img src="${esc(p.img)}" alt="${esc(p.cap)}" loading="lazy">`:igPh}<span class="cap">${esc(p.cap)}</span></a>`).join('');})();
 
 const nodeGlyph='<svg viewBox="0 0 24 24" fill="none" stroke="#5A6051" stroke-width="1.4"><rect x="9" y="9" width="6" height="6"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="11.2"/></svg>';
 function renderBuilds(f){const g=$('#gallery');if(!g)return;
-  g.innerHTML=BUILDS.filter(b=>f==='all'||b.type===f).map(b=>`
+  const rows=BUILDS.filter(b=>f==='all'||b.type===f);
+  if(!rows.length){
+    g.classList.add('is-empty');
+    g.innerHTML=BUILDS.length
+      ? `<p class="empty-state">No builds of this type yet. <button class="btn-mini js-showall" type="button">Show all</button></p>`
+      : `<p class="empty-state"><b>The build wall is empty \u2014 on purpose.</b><br>
+          This section lists real builds from real operators, so it starts blank rather than
+          seeded with examples. Built something? <a href="#contact">Send it in</a> and it goes up here.</p>`;
+    return;
+  }
+  g.classList.remove('is-empty');
+  g.innerHTML=rows.map(b=>`
   <article class="build glass" data-type="${esc(b.type)}"><div class="thumb">
-    ${b.img?`<img src="${esc(b.img)}" alt="${esc(b.title)}">`:nodeGlyph}
+    ${b.img?`<img src="${esc(b.img)}" alt="${esc(b.title)}" loading="lazy">`:nodeGlyph}
     <span class="loc">${esc(b.loc)}</span><span class="nid">${esc(b.id)}</span></div>
     <div class="bi"><h3>${esc(b.title)}</h3><div class="hw">${esc(b.hw)}</div><div class="by">build by <b>${esc(b.by)}</b></div></div></article>`).join('');}
 renderBuilds('all');
@@ -1053,12 +1216,22 @@ const fil=$('#filters');if(fil)fil.addEventListener('click',e=>{const b=e.target
   $$('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderBuilds(b.dataset.filter);});
 
 /* lazy YouTube */
-$$('.embed[data-video-id]').forEach(box=>{const ph=box.querySelector('.ph');if(!ph)return;
-  ph.addEventListener('click',()=>{const id=box.dataset.videoId;
-    if(!id||id==='SET_VIDEO_ID'){window.open(C.youtube,'_blank','noopener');return;}
+/* Video slots take EITHER a playlist (data-playlist-id) or a single video
+   (data-video-id). A channel homepage can't be framed, so "show this channel"
+   is implemented as its uploads playlist. Nothing loads until a play click. */
+$$('.embed[data-playlist-id],.embed[data-video-id]').forEach(box=>{
+  const ph=box.querySelector('.ph');if(!ph)return;
+  const list=box.dataset.playlistId, vid=box.dataset.videoId;
+  const unset=(!list&&!vid)||list==='SET_PLAYLIST_ID'||vid==='SET_VIDEO_ID';
+  if(PREVIEW&&unset)box.insertAdjacentHTML('beforeend',wipAbs(true));
+  ph.addEventListener('click',()=>{
+    if(unset){window.open(C.youtube,'_blank','noopener');return;}
+    const src=list
+      ? `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(list)}&autoplay=1&rel=0`
+      : `https://www.youtube-nocookie.com/embed/${encodeURIComponent(vid)}?autoplay=1&rel=0`;
     const f=document.createElement('iframe');
-    f.src=`https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0`;
-    f.title=box.dataset.title||'Video';f.allow='accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture';
+    f.src=src;f.title=box.dataset.title||'Video';
+    f.allow='accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture';
     f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');f.setAttribute('allowfullscreen','');
     box.innerHTML='';box.appendChild(f);});});
 
@@ -1077,7 +1250,21 @@ function dlICS(list,name){const b=new Blob([ics(list)],{type:'text/calendar;char
   a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
 function gcal(ev){const p=new URLSearchParams({action:'TEMPLATE',text:ev.title,dates:icsDate(ev.start)+'/'+icsDate(ev.end||ev.start),location:ev.loc||'',details:ev.desc||''});return'https://calendar.google.com/calendar/render?'+p;}
 function fmtT(d){let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(d.getMinutes())+' '+ap;}
-(function(){const w=$('#events-list');if(!w)return;const s=[...EVENTS].sort((a,b)=>new Date(a.start)-new Date(b.start));
+(function(){const w=$('#events-list');if(!w)return;
+  /* only future events, soonest first — a past date is never "upcoming" */
+  const now=Date.now();
+  const s=[...EVENTS].filter(ev=>new Date(ev.end||ev.start).getTime()>=now)
+                     .sort((a,b)=>new Date(a.start)-new Date(b.start));
+  if(!s.length){
+    w.classList.add('is-empty');
+    w.innerHTML=`<p class="empty-state"><b>No events scheduled yet.</b><br>
+      Nothing is listed here until it is really on the calendar. In the meantime,
+      <a href="${esc(C.mspMeshSite)}" target="_blank" rel="noopener">MSP Mesh</a> runs a weekly
+      virtual Node Night and regular Twin Cities meetups.</p>`;
+    const dl=$('#dl-all-ics'); if(dl) dl.disabled=true;
+    const sc=$('#subscribe-cal'); if(sc) sc.setAttribute('aria-disabled','true');
+    return;
+  }
   w.innerHTML=s.map((ev,i)=>{const d=new Date(ev.start);return`<article class="event glass">
     <div class="date"><div class="mo">${MO[d.getMonth()]}</div><div class="dy">${d.getDate()}</div></div>
     <div class="ei"><h3>${esc(ev.title)}</h3><div class="when">${DOW[d.getDay()]} · ${fmtT(d)} · ${esc(ev.loc||'')}</div><p>${esc(ev.desc||'')}</p></div>
@@ -1085,15 +1272,20 @@ function fmtT(d){let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return h
       <button class="btn-mini js-ics" data-i="${i}" type="button">.ics</button></div></article>`;}).join('');
   w.addEventListener('click',e=>{const b=e.target.closest('.js-ics');if(!b)return;const ev=s[+b.dataset.i];
     dlICS([ev],ev.title.replace(/\s+/g,'-').toLowerCase()+'.ics');toast('Event downloaded — your calendar will remind you.');});})();
-const dla=$('#dl-all-ics');if(dla)dla.addEventListener('click',()=>{dlICS(EVENTS,'midwest-mesh-lab-ops.ics');toast('Full ops calendar downloaded.');});
+const dla=$('#dl-all-ics');if(dla)dla.addEventListener('click',()=>{
+  if(!EVENTS.length){toast('No events on the calendar yet.');return;}
+  dlICS(EVENTS,'midwest-mesh-lab-ops.ics');toast('Full ops calendar downloaded.');});
+const scal=$('#subscribe-cal');if(scal)scal.addEventListener('click',e=>{
+  if(!EVENTS.length){e.preventDefault();toast('No events on the calendar yet.');}});
 
 /* forms */
-if(sf)sf.addEventListener('submit',()=>toast('Confirm in the new tab to get content + event alerts.'));
-const cf=$('#contactForm');if(cf)cf.addEventListener('submit',e=>{e.preventDefault();const f=e.target;
-  const n=f.elements.name.value.trim(),l=f.elements.link.value.trim(),m=f.elements.message.value.trim();
-  const body=[`Name / callsign: ${n}`,l?`Link: ${l}`:'','',m].filter(Boolean).join('\n');
-  location.href=`mailto:${C.email}?subject=${encodeURIComponent('Lab contact — '+(n||'no callsign'))}&body=${encodeURIComponent(body)}`;
-  toast('Opening your mail app…');});
+/* Both forms POST to Netlify Forms and land on /thanks.html — no JS needed. */
+
+/* preview build: tag integrations that still need CONFIG values */
+if(PREVIEW){
+  const gw=C.giscus;
+  if(!gw.repo||!gw.repoId||!gw.categoryId){const dh=$('#disc-ph');if(dh){const b=dh.querySelector('b');if(b)b.insertAdjacentHTML('afterend',wipTag(true));}}
+}
 
 /* community discussion (giscus / GitHub Discussions) — loads on demand only */
 const loadBtn=$('#load-disc');
@@ -1117,35 +1309,114 @@ if(!reduce){const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isInters
 /* toast */
 function toast(m){const t=$('#toast');if(!t)return;t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3800);}
 
+/* preview build: floating legend that explains the amber tags + counts open items */
+if(PREVIEW){
+  const open=$$('.wip').length;
+  const el=document.createElement('div');el.className='wip-legend';el.setAttribute('role','note');
+  el.innerHTML='<span class="dot"></span><span><b>Preview build</b> · amber tags = in progress'+(open?' ('+open+')':'')+'</span>';
+  document.body.appendChild(el);
+}
+
 /* =====================================================================
-   4) MINNESOTA MAP — render nodes/links + animate packets (SVG)
+   4) MINNESOTA MAP — real geography (SVG)
+
+   The state outline is a fixed, accurately projected path in the markup.
+   This code draws the graticule, the reference cities, and — only if real
+   node data has been supplied — the node and link layers. It never invents
+   nodes: with MN_NODES empty it renders geography and says so plainly.
    ===================================================================== */
 (function(){
   const NS='http://www.w3.org/2000/svg';
-  const grid=$('#mn-gridlines'),linkG=$('#mn-links'),nodeG=$('#mn-nodes'),pktG=$('#mn-packets');
-  if(!nodeG)return;
-  for(let x=40;x<=480;x+=48){const l=document.createElementNS(NS,'line');l.setAttribute('x1',x);l.setAttribute('y1',20);l.setAttribute('x2',x);l.setAttribute('y2',620);l.setAttribute('class','mn-grid');grid.appendChild(l);}
-  for(let y=40;y<=620;y+=48){const l=document.createElementNS(NS,'line');l.setAttribute('x1',40);l.setAttribute('y1',y);l.setAttribute('x2',480);l.setAttribute('y2',y);l.setAttribute('class','mn-grid');grid.appendChild(l);}
-  MN_LINKS.forEach(([a,b])=>{const A=MN_NODES[a],B=MN_NODES[b];if(!A||!B)return;
-    const l=document.createElementNS(NS,'line');l.setAttribute('x1',A.x);l.setAttribute('y1',A.y);l.setAttribute('x2',B.x);l.setAttribute('y2',B.y);l.setAttribute('class','mn-link');linkG.appendChild(l);});
-  MN_NODES.forEach(n=>{
-    if(n.hub){const r=document.createElementNS(NS,'circle');r.setAttribute('cx',n.x);r.setAttribute('cy',n.y);r.setAttribute('r',6);r.setAttribute('class','mn-ring');nodeG.appendChild(r);
-      if(!reduce){const an=document.createElementNS(NS,'animate');an.setAttribute('attributeName','r');an.setAttribute('values','6;13;6');an.setAttribute('dur','2.6s');an.setAttribute('repeatCount','indefinite');r.appendChild(an);
-        const ao=document.createElementNS(NS,'animate');ao.setAttribute('attributeName','opacity');ao.setAttribute('values','.6;0;.6');ao.setAttribute('dur','2.6s');ao.setAttribute('repeatCount','indefinite');r.appendChild(ao);}}
-    const c=document.createElementNS(NS,'circle');c.setAttribute('cx',n.x);c.setAttribute('cy',n.y);c.setAttribute('r',n.hub?4.6:3.2);
-    c.setAttribute('class','mn-node'+(n.hub?' hub':''));c.setAttribute('filter','url(#glow)');nodeG.appendChild(c);
-    const t=document.createElementNS(NS,'text');t.setAttribute('x',n.x+8);t.setAttribute('y',n.y+3.5);t.setAttribute('class','mn-label');t.textContent=n.name;nodeG.appendChild(t);});
-  if(reduce)return;
-  const packets=[];const spawn=()=>{const [a,b]=MN_LINKS[(Math.random()*MN_LINKS.length)|0];const c=document.createElementNS(NS,'circle');
-    c.setAttribute('r',2.6);c.setAttribute('class','mn-packet');c.setAttribute('filter','url(#glow)');pktG.appendChild(c);
-    packets.push({a:MN_NODES[a],b:MN_NODES[b],t:0,sp:0.004+Math.random()*0.006,el:c});};
-  for(let i=0;i<5;i++)spawn();
-  let raf;function step(){for(let i=packets.length-1;i>=0;i--){const p=packets[i];p.t+=p.sp;
-    if(p.t>=1){p.el.remove();packets.splice(i,1);continue;}
-    p.el.setAttribute('cx',p.a.x+(p.b.x-p.a.x)*p.t);p.el.setAttribute('cy',p.a.y+(p.b.y-p.a.y)*p.t);}
-    while(packets.length<5)spawn();raf=requestAnimationFrame(step);}
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else raf=requestAnimationFrame(step);});
-  raf=requestAnimationFrame(step);
+  const VW=520, VH=593;
+  const grid=$('#mn-gridlines'), cityG=$('#mn-cities'), linkG=$('#mn-links'),
+        nodeG=$('#mn-nodes'), scaleG=$('#mn-scale'), empty=$('#map-empty');
+  if(!nodeG) return;
+  const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+  /* --- Albers Equal Area Conic: identical constants to tools/build-map.js,
+         so anything projected here lands exactly on the baked outline. --- */
+  const D=Math.PI/180, LAT0=46.44, LON0=-93.364, P1=44.48, P2=48.40, PAD=16;
+  const nA=(Math.sin(P1*D)+Math.sin(P2*D))/2;
+  const CA=Math.pow(Math.cos(P1*D),2)+2*nA*Math.sin(P1*D);
+  const rho0=Math.sqrt(CA-2*nA*Math.sin(LAT0*D))/nA;
+  const albers=(lon,lat)=>{const th=nA*(lon-LON0)*D, r=Math.sqrt(CA-2*nA*Math.sin(lat*D))/nA;
+    return [r*Math.sin(th), rho0-r*Math.cos(th)];};
+  /* extent of the projected state, from the same bbox the outline was built on */
+  const B=(()=>{const c=[[-97.2392,43.4994],[-89.4892,49.3844],[-97.2392,49.3844],[-89.4892,43.4994]];
+    let a=1e9,b=-1e9,d2=1e9,e=-1e9;
+    for(let lo=-97.24;lo<=-89.48;lo+=0.12)for(let la=43.49;la<=49.39;la+=0.12){
+      const [x,y]=albers(lo,la);a=Math.min(a,x);b=Math.max(b,x);d2=Math.min(d2,y);e=Math.max(e,y);}
+    return {minX:a,maxX:b,minY:d2,maxY:e};})();
+  const SC=(VW-PAD*2)/(B.maxX-B.minX);
+  /* project a real coordinate into the map's viewBox */
+  const project=(lat,lon)=>{const [x,y]=albers(lon,lat);
+    return {x:(x-B.minX)*SC+PAD, y:(B.maxY-y)*SC+PAD};};
+
+  /* --- graticule: real whole-degree lat/lon lines, not decorative grid --- */
+  for(let lon=-97;lon<=-90;lon++){
+    let d='';for(let lat=43.4;lat<=49.5;lat+=0.3){const p=project(lat,lon);d+=(d?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1);}
+    grid.appendChild(mk('path',{d:d,class:'mn-grid',fill:'none'}));
+  }
+  for(let lat=44;lat<=49;lat++){
+    let d='';for(let lon=-97.4;lon<=-89.4;lon+=0.3){const p=project(lat,lon);d+=(d?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1);}
+    grid.appendChild(mk('path',{d:d,class:'mn-grid',fill:'none'}));
+  }
+
+  /* --- reference cities (real coordinates, explicitly not mesh nodes) --- */
+  MN_CITIES.forEach(c=>{
+    const west=c.la==='w';
+    cityG.appendChild(mk('circle',{cx:c.x,cy:c.y,r:c.major?3.6:2.4,class:'mn-city'+(c.major?' major':'')}));
+    const t=mk('text',{x:c.x+(west?-6:6),y:c.y+3.4,class:'mn-label'+(c.major?' major':''),
+      'text-anchor':west?'end':'start'});
+    t.textContent=c.name;
+    const title=mk('title',{}); title.textContent=c.name+' — '+c.lat.toFixed(4)+', '+c.lon.toFixed(4);
+    t.appendChild(title);
+    cityG.appendChild(t);
+  });
+
+  /* --- scale bar: 100 km measured on the projection itself.
+         Sits in the empty SE corner of the viewBox so it clears the state. --- */
+  (function(){
+    const a=project(44.0,-95.0), b=project(44.0,-93.75);       // ~100 km apart at 44N
+    const km=100, px=Math.abs(b.x-a.x);
+    const xEnd=VW-PAD-6, x0=xEnd-px, y0=VH-PAD-4;
+    scaleG.appendChild(mk('path',{d:'M'+x0.toFixed(1)+' '+(y0-5)+'V'+y0+'H'+xEnd.toFixed(1)+'V'+(y0-5),
+      class:'map-scale-bar',fill:'none'}));
+    const t=mk('text',{x:(x0-6).toFixed(1),y:y0+1,class:'map-scale','text-anchor':'end'});
+    t.textContent=km+' KM';
+    scaleG.appendChild(t);
+  })();
+
+  /* --- node + link layers: only when REAL data exists --- */
+  const nodes=(typeof MN_NODES!=='undefined'&&Array.isArray(MN_NODES))?MN_NODES:[];
+  if(!nodes.length){
+    if(empty){
+      empty.hidden=false;
+      empty.innerHTML='<span class="dot" style="width:8px;height:8px;border-radius:50%;'+
+        'background:var(--amber);flex:none"></span><span><b>No live node data connected.</b> '+
+        'Markers above are cities, for orientation only. Live maps are linked to the right.</span>';
+    }
+    return;
+  }
+  /* real nodes: place by lat/lon through the same projection */
+  const pts=nodes.map(n=>Object.assign({},n,project(n.lat,n.lon)));
+  MN_LINKS.forEach(([a,b])=>{const A=pts[a],B2=pts[b];if(!A||!B2)return;
+    linkG.appendChild(mk('line',{x1:A.x,y1:A.y,x2:B2.x,y2:B2.y,class:'mn-link'}));});
+  pts.forEach(n=>{
+    if(n.hub){
+      const r=mk('circle',{cx:n.x,cy:n.y,r:6,class:'mn-ring'});
+      nodeG.appendChild(r);
+      if(!reduce){
+        r.appendChild(mk('animate',{attributeName:'r',values:'6;13;6',dur:'2.6s',repeatCount:'indefinite'}));
+        r.appendChild(mk('animate',{attributeName:'opacity',values:'.6;0;.6',dur:'2.6s',repeatCount:'indefinite'}));
+      }
+    }
+    nodeG.appendChild(mk('circle',{cx:n.x,cy:n.y,r:n.hub?4.6:3.2,
+      class:'mn-node'+(n.hub?' hub':''),filter:'url(#glow)'}));
+    const t=mk('text',{x:n.x+8,y:n.y+3.5,class:'mn-label major'});
+    t.textContent=n.name||n.id||'';
+    nodeG.appendChild(t);
+  });
 })();
 
 /* =====================================================================

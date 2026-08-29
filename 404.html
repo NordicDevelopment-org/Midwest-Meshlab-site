@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!-- Served by Netlify for any unmatched path (see netlify.toml).
+     Several cards on the home page point at guides that are written but not
+     yet published — this page is what those links land on, so it explains
+     that plainly instead of showing a dead end. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Not here (yet) — Midwest Mesh Lab</title>
+<meta name="description" content="That page isn't on the site. It may be a guide that's still being written." />
+<meta name="theme-color" content="#07090A" />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/assets/page.css" />
+<style>
+  .nf{max-width:880px;margin:0 auto;padding:clamp(48px,11vh,110px) var(--gut) 80px}
+  .nf .code{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--amber);
+    text-transform:uppercase;margin-bottom:14px}
+  .nf h1{font-family:var(--disp);font-size:clamp(30px,6vw,50px);line-height:1.06;color:var(--ink);
+    text-transform:uppercase;letter-spacing:.01em;margin:0 0 18px}
+  .nf .lede{font-size:17px;color:var(--fg);margin:0 0 12px;max-width:62ch}
+  .nf .sub{color:var(--muted);font-size:15px;max-width:62ch;margin:0 0 30px}
+  .nf .path{font-family:var(--mono);font-size:13px;color:var(--green-hi);
+    background:rgba(143,209,80,.06);border:1px solid var(--line-2);border-radius:8px;
+    padding:9px 13px;display:inline-block;margin-bottom:28px;word-break:break-all;max-width:100%}
+  .nf .links{display:flex;flex-wrap:wrap;gap:10px}
+  .nf .lk{font-family:var(--mono);font-size:12.5px;color:var(--ink);border:1px solid var(--line-2);
+    border-radius:999px;padding:9px 16px;text-decoration:none;transition:border-color .16s,color .16s}
+  .nf .lk:hover{border-color:var(--amber);color:var(--amber);text-decoration:none}
+  .nf .lk.primary{background:var(--amber);color:#1b1206;border-color:var(--amber);font-weight:600}
+  .nf .lk.primary:hover{background:var(--amber-hi);border-color:var(--amber-hi);color:#1b1206}
+  .nf .nf-note{margin-top:34px;padding-top:20px;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.75;max-width:70ch}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab
+    </a>
+    <a class="back" href="/">← home</a>
+  </div>
+</header>
+
+<main class="nf">
+  <div class="code">// 404 · no route</div>
+  <h1 id="head">Nothing at this address</h1>
+  <p class="lede" id="lede">That page isn&rsquo;t on the site.</p>
+  <p class="sub" id="sub">It may have moved, or the link may be wrong. The sections below cover
+    everything that is actually published.</p>
+  <div class="path" id="path" hidden></div>
+  <div class="links">
+    <a class="lk primary" href="/">Home</a>
+    <a class="lk" href="/#manuals">Manuals</a>
+    <a class="lk" href="/#builds">Builds</a>
+    <a class="lk" href="/#notes">Field notes</a>
+    <a class="lk" href="/#map">MN map</a>
+    <a class="lk" href="/#contact">Contact</a>
+  </div>
+  <p class="nf-note">
+    Midwest Mesh Lab is an independent community project, not affiliated with Meshtastic LLC,
+    Raspberry Pi Ltd, or MSP Mesh. If a link on this site brought you here, that&rsquo;s a bug worth
+    reporting &mdash; the contact form is on the home page.
+  </p>
+</main>
+
+<script>
+/* If the visitor hit a path we know is a planned-but-unwritten guide, say so
+   specifically. These are the URLs marked `wip` in index.html — keep the two
+   in sync when a guide goes live (delete the entry here as you publish). */
+(function(){
+  var PLANNED = {
+    '/manuals/pi-mqtt-gateway.html':   'the Raspberry Pi MQTT gateway manual',
+    '/manuals/solar-power-budget.html':'the solar node power-budget manual',
+    '/manuals/antenna-los.html':       'the antennas & line-of-sight manual',
+    '/manuals/channels-encryption.html':'the channels, keys & encryption manual',
+    '/manuals/weatherproof-case.html': 'the weatherproof node case manual',
+    '/builds/pi-mqtt-gateway.html':    'the Pi MQTT Gateway build',
+    '/builds/pocket-node.html':        'the Pocket Node build',
+    '/builds/storm-go-box.html':       'the Storm Go-Box build',
+    '/notes/cloudy-week-power.html':   'the cloudy-week power budgets field note'
+  };
+  var p = location.pathname.replace(/\/+$/,'') || '/';
+  var hit = PLANNED[p] || PLANNED[p + '.html'];
+  var pathEl = document.getElementById('path');
+
+  if (hit) {
+    document.getElementById('head').textContent = 'Not written yet';
+    document.getElementById('lede').innerHTML =
+      'You followed a link to <strong>' + hit + '</strong>. It&rsquo;s planned, but it hasn&rsquo;t been written yet.';
+    document.getElementById('sub').textContent =
+      'The home page marks unwritten guides with an amber "In progress" tag so you can tell at a ' +
+      'glance what exists. Everything below is published and ready to read.';
+  }
+  if (p !== '/') { pathEl.textContent = p; pathEl.hidden = false; }
+})();
+</script>
+</body>
+</html>
