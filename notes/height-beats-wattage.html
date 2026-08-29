@@ -5,7 +5,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Why height beats wattage every time — Midwest Mesh Lab</title>
-<meta name="description" content="A five-meter mast did more for our range than doubling transmit power ever could. The reasoning, and what we measured in the field." />
+<meta name="description" content="Why antenna height beats transmit power for LoRa range — radio horizon and Fresnel zone maths, worked through with the formulas." />
 <meta name="theme-color" content="#07090A" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,34 +28,84 @@
 <main class="doc">
   <div class="eyebrow">Field Notes <span class="desig">// LOG</span></div>
   <h1>Why height beats wattage every time</h1>
-  <div class="meta"><span>Jun 12, 2026</span><span>Read <b>4 min</b></span><span>Tags <b>RF · Range</b></span></div>
+  <div class="meta"><span>Reference note</span><span>Read <b>5 min</b></span><span>Tags <b>RF · Range</b></span></div>
 
-  <p>We spent a Saturday trying to brute-force range with power, and a different Saturday raising an antenna a few
-    meters. The mast won, and it wasn't close. Here's why that keeps happening, and what we actually measured.</p>
-
-  <h2>LoRa is patient; terrain is not</h2>
-  <p>LoRa is already extraordinarily good at digging a weak signal out of the noise — that's the whole point of the
-    modulation. So once you're link-budget-limited, pouring on more transmit power buys you a little, but the
-    radio was rarely the bottleneck. <strong>Obstructions were.</strong> A hill, a tree line, or the curve of the
-    earth doesn't care how loud you are.</p>
-
-  <h2>Line of sight does most of the work</h2>
-  <p>Get both antennas up where they can "see" each other and range opens up dramatically. Raising a node from
-    bench height to the top of a short mast clears the near-field clutter — fences, cars, your own roofline — that
-    quietly eats the first hop. In flat country especially, every meter of height pushes the horizon out and adds
-    nodes you simply could not hear before.</p>
+  <p>&ldquo;Raise it before you turn it up&rdquo; is the most repeated piece of advice in mesh networking, and
+    unlike most rules of thumb it falls straight out of the geometry. This note works through why, with the
+    arithmetic laid out so you can check it against your own site rather than take it on faith.</p>
 
   <div class="note">
-    <div class="h">The rule of thumb</div>
-    <p>Spend your first dollar on height, your second on a better antenna and a clean feedline, and only then think
-      about power. Most "dead" links are really just blocked ones.</p>
+    <div class="h">What this note is</div>
+    <p>This is a <strong>reference explainer built from published RF fundamentals</strong>, not a write-up of a
+      test we ran. Every figure below comes from the standard formulas, which are given so you can recompute
+      them. When we publish measurements, they will be labelled as measurements.</p>
   </div>
 
-  <h2>What we measured</h2>
-  <p>Same two nodes, same firmware, same day. On the bench-to-bench test we struggled to hold a link across town.
-    Put one node on a five-meter painter's pole with a clear shot down the valley and the same pair held a solid
-    link many kilometers out — a multiple of the bench result, with margin to spare. We didn't touch the transmit
-    power once.</p>
+  <h2>LoRa is patient; terrain is not</h2>
+  <p>LoRa&rsquo;s chirp spread-spectrum modulation is genuinely excellent at pulling a signal out of the noise
+    floor — that is the entire point of the scheme, and it is why a few hundred milliwatts can travel so far.
+    But sensitivity only helps against <em>weak</em> signal. It does nothing against a <em>blocked</em> one.
+    A hill, a tree line, or the curve of the earth does not care how loud you are.</p>
+
+  <h2>The horizon is a hard limit</h2>
+  <p>The distance to the radio horizon depends only on antenna height. Accounting for the way the atmosphere
+    bends radio waves slightly around the earth (the standard 4/3-earth model), it is:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Antenna height</th><th>Radio horizon</th></tr></thead>
+      <tbody>
+        <tr><td>1.5 m &mdash; on a bench, or held</td><td>5.1 km</td></tr>
+        <tr><td>5 m &mdash; short mast or painter&rsquo;s pole</td><td>9.2 km</td></tr>
+        <tr><td>10 m &mdash; house roofline</td><td>13.0 km</td></tr>
+        <tr><td>20 m &mdash; tall building, silo, tower leg</td><td>18.4 km</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The usable path is the sum of both ends. Two nodes at bench height can see about
+    <strong>10 km</strong> of horizon between them; lift one onto a 5 m pole and it becomes
+    <strong>14 km</strong>; put both on 20 m structures and it is <strong>37 km</strong>. No change to the
+    radio in any of those cases.</p>
+
+  <div class="note">
+    <div class="h">The formula</div>
+    <p><code>d &asymp; 4.12 &times; &radic;h</code> &mdash; <em>d</em> in kilometres, <em>h</em> in metres,
+      per antenna. Because distance goes as the <em>square root</em> of height, <strong>quadrupling your
+      height exactly doubles your horizon</strong>.</p>
+  </div>
+
+  <h2>Why power can&rsquo;t buy the same thing</h2>
+  <p>Here is the comparison that settles the argument. In free space, doubling your range costs
+    <strong>+6 dB</strong> — four times the transmit power. Doubling your range by height also costs a factor
+    of four, but of <em>height</em>: 1.5 m to 6 m. One of those is a painter&rsquo;s pole; the other runs you
+    into the 30 dBm regulatory ceiling in short order.</p>
+  <p>And that comparison is the <em>optimistic</em> one, because it assumes a clear path. If the earth or a
+    ridge is in the way, extra power buys you nothing at all: the horizon is geometry, and geometry does not
+    respond to watts.</p>
+
+  <h2>Leave room around the line, not just along it</h2>
+  <p>A clear sightline is necessary but not sufficient. Radio needs clearance <em>around</em> the straight
+    line too — the first Fresnel zone, an ellipse between the two antennas. Obstructing it costs you signal
+    even when you can see the far end perfectly well. Aim to keep at least 60% of it clear.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Link length</th><th>Zone radius at midpoint (915 MHz)</th><th>60% clearance</th></tr></thead>
+      <tbody>
+        <tr><td>1 km</td><td>9.1 m</td><td>5.5 m</td></tr>
+        <tr><td>5 km</td><td>20.2 m</td><td>12.1 m</td></tr>
+        <tr><td>10 km</td><td>28.6 m</td><td>17.2 m</td></tr>
+        <tr><td>20 km</td><td>40.5 m</td><td>24.3 m</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>This is the part that surprises people: a 10 km link wants roughly <strong>17 m of clearance</strong> at
+    its midpoint, not a metre or two. It is also why a link across an open field behaves so differently from
+    one that grazes a treetop halfway along, even though both &ldquo;have line of sight&rdquo;.</p>
+  <div class="note">
+    <div class="h">The formula</div>
+    <p><code>r &asymp; 17.32 &times; &radic;(d / 4f)</code> &mdash; <em>r</em> in metres, <em>d</em> in
+      kilometres, <em>f</em> in GHz (0.915 for the US band). This gives the radius at the midpoint, where the
+      ellipse is widest.</p>
+  </div>
 
   <h2>Practical takeaways</h2>
   <ul>
@@ -67,7 +117,7 @@
 
   <p>If you're planning a network, the <a href="/manuals/antenna-los.html">antennas &amp; line-of-sight manual</a>
     goes deeper on Fresnel zones and hop planning, and the <a href="/builds/solar-relay-v2.html">Solar Relay v2</a>
-    build is the node we usually send up the pole.</p>
+    build is a node designed to go up a pole and stay there.</p>
 
   <div class="prevnext">
     <a href="/#notes"><span class="k">← BACK</span>All field notes</a>
