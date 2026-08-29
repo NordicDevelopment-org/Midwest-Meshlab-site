@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!-- Summarised from published upstream sources, not first-hand testing.
+     Every claim must be traceable to a link in the Sources block. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Known issues worth checking before you flash — Midwest Mesh Lab</title>
+<meta name="description" content="How to read the Meshtastic issue tracker before a firmware update, and the kinds of board-specific bugs that were open at the end of August 2026." />
+<meta name="theme-color" content="#07090A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/page.css" />
+<style>
+  .srcbox{border-top:1px solid var(--line);margin-top:38px;padding-top:20px}
+  .srcbox .sl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:10px}
+  .srcbox a{display:block;font-family:var(--mono);font-size:12.5px;color:var(--green-hi);
+    margin-bottom:6px;text-decoration:none;word-break:break-word}
+  .srcbox a:hover{color:var(--amber);text-decoration:underline}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab
+    </a>
+    <a class="back" href="/#notes">← field notes</a>
+  </div>
+</header>
+<main class="doc">
+  <div class="eyebrow">Field Notes <span class="desig">// LOG</span></div>
+  <h1>Known issues worth checking before you flash</h1>
+  <div class="meta"><span>Reference note</span><span>Read <b>5 min</b></span><span>Tags <b>Firmware &middot; Troubleshooting</b></span></div>
+
+  <div class="note">
+    <div class="h">Where this comes from</div>
+    <p>Compiled by querying the meshtastic/firmware issue tracker on 29 Aug 2026. Every issue below is linked by number so you can check its current state — several will have been fixed by the time you read this, which is exactly why the method matters more than the list.</p>
+  </div>
+
+  <p>Firmware updates are usually uneventful. The exceptions tend to be <em>board-specific</em>
+    rather than general &mdash; a build that is fine on one radio can have a real problem on another.
+    Ten minutes on the issue tracker before you flash a node that lives on a rooftop is cheap
+    insurance.</p>
+
+  <h2>The method</h2>
+  <ol>
+    <li>Open the <a href="https://github.com/meshtastic/firmware/issues" target="_blank" rel="noopener noreferrer">firmware issue tracker</a>.</li>
+    <li>Search for <strong>your board name</strong>, not just the symptom &mdash; &ldquo;Heltec
+      V4&rdquo;, &ldquo;T-Echo&rdquo;, &ldquo;T114&rdquo;.</li>
+    <li>Filter to <code>is:open label:bug</code> and sort by newest.</li>
+    <li>Check whether anything mentions the specific version you are about to install.</li>
+  </ol>
+  <p>That is the whole technique, and it generalises past anything written here.</p>
+
+  <h2>What was open at the end of August 2026</h2>
+  <p>A snapshot, to show the <em>shape</em> of what turns up. There were around 97 open bug-labelled
+    issues at the time. These are illustrative, not a complete list:</p>
+  <ul>
+    <li><strong>A possible receive regression on Heltec V4.3 in 2.7.26</strong> &mdash; the kind of
+      report that matters most, because it targets a specific board on a specific build
+      (<a href="https://github.com/meshtastic/firmware/issues/11280" target="_blank" rel="noopener noreferrer">#11280</a>).</li>
+    <li><strong>Heltec V4 WiFi authentication failing on recent nightly builds</strong>, with
+      AUTH_FAIL and handshake timeouts &mdash; relevant if your gateway depends on WiFi
+      (<a href="https://github.com/meshtastic/firmware/issues/11581" target="_blank" rel="noopener noreferrer">#11581</a>).</li>
+    <li><strong>An I2C crash on Heltec T114 that freezes the node without resetting it</strong>
+      &mdash; the worst failure mode for a remote node, because it stops without rebooting itself
+      (<a href="https://github.com/meshtastic/firmware/issues/11301" target="_blank" rel="noopener noreferrer">#11301</a>).</li>
+    <li><strong>T-Echo touch button doing nothing</strong>
+      (<a href="https://github.com/meshtastic/firmware/issues/11610" target="_blank" rel="noopener noreferrer">#11610</a>),
+      and display and battery-reporting glitches on ThinkNode M1
+      (<a href="https://github.com/meshtastic/firmware/issues/11578" target="_blank" rel="noopener noreferrer">#11578</a>,
+       <a href="https://github.com/meshtastic/firmware/issues/11366" target="_blank" rel="noopener noreferrer">#11366</a>).</li>
+  </ul>
+
+  <div class="note warn">
+    <div class="h">Read the state, not just the title</div>
+    <p>An issue being <em>open</em> does not mean it is unfixed, and a scary title does not mean it
+      affects you. Check whether it reproduces on your board and your build before letting it change
+      your plans.</p>
+  </div>
+
+  <h2>Older threads still worth knowing</h2>
+  <p>Some long-standing Bluetooth reports are now <strong>closed</strong>, but they are still the
+    first thing to search if pairing misbehaves &mdash; if you are running older firmware you may be
+    sitting on a bug that has already been fixed upstream:</p>
+  <ul>
+    <li>Heltec V3 and LilyGO T3-S3 failing to connect over Bluetooth
+      (<a href="https://github.com/meshtastic/firmware/issues/10172" target="_blank" rel="noopener noreferrer">#10172</a>).</li>
+    <li>Bluetooth going non-functional after commands are sent over the serial interface
+      (<a href="https://github.com/meshtastic/firmware/issues/8747" target="_blank" rel="noopener noreferrer">#8747</a>).</li>
+    <li>The BLE pairing PIN barely displaying on Heltec V3
+      (<a href="https://github.com/meshtastic/firmware/issues/8081" target="_blank" rel="noopener noreferrer">#8081</a>).</li>
+  </ul>
+  <p>In all three cases the first move is the same: update, then retest.</p>
+
+  <h2>Habits that make updates boring</h2>
+  <ul>
+    <li>Update the node on your bench before the one on the roof.</li>
+    <li>Keep one node on a known-good build so you always have a working reference to test against.</li>
+    <li>Note which version each deployed node runs. When something breaks, that list is the first
+      thing you will want.</li>
+    <li>Prefer beta over nightly for anything you cannot easily reach.</li>
+  </ul>
+  <p>If something is already misbehaving, the <a href="/troubleshoot.html">troubleshooting tool</a>
+    narrows it down before you go bug-hunting.</p>
+
+  <div class="srcbox">
+    <div class="sl">Sources — checked 29 Aug 2026</div>
+    <a href="https://github.com/meshtastic/firmware/issues" target="_blank" rel="noopener noreferrer">meshtastic/firmware — open issues →</a>
+    <a href="https://github.com/meshtastic/firmware/issues/11280" target="_blank" rel="noopener noreferrer">firmware#11280 — possible Heltec V4.3 RX regression in 2.7.26 →</a>
+    <a href="https://github.com/meshtastic/firmware/issues/11581" target="_blank" rel="noopener noreferrer">firmware#11581 — Heltec V4 WiFi auth failure on nightlies →</a>
+    <a href="https://github.com/meshtastic/firmware/issues/11301" target="_blank" rel="noopener noreferrer">firmware#11301 — I2C crash freezes Heltec T114 →</a>
+    <a href="https://github.com/meshtastic/firmware/issues/11610" target="_blank" rel="noopener noreferrer">firmware#11610 — T-Echo touch button unresponsive →</a>
+    <a href="https://github.com/meshtastic/firmware/releases" target="_blank" rel="noopener noreferrer">meshtastic/firmware — releases →</a>
+  </div>
+</main>
+</body>
+</html>

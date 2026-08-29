@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!-- Summarised from published upstream sources, not first-hand testing.
+     Every claim must be traceable to a link in the Sources block. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Set your region first, or nothing transmits — Midwest Mesh Lab</title>
+<meta name="description" content="A freshly flashed Meshtastic node has no region set and will not transmit until you choose one. The most common reason a new node looks dead." />
+<meta name="theme-color" content="#07090A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/page.css" />
+<style>
+  .srcbox{border-top:1px solid var(--line);margin-top:38px;padding-top:20px}
+  .srcbox .sl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:10px}
+  .srcbox a{display:block;font-family:var(--mono);font-size:12.5px;color:var(--green-hi);
+    margin-bottom:6px;text-decoration:none;word-break:break-word}
+  .srcbox a:hover{color:var(--amber);text-decoration:underline}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab
+    </a>
+    <a class="back" href="/#notes">← field notes</a>
+  </div>
+</header>
+<main class="doc">
+  <div class="eyebrow">Field Notes <span class="desig">// LOG</span></div>
+  <h1>Set your region first, or nothing transmits</h1>
+  <div class="meta"><span>Reference note</span><span>Read <b>4 min</b></span><span>Tags <b>Setup &middot; Beginner</b></span></div>
+
+  <div class="note">
+    <div class="h">Where this comes from</div>
+    <p>Summarised from the official Meshtastic documentation, linked in full at the bottom. This describes documented behaviour; it is not a write-up of a test we ran.</p>
+  </div>
+
+  <p>If you have just flashed a node and nothing you send goes anywhere, it is almost certainly not
+    broken. A freshly flashed node ships with <strong>no region configured</strong>, and in that state
+    the radio will not transmit at all.</p>
+
+  <p>That is deliberate. Which frequencies a LoRa radio may legally use depends on where in the world
+    it is, and the firmware will not guess. Until you tell it, it stays quiet.</p>
+
+  <h2>Setting it</h2>
+  <ol>
+    <li>Connect to the node from the Meshtastic app or the web client.</li>
+    <li>Open <strong>Radio Configuration &rarr; LoRa</strong>.</li>
+    <li>Set <strong>Region</strong>. In the United States that is <code>US</code>.</li>
+    <li>Let the node reboot, then confirm the setting stuck.</li>
+  </ol>
+
+  <p>That is the whole fix, and it accounts for a large share of &ldquo;my new node does not
+    work&rdquo; reports.</p>
+
+  <h2>What US actually means</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Frequency range</td><td>902.0 &ndash; 928.0 MHz</td></tr>
+        <tr><td>Power limit</td><td>30 dBm</td></tr>
+        <tr><td>Duty cycle</td><td>100% (no restriction)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>This is the 915 MHz ISM band. Operating here does not require an amateur radio licence &mdash;
+    standard Meshtastic use is unlicensed operation on a shared band.</p>
+
+  <div class="note warn">
+    <div class="h">The other half of the problem</div>
+    <p>Region alone is not enough for two nodes to talk. They must also share a <strong>modem
+      preset</strong> and a <strong>channel name and key</strong>. A node on a different preset is
+      effectively on its own network even sitting on the same desk &mdash; it is the next most common
+      cause of silence after an unset region.</p>
+  </div>
+
+  <h2>If it still will not transmit</h2>
+  <ul>
+    <li>Confirm the region really saved &mdash; re-read it after the reboot, not before.</li>
+    <li>Check the modem preset matches your local mesh. <code>LONG_FAST</code> is the default.</li>
+    <li>Check the channel name and pre-shared key match on both ends. Sharing the channel QR code is
+      the reliable way to copy them.</li>
+    <li>Make sure an antenna is attached. Transmitting without one can damage the radio.</li>
+  </ul>
+  <p>Our <a href="/troubleshoot.html">troubleshooting tool</a> walks these in order if you would rather
+    be asked questions than read a list.</p>
+
+  <div class="srcbox">
+    <div class="sl">Sources — checked 29 Aug 2026</div>
+    <a href="https://meshtastic.org/docs/getting-started/initial-config/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Initial Configuration →</a>
+    <a href="https://meshtastic.org/docs/configuration/radio/lora/" target="_blank" rel="noopener noreferrer">Meshtastic docs — LoRa Configuration (region table) →</a>
+    <a href="https://meshtastic.org/docs/configuration/radio/channels/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Channel Configuration →</a>
+  </div>
+</main>
+</body>
+</html>

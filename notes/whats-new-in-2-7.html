@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!-- Summarised from published upstream sources, not first-hand testing.
+     Every claim must be traceable to a link in the Sources block. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>What&rsquo;s new in Meshtastic 2.7 — Midwest Mesh Lab</title>
+<meta name="description" content="The 2.7 line brings BaseUI — the biggest overhaul of the default interface in years — plus multi-message storage, a configurable API port, and new hardware support." />
+<meta name="theme-color" content="#07090A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/page.css" />
+<style>
+  .srcbox{border-top:1px solid var(--line);margin-top:38px;padding-top:20px}
+  .srcbox .sl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:10px}
+  .srcbox a{display:block;font-family:var(--mono);font-size:12.5px;color:var(--green-hi);
+    margin-bottom:6px;text-decoration:none;word-break:break-word}
+  .srcbox a:hover{color:var(--amber);text-decoration:underline}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab
+    </a>
+    <a class="back" href="/#notes">← field notes</a>
+  </div>
+</header>
+<main class="doc">
+  <div class="eyebrow">Field Notes <span class="desig">// LOG</span></div>
+  <h1>What&rsquo;s new in Meshtastic 2.7</h1>
+  <div class="meta"><span>Release summary</span><span>Read <b>5 min</b></span><span>Tags <b>Firmware &middot; Release</b></span></div>
+
+  <div class="note">
+    <div class="h">Where this comes from</div>
+    <p>Compiled from the Meshtastic firmware release notes and project blog, linked below. Version numbers are what those sources showed when this was written on 29 Aug 2026 — check the releases page for what is current before you flash.</p>
+  </div>
+
+  <p>The 2.7 series is the most visible change Meshtastic has shipped in a while. If you have been
+    running 2.6 and wondering whether it is worth moving, the short answer is that the interface is
+    genuinely different, and a few of the under-the-hood changes matter for congested meshes.</p>
+
+  <h2>BaseUI: the default interface, rebuilt</h2>
+  <p>The headline is a rebuilt and renamed default interface, <strong>BaseUI</strong> &mdash; described
+    by the project as the largest overhaul of the default UI in over four years. The goal was an
+    interface that is more capable and works sensibly across a much wider range of screens, from tiny
+    OLEDs to the larger displays on newer boards.</p>
+  <p>If you have muscle memory from older firmware, expect to spend a few minutes relearning where
+    things live.</p>
+
+  <h2>Multi-message storage</h2>
+  <p>Nodes can now batch several messages together before transmitting rather than sending each as its
+    own packet. Fewer discrete packets hitting the channel means less airtime contention, which is
+    most noticeable on a busy mesh where channel utilisation is already high.</p>
+  <p>If your local mesh regularly runs hot, this is the change most likely to help you.</p>
+
+  <h2>Configurable API port</h2>
+  <p>The API port can now be set from the config file rather than relying on the default. That matters
+    if you run more than one service against the same device, or build your own tooling against the
+    Meshtastic API and want the port pinned rather than assumed.</p>
+
+  <h2>Hardware and logging</h2>
+  <ul>
+    <li>Support for the <strong>ThinkNode M7</strong>.</li>
+    <li>A <strong>rotating JSONL recorder</strong> for persistent logging &mdash; useful if you are
+      trying to characterise a flaky link over days rather than minutes.</li>
+  </ul>
+
+  <h2>Which build should you run?</h2>
+  <p>Meshtastic ships alpha and beta builds continuously, so &ldquo;the latest&rdquo; moves constantly.
+    At the time of writing the 2.7 line had progressed through several alpha builds &mdash; 2.7.18,
+    2.7.22 and 2.7.24 &mdash; to <strong>2.7.26 marked beta</strong>.</p>
+  <div class="note warn">
+    <div class="h">Check before you flash</div>
+    <p>Those version numbers were accurate when this page was written and will be stale soon after.
+      Always take the current build from the releases page rather than from a blog post &mdash; this
+      one included. And on a node that is deployed somewhere inconvenient, let a build sit in beta a
+      while before you climb the mast.</p>
+  </div>
+
+  <h2>Before you upgrade</h2>
+  <ul>
+    <li>Back up your channel configuration, or at least have the QR code somewhere you can reach it.</li>
+    <li>Skim the open issues for your specific board &mdash; several current reports are
+      hardware-specific rather than general. Our
+      <a href="/notes/known-issues-before-you-flash.html">known-issues note</a> covers what to look for.</li>
+    <li>Upgrade one node first, confirm it still talks to the mesh, and only then do the rest.</li>
+  </ul>
+
+  <div class="srcbox">
+    <div class="sl">Sources — checked 29 Aug 2026</div>
+    <a href="https://github.com/meshtastic/firmware/releases" target="_blank" rel="noopener noreferrer">meshtastic/firmware — releases →</a>
+    <a href="https://meshtastic.org/blog/" target="_blank" rel="noopener noreferrer">Meshtastic — project blog →</a>
+    <a href="https://meshtastic.org/docs/configuration/radio/lora/" target="_blank" rel="noopener noreferrer">Meshtastic docs — LoRa Configuration →</a>
+  </div>
+</main>
+</body>
+</html>

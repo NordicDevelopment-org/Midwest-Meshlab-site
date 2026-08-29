@@ -20,7 +20,9 @@ Almost everything lives in plain arrays at the bottom of `index.html` (`MANUALS`
 ## Layout
 ```
 index.html                 the site (HTML + CSS + JS in one file)
+troubleshoot.html          guided Meshtastic troubleshooter (works without JS)
 404.html                   custom not-found page (names unwritten guides)
+thanks.html                form submission landing page
 netlify.toml               deploy config: headers, CSP, redirects
 events.ics                 calendar people subscribe to
 robots.txt
@@ -37,6 +39,12 @@ boundary data through an Albers Equal Area Conic projection and prints an SVG pa
 viewBox matches the true projected aspect ratio so nothing is stretched. City markers are real
 lat/lon run through the same projection. Run `node tools/build-map.js` to regenerate; don't
 hand-edit the path in `index.html`.
+
+## Forms
+There is no mail server: `midwestmeshlab.net` has no MX records, so the old
+`contact@midwestmeshlab.net` address bounced. Both forms post to **Netlify Forms** instead and land
+on `/thanks.html`. `netlify.toml` must keep `skip_processing = false` or Netlify never registers
+them.
 
 ## No invented content
 Lists that have no real data yet (community builds, Instagram tiles, events, mesh nodes) ship

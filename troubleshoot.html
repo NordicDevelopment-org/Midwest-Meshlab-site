@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<!-- Guided Meshtastic troubleshooting.
+
+     Architecture note: every fix below is REAL HTML in the document, not
+     injected by script. The wizard at the top is only a navigation layer that
+     reveals the matching fix. So with JavaScript disabled the page still works
+     as a complete, sourced reference — and every fix is deep-linkable
+     (troubleshoot.html#fix-no-region).
+
+     House rule: no fix ships without a source link. If it can't be sourced to
+     the Meshtastic docs or a real tracker issue, it doesn't go on the page. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Troubleshooting — Midwest Mesh Lab</title>
+<meta name="description" content="A guided troubleshooter for common Meshtastic problems: nothing transmitting, Bluetooth pairing, no GPS fix, flashing failures, poor range, battery drain, and MQTT. Every fix cites its source." />
+<meta name="theme-color" content="#07090A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/assets/page.css" />
+<style>
+  .ts{max-width:900px;margin:0 auto;padding:clamp(34px,7vh,70px) var(--gut) 90px}
+  .ts .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--amber);
+    text-transform:uppercase;margin-bottom:12px}
+  .ts h1{font-family:var(--disp);font-size:clamp(30px,6vw,50px);line-height:1.06;color:var(--ink);
+    text-transform:uppercase;margin:0 0 16px}
+  .ts .lede{font-size:17px;color:var(--fg);max-width:66ch;margin:0 0 10px}
+  .ts .verified{font-family:var(--mono);font-size:11.5px;color:var(--faint);margin:0 0 30px}
+
+  /* wizard */
+  .wiz{border:1px solid var(--line-2);border-radius:var(--r,14px);background:var(--glass);
+    padding:clamp(18px,3vw,28px);margin:0 0 12px}
+  .wiz .step-n{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--green-hi);
+    text-transform:uppercase;margin-bottom:10px}
+  .wiz h2{font-family:var(--disp);font-size:clamp(19px,3vw,25px);color:var(--ink);margin:0 0 8px;line-height:1.2}
+  .wiz .hint{color:var(--muted);font-size:14.5px;margin:0 0 18px;max-width:62ch}
+  .opts{display:flex;flex-direction:column;gap:9px}
+  .opt{display:block;width:100%;text-align:left;font-family:var(--body);font-size:15px;color:var(--ink);
+    background:rgba(143,209,80,.04);border:1px solid var(--line-2);border-radius:10px;
+    padding:13px 16px;cursor:pointer;transition:border-color .14s,background .14s,transform .14s}
+  .opt:hover{border-color:var(--green);background:rgba(143,209,80,.09);transform:translateX(3px)}
+  .opt:focus-visible{outline:2px solid var(--green-hi);outline-offset:2px}
+  .wiz-foot{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+  .wiz-btn{font-family:var(--mono);font-size:11.5px;color:var(--muted);background:none;
+    border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer}
+  .wiz-btn:hover{color:var(--amber);border-color:var(--amber)}
+  .trail{font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.6}
+
+  /* results */
+  .verdict{border:1px solid var(--amber);border-radius:12px;background:rgba(244,169,60,.07);
+    padding:16px 18px;margin:0 0 10px}
+  .verdict .vl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--amber);margin-bottom:6px}
+  .verdict p{margin:0;color:var(--fg);font-size:15px}
+  .verdict a{color:var(--amber-hi)}
+
+  /* fix cards (static content) */
+  .fixes{margin-top:54px;border-top:1px solid var(--line);padding-top:34px}
+  .fixes > h2{font-family:var(--disp);text-transform:uppercase;font-size:22px;color:var(--ink);margin:0 0 6px}
+  .fixes > .sub{color:var(--muted);font-size:14.5px;margin:0 0 26px;max-width:66ch}
+  .fix{border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:0 0 14px;
+    background:var(--glass);scroll-margin-top:76px}
+  .fix:target{border-color:var(--amber);box-shadow:0 0 0 3px rgba(244,169,60,.13)}
+  .fix h3{font-family:var(--disp);font-size:18px;color:var(--ink);margin:0 0 4px;text-transform:uppercase;
+    letter-spacing:.01em}
+  .fix .sym{font-family:var(--mono);font-size:11.5px;color:var(--green-hi);margin-bottom:12px}
+  .fix ol,.fix ul{margin:0 0 14px;padding-left:20px}
+  .fix li{margin-bottom:7px;font-size:15px;color:var(--fg);line-height:1.6}
+  .fix code{font-family:var(--mono);font-size:13px;color:var(--amber);
+    background:rgba(244,169,60,.08);padding:1px 6px;border-radius:5px}
+  .src{border-top:1px dashed var(--line-2);padding-top:11px;margin-top:4px}
+  .src .sl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:7px}
+  .src a{display:block;font-family:var(--mono);font-size:12px;color:var(--green-hi);
+    margin-bottom:4px;text-decoration:none}
+  .src a:hover{color:var(--amber);text-decoration:underline}
+  .known{border-left:3px solid var(--alert);background:rgba(226,87,59,.06);padding:12px 15px;
+    border-radius:0 8px 8px 0;margin:0 0 14px}
+  .known .kh{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--alert);margin-bottom:5px}
+  .known p{margin:0;font-size:14px;color:var(--fg)}
+  @media (max-width:620px){ .fix{padding:16px 15px} }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="2.4" fill="#F4A93C"/><circle cx="12" cy="12" r="8" stroke="#86D46A" stroke-width="1.2"/><circle cx="4.5" cy="6" r="1.6" fill="#86D46A"/><circle cx="19.5" cy="7" r="1.6" fill="#86D46A"/><path d="M12 12 4.5 6M12 12l7.5-5" stroke="#86D46A" stroke-width=".8"/></svg>
+      Midwest Mesh Lab
+    </a>
+    <a class="back" href="/">← home</a>
+  </div>
+</header>
+
+<main class="ts">
+  <div class="eyebrow">Troubleshooting <span class="desig">// DIAG</span></div>
+  <h1>What&rsquo;s your node doing?</h1>
+  <p class="lede">Answer a couple of questions and this points at the most likely cause. Every fix
+    below cites the Meshtastic documentation or a real tracker issue &mdash; nothing here is guesswork,
+    and the full reference is on this page whether or not you use the questions.</p>
+  <p class="verified">Sources checked 29 Aug 2026 &middot; Meshtastic firmware 2.7.x</p>
+
+  <div class="wiz" id="wiz" hidden>
+    <div class="step-n" id="step-n">Step 1</div>
+    <h2 id="step-q">What&rsquo;s happening?</h2>
+    <p class="hint" id="step-h"></p>
+    <div class="opts" id="opts"></div>
+    <div class="wiz-foot">
+      <button class="wiz-btn" id="back" type="button" hidden>← Back</button>
+      <button class="wiz-btn" id="restart" type="button" hidden>Start over</button>
+      <span class="trail" id="trail"></span>
+    </div>
+  </div>
+
+  <div class="fixes">
+    <h2>Every fix, in full</h2>
+    <p class="sub">The complete reference. The questions above just jump you to the right card.</p>
+
+    <!-- ---------------- TRANSMIT ---------------- -->
+    <article class="fix" id="fix-no-region">
+      <h3>Region isn&rsquo;t set</h3>
+      <div class="sym">Symptom: nothing you send leaves the node, and nobody hears you</div>
+      <p>This is the single most common reason a brand-new node appears dead. A freshly flashed node
+        has <strong>no region configured, and the radio will not transmit at all</strong> until you
+        pick one. It isn&rsquo;t broken; it&rsquo;s refusing to emit on an unknown band.</p>
+      <ol>
+        <li>Open the Meshtastic app (or web client) and connect to the node.</li>
+        <li>Go to <strong>Radio Configuration &rarr; LoRa</strong> and set <strong>Region</strong>.
+          In the United States that is <code>US</code>.</li>
+        <li>Let the node reboot, then re-check that the region persisted.</li>
+      </ol>
+      <p>For reference, the <code>US</code> region is <strong>902.0&ndash;928.0 MHz</strong>, up to
+        <strong>30 dBm</strong>, with no duty-cycle restriction.</p>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://meshtastic.org/docs/getting-started/initial-config/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Initial Configuration →</a>
+        <a href="https://meshtastic.org/docs/configuration/radio/lora/" target="_blank" rel="noopener noreferrer">Meshtastic docs — LoRa Configuration (region table) →</a>
+      </div>
+    </article>
+
+    <article class="fix" id="fix-preset">
+      <h3>Modem preset doesn&rsquo;t match the mesh</h3>
+      <div class="sym">Symptom: the node transmits, but hears nobody and nobody hears it</div>
+      <p>The modem preset determines the actual radio parameters. Nodes on different presets are
+        effectively on different networks, even in the same room on the same frequency. If someone
+        changed the preset from the default, that node is isolated.</p>
+      <ol>
+        <li>Check <strong>Radio Configuration &rarr; LoRa &rarr; Modem Preset</strong>.</li>
+        <li>Match whatever your local mesh uses. <code>LONG_FAST</code> is the default and what most
+          public meshes run.</li>
+        <li>Confirm every node you expect to reach is on that same preset.</li>
+      </ol>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://meshtastic.org/docs/configuration/radio/lora/" target="_blank" rel="noopener noreferrer">Meshtastic docs — LoRa Configuration →</a>
+      </div>
+    </article>
+
+    <article class="fix" id="fix-channel">
+      <h3>Channel name or key doesn&rsquo;t match</h3>
+      <div class="sym">Symptom: you see nodes appear, but messages never arrive</div>
+      <p>Matching frequency gets your packets heard; matching <em>channel</em> gets them decoded. The
+        channel name and the pre-shared key must both match, exactly, on every node that should talk.</p>
+      <ol>
+        <li>Compare <strong>channel name</strong> across nodes &mdash; it is case-sensitive.</li>
+        <li>Compare the <strong>PSK</strong>. Sharing the channel QR code is the reliable way to copy it.</li>
+        <li>Confirm the channel is in the same <strong>slot</strong> and is enabled on both ends.</li>
+      </ol>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://meshtastic.org/docs/configuration/radio/channels/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Channel Configuration →</a>
+      </div>
+    </article>
+
+    <!-- ---------------- BLUETOOTH ---------------- -->
+    <article class="fix" id="fix-bluetooth">
+      <h3>Phone won&rsquo;t pair with the node</h3>
+      <div class="sym">Symptom: the node never shows up, or pairing fails repeatedly</div>
+      <p>Most pairing failures are procedural rather than hardware. The big one: <strong>scan from
+        inside the Meshtastic app</strong>, not from your phone&rsquo;s system Bluetooth list.</p>
+      <ol>
+        <li>Scan from within the Meshtastic app.</li>
+        <li>If your phone already has a stale entry, <strong>forget the device</strong> in system
+          Bluetooth settings, then pair again from the app.</li>
+        <li>On a node with no screen, try the default PIN <code>123456</code>.</li>
+        <li>If the PIN is rejected, connect over USB and open a serial terminal &mdash; the debug output
+          prints the actual PIN.</li>
+        <li>Check that the app has Bluetooth <em>and</em> location permissions; Android scanning fails
+          silently without them.</li>
+      </ol>
+      <div class="known"><div class="kh">Board-specific reports</div>
+        <p>Pairing trouble on Heltec V3 and LilyGO T3-S3 has been reported and tracked upstream, as has
+          Bluetooth becoming unresponsive after sending commands over the serial interface. Both
+          threads are <strong>closed</strong> &mdash; so if you hit them, update your firmware first.</p>
+      </div>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://meshtastic.org/docs/configuration/radio/bluetooth/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Bluetooth Settings →</a>
+        <a href="https://github.com/meshtastic/firmware/issues/10172" target="_blank" rel="noopener noreferrer">firmware#10172 — Heltec V3 / T3-S3 do not connect via bluetooth (closed) →</a>
+        <a href="https://github.com/meshtastic/firmware/issues/8747" target="_blank" rel="noopener noreferrer">firmware#8747 — BT non-functional after serial commands (closed) →</a>
+        <a href="https://github.com/meshtastic/firmware/issues/8081" target="_blank" rel="noopener noreferrer">firmware#8081 — Heltec V3 BLE PIN barely displayed (closed) →</a>
+      </div>
+    </article>
+
+    <!-- ---------------- GPS ---------------- -->
+    <article class="fix" id="fix-gps">
+      <h3>No GPS fix</h3>
+      <div class="sym">Symptom: no position, or position never updates</div>
+      <p>A first fix from cold can take several minutes, and GPS essentially does not work indoors.
+        Rule out the ordinary causes before suspecting the module.</p>
+      <ol>
+        <li>Put the node <strong>outdoors with a clear view of the sky</strong> and leave it there for
+          several minutes &mdash; a cold start is slow.</li>
+        <li>Check the <strong>GPS antenna is connected and seated</strong>.</li>
+        <li>Confirm power is stable; a browning-out node will never hold a fix.</li>
+        <li>If GPS broke right after a firmware update, verify the <strong>correct GPS module is
+          selected</strong> in device configuration.</li>
+      </ol>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://meshtastic.org/docs/configuration/radio/position/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Position Configuration →</a>
+        <a href="https://meshtastic.org/docs/configuration/tips/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Configuration Tips →</a>
+      </div>
+    </article>
+
+    <!-- ---------------- FLASHING ---------------- -->
+    <article class="fix" id="fix-flash">
+      <h3>Can&rsquo;t flash, or the computer doesn&rsquo;t see the device</h3>
+      <div class="sym">Symptom: no serial port appears, or flashing fails partway</div>
+      <ol>
+        <li><strong>Suspect the cable first.</strong> Many USB-C cables are charge-only and carry no
+          data. Swap in a known-good data cable before anything else.</li>
+        <li>Install the USB-serial driver your board needs &mdash; commonly CP210x or CH34x.</li>
+        <li>Use a supported browser for the web flasher (Chrome or Edge; Web Serial is required).</li>
+        <li>Try a different USB port, ideally directly on the machine rather than through a hub.</li>
+        <li>Some ESP32 boards need to be put into bootloader mode: hold <strong>BOOT</strong>, tap
+          <strong>RESET</strong>, release BOOT.</li>
+      </ol>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://meshtastic.org/docs/getting-started/flashing-firmware/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Flashing Firmware →</a>
+        <a href="https://meshtastic.org/docs/getting-started/serial-drivers/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Serial Drivers →</a>
+      </div>
+    </article>
+
+    <!-- ---------------- RANGE ---------------- -->
+    <article class="fix" id="fix-range">
+      <h3>It works, but range is poor</h3>
+      <div class="sym">Symptom: links drop far sooner than expected</div>
+      <p>Before touching any radio setting: range is usually a <em>geometry</em> problem, not a power
+        problem. The radio horizon grows with the square root of antenna height, and a link also needs
+        clearance <em>around</em> the sightline, not just along it.</p>
+      <ol>
+        <li><strong>Raise the antenna.</strong> Going from 1.5&nbsp;m to 5&nbsp;m takes the horizon from
+          roughly 5&nbsp;km to 9&nbsp;km, with no change to the radio.</li>
+        <li>Keep the antenna <strong>vertical</strong> and the feedline short; a poor connector undoes a
+          good location.</li>
+        <li><strong>Never transmit without an antenna attached</strong> &mdash; you can damage the radio.</li>
+        <li>Check the antenna is right for the band you are on (US: 902&ndash;928 MHz).</li>
+        <li>Only then consider a slower preset, which trades data rate for sensitivity.</li>
+      </ol>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="/notes/height-beats-wattage.html">Our note — why height beats wattage (with the maths) →</a>
+        <a href="https://meshtastic.org/docs/configuration/radio/lora/" target="_blank" rel="noopener noreferrer">Meshtastic docs — LoRa Configuration →</a>
+      </div>
+    </article>
+
+    <!-- ---------------- POWER ---------------- -->
+    <article class="fix" id="fix-power">
+      <h3>Battery drains too fast</h3>
+      <div class="sym">Symptom: a node that should last days lasts hours</div>
+      <ol>
+        <li><strong>The screen is usually the biggest draw.</strong> Set a short display timeout, or
+          turn the screen off entirely on a deployed node.</li>
+        <li><strong>GPS is the next biggest.</strong> Increase the position broadcast interval, or
+          disable GPS on a node that never moves and give it a fixed position instead.</li>
+        <li>Check the <strong>device role</strong>. A router-type role stays awake to forward traffic
+          and will not sleep like a client.</li>
+        <li>Enable power saving in the power configuration for battery-only nodes.</li>
+        <li>Turn off WiFi and Bluetooth if the node does not need them.</li>
+      </ol>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://meshtastic.org/docs/configuration/radio/power/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Power Configuration →</a>
+        <a href="https://meshtastic.org/docs/configuration/radio/device/" target="_blank" rel="noopener noreferrer">Meshtastic docs — Device Configuration (roles) →</a>
+      </div>
+    </article>
+
+    <!-- ---------------- MQTT ---------------- -->
+    <article class="fix" id="fix-mqtt">
+      <h3>Not showing up on the public map / MQTT</h3>
+      <div class="sym">Symptom: the node works locally but never appears online</div>
+      <p>Appearing on a public map is deliberately opt-in, and it needs more than one switch. Your node
+        also has to reach a gateway that actually has internet.</p>
+      <ol>
+        <li>Enable <strong>uplink</strong> on the channel you want shared.</li>
+        <li>Turn on <strong>&ldquo;OK to MQTT&rdquo;</strong> in LoRa configuration.</li>
+        <li>You must be using the <strong>default primary channel</strong> for the public map to accept
+          the data.</li>
+        <li>Confirm a gateway node with an internet connection is actually in range &mdash; your node
+          does not upload directly unless it is itself the gateway.</li>
+      </ol>
+      <div class="known"><div class="kh">Worth knowing</div>
+        <p>&ldquo;OK to MQTT&rdquo; is a flag that other operators&rsquo; nodes choose to respect. Treat
+          anything you send over a public channel as public.</p>
+      </div>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://meshtastic.org/docs/configuration/module/mqtt/" target="_blank" rel="noopener noreferrer">Meshtastic docs — MQTT Module →</a>
+        <a href="https://github.com/brianshea2/meshmap.net" target="_blank" rel="noopener noreferrer">meshmap.net — requirements to appear on the map →</a>
+      </div>
+    </article>
+
+    <!-- ---------------- STILL STUCK ---------------- -->
+    <article class="fix" id="fix-stuck">
+      <h3>Still stuck</h3>
+      <div class="sym">When it isn&rsquo;t any of the above</div>
+      <ol>
+        <li>Check the <strong>open issue tracker</strong> for your specific board &mdash; several
+          current bugs are hardware-specific.</li>
+        <li>Ask the regional group. <a href="https://mspmesh.org" target="_blank" rel="noopener noreferrer">MSP Mesh</a>
+          covers the Twin Cities, Greater Minnesota and western Wisconsin, and runs a weekly virtual
+          Node Night.</li>
+        <li>If you think you have found a genuine bug, file it upstream with your board, firmware
+          version and steps to reproduce.</li>
+      </ol>
+      <div class="src"><div class="sl">Sources</div>
+        <a href="https://github.com/meshtastic/firmware/issues" target="_blank" rel="noopener noreferrer">meshtastic/firmware — open issues →</a>
+        <a href="https://meshtastic.org/docs/" target="_blank" rel="noopener noreferrer">Meshtastic documentation →</a>
+      </div>
+    </article>
+  </div>
+</main>
+
+<script>
+/* The wizard is a navigation layer only: every answer resolves to a fix card
+   that already exists in the DOM above. Without JS the page is still complete. */
+(function(){
+  var STEPS = {
+    start: {
+      q: "What's happening?",
+      h: "Pick the closest match. You can go back at any point.",
+      options: [
+        { label: "Nothing I send gets through — nobody hears me", next: "tx" },
+        { label: "My phone won't connect to the node",            fix: "fix-bluetooth" },
+        { label: "No GPS fix / no position",                      fix: "fix-gps" },
+        { label: "I can't flash it, or my computer doesn't see it", fix: "fix-flash" },
+        { label: "It works, but the range is poor",               fix: "fix-range" },
+        { label: "The battery dies far too fast",                 fix: "fix-power" },
+        { label: "It won't show up on the public map",            fix: "fix-mqtt" }
+      ]
+    },
+    tx: {
+      q: "Is this a node you just set up?",
+      h: "A brand-new node behaves differently from one that used to work.",
+      options: [
+        { label: "Yes — it's new, and has never worked",     fix: "fix-no-region" },
+        { label: "It was working, and stopped",              next: "tx-was" },
+        { label: "Other nodes appear, but messages never arrive", fix: "fix-channel" }
+      ]
+    },
+    "tx-was": {
+      q: "Did anything change before it stopped?",
+      h: "Most sudden failures follow a settings or firmware change.",
+      options: [
+        { label: "Someone changed the radio settings",  fix: "fix-preset" },
+        { label: "I updated the firmware",              fix: "fix-stuck" },
+        { label: "Nothing changed that I know of",      fix: "fix-preset" }
+      ]
+    }
+  };
+
+  var wiz=document.getElementById('wiz'), qEl=document.getElementById('step-q'),
+      hEl=document.getElementById('step-h'), optsEl=document.getElementById('opts'),
+      nEl=document.getElementById('step-n'), backB=document.getElementById('back'),
+      resetB=document.getElementById('restart'), trailEl=document.getElementById('trail');
+  var stack=[], verdict=null;
+
+  wiz.hidden=false;   /* only show the wizard when JS is actually running */
+
+  function clearVerdict(){ if(verdict){verdict.remove();verdict=null;} }
+
+  function showFix(id, label){
+    var card=document.getElementById(id); if(!card) return;
+    clearVerdict();
+    verdict=document.createElement('div');
+    verdict.className='verdict';
+    var t=card.querySelector('h3') ? card.querySelector('h3').textContent : 'Likely cause';
+    verdict.innerHTML='<div class="vl">Most likely cause</div><p><strong>'+t+
+      '</strong> — <a href="#'+id+'">jump to the full fix ↓</a></p>';
+    wiz.insertAdjacentElement('afterend', verdict);
+    location.hash=id;
+    card.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function render(id){
+    var s=STEPS[id]; if(!s) return;
+    clearVerdict();
+    nEl.textContent='Step '+(stack.length+1);
+    qEl.textContent=s.q;
+    hEl.textContent=s.h||'';
+    hEl.hidden=!s.h;
+    optsEl.innerHTML='';
+    s.options.forEach(function(o){
+      var b=document.createElement('button');
+      b.type='button'; b.className='opt'; b.textContent=o.label;
+      b.addEventListener('click',function(){
+        if(o.fix){ showFix(o.fix, o.label); }
+        else { stack.push(id); render(o.next); }
+      });
+      optsEl.appendChild(b);
+    });
+    backB.hidden = stack.length===0;
+    resetB.hidden = stack.length===0;
+    trailEl.textContent = stack.length ? stack.length+' answered' : '';
+  }
+
+  backB.addEventListener('click',function(){ var p=stack.pop(); render(p||'start'); });
+  resetB.addEventListener('click',function(){ stack=[]; render('start'); });
+  render('start');
+})();
+</script>
+</body>
+</html>

@@ -36,18 +36,22 @@ tools/build-map.js          regenerates the Minnesota map geometry
 
 | Field | Set to |
 |---|---|
-| `email` | `contact@midwestmeshlab.net` (forward to your Proton inbox — see §6) |
 | `instagram` / `instagramHandle` | already `@midwest_meshlab` |
 | `youtube` / `youtubeLive` | your channel + live URLs |
-| `buyMeACoffee` | your Buy Me a Coffee URL |
-| `newsletterAction` | your email provider's subscribe endpoint (see §5) |
+| `buyMeACoffee` | your Buy Me a Coffee URL (not set up yet — deliberately left alone) |
 | `previewMode` | `true` while building out; `false` at launch (hides all *In progress* tags) |
-| `mspMeshDiscord` | MSP Mesh's real **never-expiring** Discord invite (until then it points at mspmesh.org) |
 | `githubDiscussions` | already points at this repo's Discussions — enable them in repo Settings |
 | `giscus` | repo IDs from giscus.app once you enable Discussions (see §7) |
 
-Then swap the three `data-video-id="SET_VIDEO_ID"` placeholders in the Broadcast section for real
-YouTube IDs. Until you do, the play button just opens your channel.
+**Video slots.** A YouTube *channel homepage cannot be embedded* — the player only accepts a video or
+a playlist ID, and channel pages refuse framing. So "feature this channel" is implemented as that
+channel's uploads playlist. Each slot takes either:
+
+- `data-playlist-id="UU…"` — a channel's uploads playlist (auto-updates, no maintenance), or
+- `data-video-id="…"` — one specific video.
+
+Currently: Constellation Response's *Getting Started with Meshtastic* playlist, S2 Underground's
+uploads, and an Atlavox video on private channels. Nothing is requested from YouTube until a click.
 
 ---
 
@@ -98,7 +102,7 @@ tag on every unfinished item and a small legend in the bottom-left corner (with 
 
 - any `MANUALS` / `BUILDS_REF` / `POSTS` entry flagged **`wip: true`** (use this for cards whose page you
   haven't written yet — the three that ship with real pages are already un-flagged),
-- the three Broadcast videos while their `data-video-id` is still `SET_VIDEO_ID`,
+- any Broadcast slot still set to `SET_PLAYLIST_ID` / `SET_VIDEO_ID`,
 - the discussion board until `CONFIG.giscus` is filled in, and the Discord card until `mspMeshDiscord`
   points at a real invite (not `mspmesh.org`).
 
@@ -152,35 +156,46 @@ with invented nodes — that was the whole problem with the original build.
 
 ---
 
-## 5) Subscribe / reminders (no backend needed)
+## 5) Forms and contact (Netlify Forms)
 
-- **Email:** the form POSTs to your provider. Default placeholder is **Buttondown**. Create an account,
-  then set `newsletterAction` to `https://buttondown.email/api/emails/embed-subscribe/USERNAME`. Switching
-  providers? Update that URL **and** the `form-action` value in `netlify.toml`.
-  (On Netlify you can also skip the third party entirely and use **Netlify Forms** — add `netlify` to the
-  `<form>` tag, then drop `buttondown.email` from `form-action`.)
-- **Calendar (zero PII):** the "Subscribe to ops calendar" button hands people a `webcal://…/events.ics`
-  link. Their device syncs it and fires the reminders (the `.ics` already has 1-day + 1-hour alarms). Keep
-  `events.ics` in sync with the `EVENTS` array. **Both ship empty** — add real events to each.
-- **Real SMS:** not possible from a static page alone. If you ever need it: a Netlify scheduled function
-  plus Twilio, with opt-ins in Supabase. That's real backend work — the calendar route covers most people
-  for free.
+**There is no mail server, and no published email address.** A live DNS check showed
+`midwestmeshlab.net` has **no MX records** — mail to `contact@midwestmeshlab.net` bounced. Rather than
+publish an address that doesn't work, both forms now post to **Netlify Forms**.
+
+- Both `#contactForm` and `#subscribeForm` carry `data-netlify="true"`, a hidden `form-name` input
+  matching the form's `name`, and a `bot-field` honeypot. Submissions land in the Netlify dashboard
+  under **Forms**; both redirect to `/thanks.html`.
+- The free tier allows **100 submissions/month**.
+- `.well-known/security.txt` now uses an https `Contact:` URL (RFC 9116 permits this) pointing at the
+  contact form, so the security contact actually reaches you.
+
+> **Do not set `skip_processing = true` in `netlify.toml`.** Netlify detects forms during
+> postprocessing; skipping it means the forms silently never register. The file instead leaves
+> processing on and disables each individual transform, which keeps the markup untouched.
+
+**Calendar (zero PII):** the "Subscribe to ops calendar" button hands people a `webcal://…/events.ics`
+link; their device syncs it and fires reminders. Keep `events.ics` in sync with `EVENTS` — **both ship
+empty**, and the buttons disable themselves while there are no events.
+
+**If you later want real email**, add MX records at your DNS host and point `security.txt` back at a
+mailbox. Until those records exist, do not publish an address anywhere.
 
 ---
 
-## 6) Free, secure contact email
+## 6) Troubleshooting tool
 
-The address is published in `/.well-known/security.txt`, so it needs to actually receive mail.
-Netlify doesn't do email, so forwarding comes from wherever your DNS lives:
+`troubleshoot.html` is a guided diagnostic. Its architecture matters if you edit it:
 
-- **DNS on Cloudflare** (common even with Netlify hosting): Cloudflare dashboard → **Email** →
-  **Email Routing** → enable (adds MX/SPF for you), then route `contact@midwestmeshlab.net` to your
-  real inbox and verify it.
-- **DNS on Netlify**: Netlify DNS doesn't forward mail. Use a forwarding provider (ImprovMX, Purelymail,
-  Fastmail) and add the MX records it gives you under **Domains → DNS records**.
+- **Every fix is real HTML in the page**, in a `<article class="fix" id="fix-…">`. The wizard at the
+  top is only a *navigation layer* that reveals the matching card.
+- So the page works fully **without JavaScript**, and every fix is deep-linkable
+  (`/troubleshoot.html#fix-no-region`).
+- The question tree lives in the `STEPS` object in the page's script. Each option either points to
+  another step (`next`) or resolves to a card (`fix`).
 
-Either way, add a DMARC record once mail flows:
-`v=DMARC1; p=reject; rua=mailto:contact@midwestmeshlab.net`
+**House rule: no fix ships without a source link.** Each card ends in a Sources block pointing at the
+Meshtastic docs or a real tracker issue. If you cannot source a cause, it does not go on the page.
+Update the "Sources checked" date when you revise it.
 
 ## 7) Community discussion (GitHub Discussions via giscus)
 

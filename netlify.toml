@@ -15,8 +15,22 @@
   # deploy time and ships nothing to the browser.
   command = ""
 
+# Netlify detects forms during postprocessing, so processing cannot be skipped
+# wholesale or the contact/subscribe forms never register. Instead processing is
+# left on and every transform that would rewrite our hand-authored markup is
+# turned off individually.
 [build.processing]
-  skip_processing = true      # don't let Netlify rewrite our HTML/CSS/JS
+  skip_processing = false
+[build.processing.css]
+  bundle = false
+  minify = false
+[build.processing.js]
+  bundle = false
+  minify = false
+[build.processing.html]
+  pretty_urls = false
+[build.processing.images]
+  compress = false
 
 # ------------------------------------------------------------
 # Security headers
@@ -32,17 +46,17 @@
 #   api.open-meteo.com                        weather ticker (keyless, no cookies)
 #   www.youtube-nocookie.com                  click-to-load video embeds
 #   giscus.app                                community discussion (on click only)
-#   buttondown.email                          newsletter form POST
+#
+# Both forms use Netlify Forms, which POSTs same-origin, so form-action is
+# just 'self' — no third-party form endpoint is allowlisted.
 #
 # If you wire up Supabase, add your project origin to connect-src:
 #   connect-src 'self' https://api.open-meteo.com https://YOUR-PROJECT.supabase.co
-# If you switch the newsletter to Netlify Forms, drop buttondown.email from
-# form-action and leave just 'self'.
 # ------------------------------------------------------------
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://buttondown.email; img-src 'self' data:; script-src 'self' 'unsafe-inline' https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.open-meteo.com; frame-src https://www.youtube-nocookie.com https://giscus.app; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline' https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.open-meteo.com; frame-src https://www.youtube-nocookie.com https://giscus.app; upgrade-insecure-requests"
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"
