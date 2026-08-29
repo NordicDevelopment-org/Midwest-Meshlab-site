@@ -381,6 +381,21 @@ code{font-family:var(--mono);color:var(--green-hi);font-size:.9em}
 .disc-placeholder{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.7}
 .disc-placeholder b{color:var(--green-hi)}
 
+/* --- empty states: shown wherever real data does not exist yet --- */
+.is-empty{display:block!important}
+.empty-state{grid-column:1/-1;margin:0;padding:20px 22px;border:1px dashed var(--line-2);
+  border-radius:var(--r);background:rgba(143,209,80,.03);color:var(--muted);
+  font-size:14px;line-height:1.65;text-align:left}
+.empty-state b{color:var(--ink)}
+.empty-state a{color:var(--green-hi);text-decoration:underline;text-underline-offset:2px}
+.empty-state code{font-family:var(--mono);font-size:12.5px;color:var(--amber)}
+.sig-src{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11px;
+  color:var(--green-hi);letter-spacing:.03em}
+.sig-src:hover{color:var(--amber)}
+.meta-tbd{font-family:var(--mono);font-size:11.5px;color:var(--faint);font-style:normal}
+.lede-wip{color:var(--amber);font-family:var(--mono);font-size:.88em;letter-spacing:.03em}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.42;pointer-events:none;filter:grayscale(.55)}
+
 /* --- preview build: in-progress markers (gated by CONFIG.previewMode) --- */
 .row,.card,.post,.disc-link{position:relative}
 .wip{display:inline-block;vertical-align:middle;margin-left:8px;font-family:var(--mono);font-size:9px;
@@ -489,19 +504,19 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       <span>AO <b>US-MIDWEST</b></span><span>LICENSE <b>OPEN / FREE</b></span>
     </div>
     <h1>When the towers go quiet, the <span class="hot">mesh</span> keeps talking.</h1>
-    <p class="lede">A field lab for off-grid networks — manuals you can actually follow, build lists with real
-      parts and prices, a live Minnesota node map, field notes, streams, and a wall of community builds.
-      Everything here is free to copy, fork, and improve.</p>
+    <p class="lede">A field lab for off-grid networks — manuals you can actually follow, build lists with
+      real parts and prices, and field notes from the bench. Everything here is free to copy, fork, and
+      improve. This site is early: what is written is written, and what isn&rsquo;t is marked
+      <span class="lede-wip">in&nbsp;progress</span> rather than faked.</p>
     <p class="ig-line">Field media on Instagram → <a id="lnk-ig" href="#" target="_blank" rel="noopener noreferrer me"><span class="js-handle">@midwest_meshlab</span></a></p>
     <div class="hero-cta">
       <a class="btn btn-primary" href="#manuals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h11l5 5v11H4z"/><path d="M14 4v5h5M8 13h7M8 17h5"/></svg>Start here</a>
       <a class="btn btn-ghost" href="#map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg>See the map</a>
     </div>
-    <div class="hero-chips">
-      <span class="chip glass"><span class="pin"></span> <b id="chip-nodes">128</b>&nbsp;nodes mapped</span>
-      <span class="chip glass"><span class="pin"></span> <b id="chip-builds">36</b>&nbsp;community builds</span>
-      <span class="chip glass"><span class="pin"></span> <b id="chip-docs">22</b>&nbsp;open manuals</span>
-    </div>
+    <!-- Chips are filled from real data at runtime (see "honest hero chips" in
+         the script). Counts come from what is actually published; the constants
+         are verified facts. Nothing here is hand-typed marketing. -->
+    <div class="hero-chips" id="hero-chips"></div>
     <div class="scrollcue"><span class="ln"></span> SCROLL TO RECON</div>
   </div>
 </section>
@@ -692,8 +707,9 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
     <div class="section-head reveal">
       <span class="kicker"><span class="n">09</span> COMMUNITY</span>
       <h2>Talk shop, swap nodes, get help <span class="desig">NET</span></h2>
-      <p>Builds from operators across the network — filter, then add yours. Threaded discussion runs on
-        GitHub Discussions (no tracking, you moderate from GitHub).</p>
+      <p>A wall for real builds from real operators — filter, then add yours. It starts empty rather than
+        seeded with examples. Threaded discussion runs on GitHub Discussions (no tracking, moderated from
+        GitHub).</p>
     </div>
 
     <div class="toolbar" id="filters" role="group" aria-label="Filter builds">
@@ -870,11 +886,12 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
       by Meshtastic LLC, Raspberry Pi Ltd, MSP Mesh, Instagram, YouTube, Discord, or any other third party.
       "Meshtastic" is a registered trademark of Meshtastic LLC; "Raspberry Pi" is a trademark of Raspberry Pi Ltd —
       both used here nominatively to refer to those projects. All other names and marks belong to their owners.
-      Map geometry is a stylized, original rendering from public-domain boundary data and does not depict live
-      telemetry. Weather by Open-Meteo (CC BY 4.0).
+      The Minnesota map is rendered from public-domain boundary data through an Albers Equal Area Conic
+      projection; city markers are real coordinates. It is a geographic reference and does not depict live
+      telemetry or node locations. Weather by Open-Meteo (CC BY 4.0).
     </p>
     <div class="signoff">
-      <span>node <span class="node">0xMWML</span> · 915 MHz · US-Midwest</span>
+      <span>node <span class="node">0xMWML</span> · 902–928 MHz · US-Midwest</span>
       <span>© <span id="year"></span> Midwest Mesh Lab — open &amp; free.</span>
     </div>
   </div>
@@ -914,8 +931,8 @@ const CONFIG = {
    ===================================================================== */
 const STACK = [
   { t:"Manuals", d:"Box to first packet", href:"#manuals", ic:'<path d="M4 4h11l5 5v11H4z"/><path d="M14 4v5h5M8 13h7M8 17h5"/>' },
-  { t:"Build list", d:"Real BOMs & costs", href:"#builds", ic:'<path d="M3 7h18M3 12h18M3 17h12"/>' },
-  { t:"MN map", d:"The network live", href:"#map", ic:'<path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/>' },
+  { t:"Build list", d:"BOMs & real costs", href:"#builds", ic:'<path d="M3 7h18M3 12h18M3 17h12"/>' },
+  { t:"MN map", d:"Accurate state reference", href:"#map", ic:'<path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/>' },
   { t:"Field notes", d:"Bench & field log", href:"#notes", ic:'<path d="M4 4h13v16H4z"/><path d="M8 9h7M8 13h7M8 17h4"/>' },
   { t:"Toolkit", d:"Gear worth owning", href:"#toolkit", ic:'<path d="m14 7 3 3M5 19l9-9 1-4 4-1-1 4-9 9-4 1z"/>' },
   { t:"Community", d:"Talk shop & get help", href:"#community", ic:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>' }
@@ -930,11 +947,14 @@ const MANUALS = [
   { hx:"0x6F", title:"Weatherproof node case (STLs)", desc:"Printable enclosure with gasket channel and antenna gland.", url:"/manuals/weatherproof-case.html", tags:["3D Print","Enclosure"], wip:true }
 ];
 
+/* Builds. parts/cost/time are only filled in for a build whose page exists and
+   carries a real bill of materials \u2014 a planned build shows no numbers, because
+   there is nothing yet to base them on. */
 const BUILDS_REF = [
-  { ct:"Relay", title:"Solar Relay v2", desc:"Always-on repeater for the edge. Survives a cloudy week on a 6W panel.", url:"/builds/solar-relay-v2.html", parts:14, cost:"$68", time:"2h" },
-  { ct:"Gateway", title:"Pi MQTT Gateway", desc:"Raspberry Pi 4 + RAK module bridging your local mesh to the internet.", url:"/builds/pi-mqtt-gateway.html", parts:9, cost:"$120", time:"1h", wip:true },
-  { ct:"Handheld", title:"Pocket Node", desc:"T-Echo loadout for trails and travel. E-ink, GPS, printed clip.", url:"/builds/pocket-node.html", parts:6, cost:"$95", time:"30m", wip:true },
-  { ct:"Go-box", title:"Storm Go-Box", desc:"Pelican-case node with solar and a spare battery for storm season.", url:"/builds/storm-go-box.html", parts:17, cost:"$140", time:"3h", wip:true }
+  { ct:"Relay", title:"Solar Relay v2", desc:"Always-on repeater for the edge, sized to keep running through a cloudy week on a small panel.", url:"/builds/solar-relay-v2.html", parts:14, cost:"$68", time:"2h" },
+  { ct:"Gateway", title:"Pi MQTT Gateway", desc:"Raspberry Pi + LoRa module bridging a local mesh to the wider network over MQTT.", url:"/builds/pi-mqtt-gateway.html", wip:true },
+  { ct:"Handheld", title:"Pocket Node", desc:"A pocketable node for trails and travel \u2014 e-ink, GPS, printed clip.", url:"/builds/pocket-node.html", wip:true },
+  { ct:"Go-box", title:"Storm Go-Box", desc:"A hard-case node with solar and a spare battery, for storm season.", url:"/builds/storm-go-box.html", wip:true }
 ];
 
 const TOOLS = [
@@ -948,50 +968,51 @@ const TOOLS = [
 
 const POSTS = [
   { date:"2026-06-12", title:"Why height beats wattage every time", excerpt:"A 5-meter mast did more for our range than doubling TX power ever could. The math and the field data.", url:"/notes/height-beats-wattage.html" },
-  { date:"2026-05-28", title:"Cloudy-week power budgets that actually hold", excerpt:"How we size panels and batteries so relays don't drop out after three gray days in a row.", url:"/notes/cloudy-week-power.html", wip:true },
-  { date:"2026-05-09", title:"Field notes: 14 km across open prairie", excerpt:"Two nodes, two tripods, one very flat horizon. What we learned about Fresnel zones the hard way.", url:"/notes/prairie-range-test.html", wip:true }
+  { title:"Cloudy-week power budgets", excerpt:"Sizing panels and batteries so a relay keeps running through a run of gray days.", url:"/notes/cloudy-week-power.html", wip:true },
+  { title:"Range testing across open ground", excerpt:"Method for running a line-of-sight hop trial, and what the Fresnel zone actually costs you.", url:"/notes/prairie-range-test.html", wip:true }
 ];
 
+/* Signal — verified, sourced reference facts. Every entry must be checkable
+   against the `src` link. If you cannot source it, it does not go here. */
 const SIGNAL = [
-  { tag:"Firmware", title:"New Meshtastic® release", desc:"Worth reading the changelog before you flash your gateways." },
-  { tag:"Hardware", title:"Cheaper LoRa boards landing", desc:"More sub-$25 options showing up for relay duty." },
-  { tag:"Protocol", title:"MeshCore vs Meshtastic®", desc:"The off-grid space now has two serious LoRa stacks worth knowing." },
-  { tag:"Power", title:"LiFePO4 prices keep dropping", desc:"Makes always-on solar relays easier to justify than ever." }
+  { tag:"Regulatory", title:"US LoRa runs 902\u2013928 MHz", desc:"Meshtastic's US region is 902.0\u2013928.0 MHz \u2014 the 915 MHz ISM band \u2014 at up to 30 dBm with no duty-cycle limit.",
+    src:"https://meshtastic.org/docs/configuration/radio/lora/" },
+  { tag:"Licensing", title:"No amateur licence needed", desc:"Standard Meshtastic operation is unlicensed Part 15 use of the ISM band. A ham licence is not required to run a node.",
+    src:"https://meshtastic.org/docs/overview/radio-settings/" },
+  { tag:"Privacy", title:"You choose whether you're mapped", desc:"Public maps only see you if you use the default channel and switch on \u201cOK to MQTT\u201d. It is opt-in, and it is a flag others choose to respect.",
+    src:"https://github.com/brianshea2/meshmap.net" },
+  { tag:"Local", title:"MSP Mesh covers this region", desc:"An established group for the Twin Cities, Greater Minnesota and western Wisconsin, with a weekly virtual Node Night and regular metro meetups.",
+    src:"https://mspmesh.org/" }
 ];
 
+/* Ticker — short, checkable statements only. No hype, no invented metrics. */
 const TICKER = [
-  "915 MHz is the US ISM band for LoRa",
-  "Height > power for range",
-  "Default channel + 'OK to MQTT' puts you on the public map",
-  "No license required to run a node",
-  "Solar + LiFePO4 = set-and-forget relays",
-  "Twin Cities mesh is growing fast"
+  "US LoRa region: 902\u2013928 MHz, up to 30 dBm",
+  "No licence required for standard Meshtastic use",
+  "Antenna height usually beats transmit power for range",
+  "Public mapping is opt-in: default channel + \u201cOK to MQTT\u201d",
+  "LoRa trades data rate for range and battery life",
+  "A clear Fresnel zone matters more than a louder radio"
 ];
 
-const IG_POSTS = [
-  { img:null, cap:"Solar relay deploy" }, { img:null, cap:"14 km range test" },
-  { img:null, cap:"Pi gateway build" },  { img:null, cap:"Storm go-box" },
-  { img:null, cap:"Antenna day" },       { img:null, cap:"Node case prints" },
-  { img:null, cap:"Field SITREP" },      { img:null, cap:"On the mesh" }
-];
+/* Instagram tiles. EMPTY until real posts with real images exist.
+   { img:"/media/ig/your-photo.jpg", cap:"What it shows", url:"https://instagram.com/p/..." } */
+const IG_POSTS = [];
 
-const BUILDS = [
-  { id:"0x7A3F", title:"Prairie Relay", type:"relay", hw:"Heltec V3 · 18650 · 6W solar", loc:"Cedar Rapids, IA", by:"@kd0grain", img:null },
-  { id:"0x1C09", title:"Basement Gateway", type:"gateway", hw:"Raspberry Pi 4 · RAK WisBlock", loc:"Madison, WI", by:"@mesh_marv", img:null },
-  { id:"0xB17E", title:"Trail Pocket Node", type:"handheld", hw:"LilyGO T-Echo · printed mount", loc:"Ozarks, MO", by:"@switchback", img:null },
-  { id:"0x4D2A", title:"Rooftop Beacon", type:"relay", hw:"RAK19007 · 5.8 dBi antenna", loc:"Minneapolis, MN", by:"@triple_decker", img:null },
-  { id:"0x9F11", title:"Pi Weather Mesh", type:"sensor", hw:"Pi Zero 2 W · BME280", loc:"Lincoln, NE", by:"@plainswx", img:null },
-  { id:"0x33C4", title:"Storm Go-Box", type:"gateway", hw:"T-Beam · solar · Pelican case", loc:"Tornado Alley", by:"@stormchase", img:null },
-  { id:"0x58D7", title:"Lake House Relay", type:"relay", hw:"RAK4631 · LiFePO4 · 10W panel", loc:"Lake of the Woods", by:"@dockside", img:null },
-  { id:"0xE2A1", title:"Soil Sensor Node", type:"sensor", hw:"Heltec V3 · capacitive probe", loc:"Iowa City, IA", by:"@rowcrop", img:null }
-];
+/* Community build wall. EMPTY ON PURPOSE — these must be real builds
+   submitted by real operators. Never seed this with invented nodes.
+   { id:"!a1b2c3d4", title:"Name", type:"relay", hw:"board \u00b7 power \u00b7 antenna",
+     loc:"City, ST", by:"@handle", img:null } */
+const BUILDS = [];
 
-const EVENTS = [
-  { title:"Twin Cities Mesh Meetup", start:"2026-07-09T18:30:00", end:"2026-07-09T20:30:00", loc:"Minneapolis, MN", desc:"Build night + network planning. New operators welcome." },
-  { title:"Solar Node Workshop", start:"2026-07-19T13:00:00", end:"2026-07-19T16:00:00", loc:"Midwest Mesh Lab", desc:"Hands-on: power budget, panel sizing, weatherproofing." },
-  { title:"Range Test — Open Fields", start:"2026-08-02T10:00:00", end:"2026-08-02T14:00:00", loc:"Greater MN", desc:"Line-of-sight hop trials. Bring a node and a tripod." },
-  { title:"Live Build Stream", start:"2026-08-14T19:00:00", end:"2026-08-14T20:30:00", loc:"YouTube / @midwest_meshlab", desc:"Pi MQTT gateway, start to finish, live Q&A." }
-];
+/* Events. EMPTY ON PURPOSE — the four events previously listed here were
+   invented. Add only real, scheduled events, and keep events.ics in sync
+   (the .ics is what people's calendars subscribe to).
+   { title:"...", start:"2026-09-10T18:30:00", end:"2026-09-10T20:30:00",
+     loc:"Venue, City, ST", desc:"One line." }
+   For MSP Mesh's own Node Night / meetups, link to mspmesh.org rather than
+   re-publishing their schedule here. */
+const EVENTS = [];
 
 /* =====================================================================
    Minnesota map — REAL geography, not decoration.
@@ -1078,9 +1099,29 @@ setHref('#subscribe-cal','webcal://'+C.site+'/events.ics');
 })();
 
 /* count-up chips */
-(function(){const set=(id,n)=>{const e=$(id);if(!e)return;if(reduce){e.textContent=n;return;}
-  let v=0;const step=Math.max(1,Math.round(n/40));const t=setInterval(()=>{v+=step;if(v>=n){v=n;clearInterval(t);}e.textContent=v;},22);};
-  set('#chip-nodes',128); set('#chip-builds',36); set('#chip-docs',22);
+/* honest hero chips — derived from real data, never hand-typed.
+   A count only appears once it is real; until then the chip states a
+   verified fact instead of a number the site cannot back up. */
+(function(){
+  const box=$('#hero-chips'); if(!box) return;
+  const live=a=>a.filter(x=>!x.wip).length;          // only pages that actually exist
+  const guides=live(MANUALS)+live(BUILDS_REF)+live(POSTS);
+  const chips=[];
+  if(guides)          chips.push({n:guides, t:'guides published'});
+  if(BUILDS.length)   chips.push({n:BUILDS.length, t:'community builds'});
+  if(MN_NODES.length) chips.push({n:MN_NODES.length, t:'nodes on the map'});
+  chips.push({t:'902–928 MHz · no licence needed'});
+  chips.push({t:'open source · free to fork'});
+  box.innerHTML=chips.slice(0,3).map(c=>
+    '<span class="chip glass"><span class="pin"></span> '+
+    (c.n!=null?'<b data-n="'+c.n+'">0</b>&nbsp;':'')+esc(c.t)+'</span>').join('');
+  /* count up only the derived numbers */
+  $$('#hero-chips b[data-n]').forEach(e=>{
+    const n=+e.dataset.n;
+    if(reduce){e.textContent=n;return;}
+    let v=0;const step=Math.max(1,Math.round(n/40));
+    const t=setInterval(()=>{v+=step;if(v>=n){v=n;clearInterval(t);}e.textContent=v;},22);
+  });
 })();
 
 /* renderers */
@@ -1094,31 +1135,53 @@ const stackIc=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 
 (function(){const g=$('#builds-cards');if(g)g.innerHTML=BUILDS_REF.map(b=>`
   <a class="card glass" href="${esc(b.url)}">${wipAbs(b.wip)}<span class="ct">${esc(b.ct)}</span><h3>${esc(b.title)}</h3><p>${esc(b.desc)}</p>
-    <div class="meta"><span><b>${b.parts}</b> parts</span><span>~<b>${esc(b.cost)}</b></span><span><b>${esc(b.time)}</b> build</span></div>
-    <span class="go">open build →</span></a>`).join('');})();
+    ${(b.parts||b.cost||b.time)?`<div class="meta">${b.parts?`<span><b>${b.parts}</b> parts</span>`:''}${b.cost?`<span>~<b>${esc(b.cost)}</b></span>`:''}${b.time?`<span><b>${esc(b.time)}</b> build</span>`:''}</div>`:`<div class="meta"><span class="meta-tbd">BOM &amp; costs once it&rsquo;s built</span></div>`}
+    <span class="go">${b.wip?'planned':'open build'} →</span></a>`).join('');})();
 
 (function(){const g=$('#tools-grid');if(g)g.innerHTML=TOOLS.map(t=>`
   <div class="tool glass"><span class="ti">${stackIc(t.ic)}</span><div><h3>${esc(t.title)}</h3><p>${esc(t.desc)}</p></div></div>`).join('');})();
 
-(function(){const g=$('#posts-grid');if(!g)return;const f=d=>new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+(function(){const g=$('#posts-grid');if(!g)return;
+  const f=d=>d?new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'Not yet published';
   g.innerHTML=POSTS.map(p=>`<a class="post glass" href="${esc(p.url)}">${wipAbs(p.wip)}
     <div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="#8FD150" stroke-width="1.3"><path d="M4 4h13v16H4z"/><path d="M8 9h7M8 13h7M8 17h4"/></svg></div>
-    <div class="pin"><span class="dt">${f(p.date)}</span><h3>${esc(p.title)}</h3><p>${esc(p.excerpt)}</p><span class="more">read →</span></div></a>`).join('');})();
+    <div class="pin"><span class="dt">${f(p.date)}</span><h3>${esc(p.title)}</h3><p>${esc(p.excerpt)}</p><span class="more">${p.wip?'planned':'read'} →</span></div></a>`).join('');})();
 
+/* Signal cards carry a source link — every claim must be checkable. */
 (function(){const g=$('#signal-grid');if(g)g.innerHTML=SIGNAL.map(s=>`
-  <div class="sig glass"><span class="st">${esc(s.tag)}</span><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p></div>`).join('');
+  <div class="sig glass"><span class="st">${esc(s.tag)}</span><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p>
+    ${s.src?`<a class="sig-src" href="${esc(s.src)}" target="_blank" rel="noopener noreferrer">source →</a>`:''}</div>`).join('');
   const tk=$('#ticker-track');if(tk){const one=TICKER.map(t=>`<span>${esc(t)}</span>`).join('');tk.innerHTML=one+one;}})();
 
 const igPh='<div class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.2" fill="currentColor"/></svg>POST</div>';
-(function(){const g=$('#iggrid');if(g)g.innerHTML=IG_POSTS.map(p=>`
-  <a class="igt" href="${esc(C.instagram)}" target="_blank" rel="noopener noreferrer me" aria-label="${esc(p.cap)} on Instagram">
-    ${p.img?`<img src="${esc(p.img)}" alt="${esc(p.cap)}">`:igPh}<span class="cap">${esc(p.cap)}</span></a>`).join('');})();
+(function(){const g=$('#iggrid');if(!g)return;
+  if(!IG_POSTS.length){
+    g.classList.add('is-empty');
+    g.innerHTML=`<p class="empty-state">No field media posted here yet. Follow
+      <a href="${esc(C.instagram)}" target="_blank" rel="noopener noreferrer me">${esc(C.instagramHandle)}</a>
+      \u2014 tiles appear once real photos are added to <code>IG_POSTS</code>.</p>`;
+    return;
+  }
+  g.innerHTML=IG_POSTS.map(p=>`
+  <a class="igt" href="${esc(p.url||C.instagram)}" target="_blank" rel="noopener noreferrer me" aria-label="${esc(p.cap)} on Instagram">
+    ${p.img?`<img src="${esc(p.img)}" alt="${esc(p.cap)}" loading="lazy">`:igPh}<span class="cap">${esc(p.cap)}</span></a>`).join('');})();
 
 const nodeGlyph='<svg viewBox="0 0 24 24" fill="none" stroke="#5A6051" stroke-width="1.4"><rect x="9" y="9" width="6" height="6"/><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="11.2"/></svg>';
 function renderBuilds(f){const g=$('#gallery');if(!g)return;
-  g.innerHTML=BUILDS.filter(b=>f==='all'||b.type===f).map(b=>`
+  const rows=BUILDS.filter(b=>f==='all'||b.type===f);
+  if(!rows.length){
+    g.classList.add('is-empty');
+    g.innerHTML=BUILDS.length
+      ? `<p class="empty-state">No builds of this type yet. <button class="btn-mini js-showall" type="button">Show all</button></p>`
+      : `<p class="empty-state"><b>The build wall is empty \u2014 on purpose.</b><br>
+          This section lists real builds from real operators, so it starts blank rather than
+          seeded with examples. Built something? <a href="#contact">Send it in</a> and it goes up here.</p>`;
+    return;
+  }
+  g.classList.remove('is-empty');
+  g.innerHTML=rows.map(b=>`
   <article class="build glass" data-type="${esc(b.type)}"><div class="thumb">
-    ${b.img?`<img src="${esc(b.img)}" alt="${esc(b.title)}">`:nodeGlyph}
+    ${b.img?`<img src="${esc(b.img)}" alt="${esc(b.title)}" loading="lazy">`:nodeGlyph}
     <span class="loc">${esc(b.loc)}</span><span class="nid">${esc(b.id)}</span></div>
     <div class="bi"><h3>${esc(b.title)}</h3><div class="hw">${esc(b.hw)}</div><div class="by">build by <b>${esc(b.by)}</b></div></div></article>`).join('');}
 renderBuilds('all');
@@ -1152,7 +1215,21 @@ function dlICS(list,name){const b=new Blob([ics(list)],{type:'text/calendar;char
   a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
 function gcal(ev){const p=new URLSearchParams({action:'TEMPLATE',text:ev.title,dates:icsDate(ev.start)+'/'+icsDate(ev.end||ev.start),location:ev.loc||'',details:ev.desc||''});return'https://calendar.google.com/calendar/render?'+p;}
 function fmtT(d){let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(d.getMinutes())+' '+ap;}
-(function(){const w=$('#events-list');if(!w)return;const s=[...EVENTS].sort((a,b)=>new Date(a.start)-new Date(b.start));
+(function(){const w=$('#events-list');if(!w)return;
+  /* only future events, soonest first — a past date is never "upcoming" */
+  const now=Date.now();
+  const s=[...EVENTS].filter(ev=>new Date(ev.end||ev.start).getTime()>=now)
+                     .sort((a,b)=>new Date(a.start)-new Date(b.start));
+  if(!s.length){
+    w.classList.add('is-empty');
+    w.innerHTML=`<p class="empty-state"><b>No events scheduled yet.</b><br>
+      Nothing is listed here until it is really on the calendar. In the meantime,
+      <a href="${esc(C.mspMeshSite)}" target="_blank" rel="noopener">MSP Mesh</a> runs a weekly
+      virtual Node Night and regular Twin Cities meetups.</p>`;
+    const dl=$('#dl-all-ics'); if(dl) dl.disabled=true;
+    const sc=$('#subscribe-cal'); if(sc) sc.setAttribute('aria-disabled','true');
+    return;
+  }
   w.innerHTML=s.map((ev,i)=>{const d=new Date(ev.start);return`<article class="event glass">
     <div class="date"><div class="mo">${MO[d.getMonth()]}</div><div class="dy">${d.getDate()}</div></div>
     <div class="ei"><h3>${esc(ev.title)}</h3><div class="when">${DOW[d.getDay()]} · ${fmtT(d)} · ${esc(ev.loc||'')}</div><p>${esc(ev.desc||'')}</p></div>
@@ -1160,7 +1237,11 @@ function fmtT(d){let h=d.getHours();const ap=h>=12?'PM':'AM';h=h%12||12;return h
       <button class="btn-mini js-ics" data-i="${i}" type="button">.ics</button></div></article>`;}).join('');
   w.addEventListener('click',e=>{const b=e.target.closest('.js-ics');if(!b)return;const ev=s[+b.dataset.i];
     dlICS([ev],ev.title.replace(/\s+/g,'-').toLowerCase()+'.ics');toast('Event downloaded — your calendar will remind you.');});})();
-const dla=$('#dl-all-ics');if(dla)dla.addEventListener('click',()=>{dlICS(EVENTS,'midwest-mesh-lab-ops.ics');toast('Full ops calendar downloaded.');});
+const dla=$('#dl-all-ics');if(dla)dla.addEventListener('click',()=>{
+  if(!EVENTS.length){toast('No events on the calendar yet.');return;}
+  dlICS(EVENTS,'midwest-mesh-lab-ops.ics');toast('Full ops calendar downloaded.');});
+const scal=$('#subscribe-cal');if(scal)scal.addEventListener('click',e=>{
+  if(!EVENTS.length){e.preventDefault();toast('No events on the calendar yet.');}});
 
 /* forms */
 if(sf)sf.addEventListener('submit',()=>toast('Confirm in the new tab to get content + event alerts.'));
