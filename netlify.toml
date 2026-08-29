@@ -1,0 +1,95 @@
+# ============================================================
+# Netlify configuration for midwestmeshlab.net
+#
+# This file is the SINGLE SOURCE OF TRUTH for build settings, headers and
+# redirects. There is deliberately no `_headers` file: Netlify would read
+# both and the two would drift apart. Edit headers here only.
+#
+# The site is static with no build step — the repo root IS the web root.
+# ============================================================
+
+[build]
+  publish = "."
+  # No build command: index.html is hand-authored and self-contained.
+  # tools/ is a local generator (see tools/build-map.js); it is not run at
+  # deploy time and ships nothing to the browser.
+  command = ""
+
+[build.processing]
+  skip_processing = true      # don't let Netlify rewrite our HTML/CSS/JS
+
+# ------------------------------------------------------------
+# Security headers
+#
+# CSP note: this build keeps CSS + JS inline so the page stays a single
+# editable file, which requires 'unsafe-inline'. Inline *style* is low
+# risk; inline *script* is the part to watch. There are no third-party
+# trackers and the site is static, so exposure is small. To go strict,
+# split CSS/JS into external files — see ADMIN.md §10.
+#
+# Allowlisted origins, one purpose each:
+#   fonts.googleapis.com / fonts.gstatic.com  Google Fonts (self-host to drop)
+#   api.open-meteo.com                        weather ticker (keyless, no cookies)
+#   www.youtube-nocookie.com                  click-to-load video embeds
+#   giscus.app                                community discussion (on click only)
+#   buttondown.email                          newsletter form POST
+#
+# If you wire up Supabase, add your project origin to connect-src:
+#   connect-src 'self' https://api.open-meteo.com https://YOUR-PROJECT.supabase.co
+# If you switch the newsletter to Netlify Forms, drop buttondown.email from
+# form-action and leave just 'self'.
+# ------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://buttondown.email; img-src 'self' data:; script-src 'self' 'unsafe-inline' https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.open-meteo.com; frame-src https://www.youtube-nocookie.com https://giscus.app; upgrade-insecure-requests"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=(), browsing-topics=(), interest-cohort=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+    X-Permitted-Cross-Domain-Policies = "none"
+    X-DNS-Prefetch-Control = "off"
+
+# The calendar people subscribe to: correct type, short cache so edits land.
+[[headers]]
+  for = "/events.ics"
+  [headers.values]
+    Content-Type = "text/calendar; charset=utf-8"
+    Cache-Control = "public, max-age=900"
+
+# Shared stylesheet for the content pages.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Long-lived binaries. Rename the file when you change it (cache busting).
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/.well-known/security.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+
+# ------------------------------------------------------------
+# Redirects
+# ------------------------------------------------------------
+# Canonical host: send the apex/www split one way. Netlify also does this
+# from the dashboard; keeping it here makes the intent explicit in git.
+[[redirects]]
+  from = "https://www.midwestmeshlab.net/*"
+  to = "https://midwestmeshlab.net/:splat"
+  status = 301
+  force = true
+
+# Anything unmatched falls through to the custom 404 page.
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
