@@ -37,8 +37,8 @@
 #
 # CSP note: this build keeps CSS + JS inline so the page stays a single
 # editable file, which requires 'unsafe-inline'. Inline *style* is low
-# risk; inline *script* is the part to watch. There are no third-party
-# trackers and the site is static, so exposure is small. To go strict,
+# risk; inline *script* is the part to watch. The only analytics is cookieless
+# GoatCounter (no cookies, no IP stored) and the site is static, so exposure is small. To go strict,
 # split CSS/JS into external files — see ADMIN.md §10.
 #
 # Allowlisted origins, one purpose each:
@@ -46,6 +46,8 @@
 #   api.open-meteo.com                        weather ticker (keyless, no cookies)
 #   www.youtube-nocookie.com                  click-to-load video embeds
 #   giscus.app                                community discussion (on click only)
+#   gc.zgo.at / *.goatcounter.com             cookieless page counts (assets/analytics.js;
+#                                             inert until GOATCOUNTER_CODE is set)
 #
 # Both forms use Netlify Forms, which POSTs same-origin, so form-action is
 # just 'self' — no third-party form endpoint is allowlisted.
@@ -56,7 +58,7 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline' https://giscus.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.open-meteo.com; frame-src https://www.youtube-nocookie.com https://giscus.app; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: https://*.goatcounter.com; script-src 'self' 'unsafe-inline' https://giscus.app https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.open-meteo.com https://*.goatcounter.com; frame-src https://www.youtube-nocookie.com https://giscus.app; upgrade-insecure-requests"
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "DENY"

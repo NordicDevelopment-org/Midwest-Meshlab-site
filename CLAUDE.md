@@ -45,6 +45,11 @@ thanks.html                 landing page for Netlify Forms submissions
 netlify.toml                deploy config: build, security headers, CSP, redirects
 events.ics                  the calendar visitors subscribe to (keep in sync with EVENTS)
 robots.txt
+sitemap.xml                 every indexable page (not 404/thanks); add new pages here
+privacy.html, terms.html    legal pages; linked from every footer
+favicon.ico, favicon.svg, apple-touch-icon.png, icon-192.png, icon-512.png, site.webmanifest
+assets/analytics.js         cookieless GoatCounter loader; inert until GOATCOUNTER_CODE is set
+media/og-card.png           shared 1200x630 Open Graph image
 .well-known/security.txt    security contact, RFC 9116 (watch the Expires date)
 assets/page.css             shared styles for ALL content sub-pages
 manuals/                    how-to pages (e.g. flash-heltec-v3.html)
@@ -61,14 +66,13 @@ There is deliberately **no `_headers` file**. Netlify reads both `_headers` and
 `netlify.toml`, and two overlapping header sources drift apart — `netlify.toml` is the single
 source of truth. Do not reintroduce `_headers`.
 
-`media/` (for `og-card.png`, build photos, Instagram thumbnails) is referenced by the code
-but not yet committed; create it when adding images.
+`media/` holds `og-card.png`; build photos and Instagram thumbnails go there too when they exist.
 
 ## How `index.html` is organized
 
 One file, four parts, read top to bottom (line numbers drift — search for the markers):
 
-1. **`<head>`** (~1–19): meta tags, Open Graph, inline SVG favicon, Google Fonts link.
+1. **`<head>`**: meta tags, canonical, Open Graph, favicon/manifest links, analytics loader, Google Fonts link.
 2. **`<style>` … `</style>`** (~20–464): all homepage CSS, inline. The design system
    (CSS custom properties for colors, fonts, spacing) lives at the top of this block.
 3. **HTML body** (~465–930): the page sections, each with an `id` and an empty container
@@ -173,7 +177,9 @@ redefine it in a page's own `<style>`.
 - **Visual theme:** "tactical" dark theme. Colors and fonts are CSS custom properties — change
   the variables, not individual rules. The palette is duplicated in the `index.html` `<style>`
   block and in `assets/page.css`; if you change brand colors, update both.
-- **No new runtime dependencies / no third-party trackers.** Deliberate. Anything new must be
+- **No new runtime dependencies / no cookie-setting trackers.** Deliberate. The one analytics
+  tool is cookieless GoatCounter via `assets/analytics.js` (honors DNT/GPC); that is why there is
+  no cookie banner. Anything that sets cookies would need a consent banner and a `privacy.html` update. Anything new must be
   added to the CSP in `netlify.toml` or the browser blocks it.
 - **Accessibility / motion:** the JS respects `prefers-reduced-motion` (`reduce`); preserve
   that when touching animations (background canvas, count-up chips, ticker).
@@ -195,6 +201,11 @@ redefine it in a page's own `<style>`.
   Individual transforms are disabled instead, so markup is still left alone.
 - **Unwritten pages ↔ `404.html` `PLANNED` map ↔ `wip:true`.** All three describe the same
   set. Publishing a page means clearing it from all three.
+- **Every page's `<head>` block.** All pages carry the same canonical + `og:*` + icon/manifest +
+  `analytics.js` block, and every indexable page is listed in `sitemap.xml`. A new page copied
+  from a template gets the block; fix its `canonical`/`og:url` and add it to the sitemap.
+- **`privacy.html` ↔ what the site actually loads.** Its "services your browser talks to" table
+  mirrors the CSP allowlist. Add an origin to the CSP, add a row there and bump "Last updated".
 - **`.well-known/security.txt` `Expires`** must stay within ~1 year; bump before it lapses.
   Its `Contact:` is an **https URL** to the contact form, not a mailto — the domain has no MX
   records, so a published address would bounce. Don't "fix" it back to an email.
