@@ -6,14 +6,22 @@
 <title>Midwest Mesh Lab — Off-grid mesh, Pi &amp; open hardware</title>
 <meta name="description" content="A field lab for off-grid mesh networking, Raspberry Pi, and open hardware — step-by-step manuals, build lists with real parts and prices, an accurately projected Minnesota map, and field notes. Midwest-based, open, and free to copy." />
 <meta name="theme-color" content="#07090A" />
-<meta name="referrer" content="strict-origin-when-cross-origin" />
-<meta property="og:title" content="Midwest Mesh Lab" />
-<meta property="og:description" content="Off-grid mesh, Raspberry Pi &amp; open hardware. Manuals, builds with real BOMs, an accurately projected Minnesota map, and field notes." />
+<link rel="canonical" href="https://midwestmeshlab.net/" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://midwestmeshlab.net" />
+<meta property="og:site_name" content="Midwest Mesh Lab" />
+<meta property="og:title" content="Midwest Mesh Lab" />
+<meta property="og:description" content="A field lab for off-grid mesh networking, Raspberry Pi, and open hardware — step-by-step manuals, build lists with real parts and prices, an accurately projected Minnesota map, and field notes. Midwest-based, open, and free to copy." />
+<meta property="og:url" content="https://midwestmeshlab.net/" />
 <meta property="og:image" content="https://midwestmeshlab.net/media/og-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Midwest Mesh Lab: when the towers go quiet, the mesh keeps talking." />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%2307090A'/%3E%3Ccircle cx='12' cy='12' r='2.4' fill='%23F4A93C'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2386D46A' stroke-width='1.2'/%3E%3Ccircle cx='5' cy='6' r='1.5' fill='%2386D46A'/%3E%3Ccircle cx='19' cy='7' r='1.5' fill='%2386D46A'/%3E%3Cpath d='M12 12 5 6M12 12l7-5' stroke='%2386D46A' stroke-width='0.8'/%3E%3C/svg%3E" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -459,9 +467,42 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(150%);background:var(--glass-2);border:1px solid var(--green);
   color:var(--ink);font-family:var(--mono);font-size:13px;padding:13px 20px;border-radius:9px;z-index:120;box-shadow:var(--shadow);
-  transition:transform .34s var(--ease);max-width:90vw;backdrop-filter:blur(10px)}
-.toast.show{transform:translateX(-50%) translateY(0)}
+  transition:transform .34s var(--ease),visibility 0s .34s;max-width:90vw;backdrop-filter:blur(10px);visibility:hidden}
+.toast.show{transform:translateX(-50%) translateY(0);visibility:visible;transition:transform .34s var(--ease)}
+
+/* form error + submitting states (see "forms" in WIRING) */
+.field .err{font-family:var(--mono);font-size:12px;color:var(--alert);margin:7px 0 0;display:flex;gap:6px;align-items:flex-start}
+.field .err:empty{display:none}
+.field .err::before{content:"!";flex:none;width:15px;height:15px;border-radius:50%;background:var(--alert);color:#1a0c09;
+  font-weight:700;font-size:10.5px;display:grid;place-items:center;margin-top:1px}
+.field.invalid input,.field.invalid textarea{border-color:var(--alert)}
+.field.invalid input:focus,.field.invalid textarea:focus{border-color:var(--alert);box-shadow:0 0 0 3px rgba(226,87,59,.18)}
+.btn[aria-busy="true"]{opacity:.85;filter:none;cursor:progress}
+
+/* loading placeholder for click-to-load embeds */
+.loading{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background:var(--bg2)}
+.loading.inline{position:static;padding:30px 0;background:none}
+.loading .spin{width:26px;height:26px;border-radius:50%;border:2px solid var(--line-2);border-top-color:var(--amber);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.loading .spin{animation:none;border-color:var(--amber)}}
+
+/* sticky mobile CTA: phones only, shown between the hero and the comms section */
+.mcta{display:none}
+@media (max-width:720px){
+  .mcta{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:90;gap:12px;align-items:center;justify-content:space-between;
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(7,9,10,.92);backdrop-filter:blur(12px);
+    border-top:1px solid var(--line-2);transform:translateY(110%);transition:transform .3s var(--ease)}
+  .mcta.show{transform:none}
+  .mcta span{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--muted);line-height:1.35}
+  .mcta .btn{padding:11px 16px;flex:none}
+  body.mcta-on .toast{bottom:calc(84px + env(safe-area-inset-bottom))}
+  body.mcta-on .wip-legend{bottom:calc(80px + env(safe-area-inset-bottom))}
+  .wip-legend{transition:bottom .3s var(--ease)}
+}
+@media (max-width:720px) and (prefers-reduced-motion:reduce){.mcta{transition:none}}
 </style>
+<script src="/assets/analytics.js" defer></script>
 </head>
 <body>
 
@@ -905,8 +946,10 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
         <a id="lnk-ig3" href="#" target="_blank" rel="noopener noreferrer me">Instagram</a>
         <a id="lnk-yt" href="#" target="_blank" rel="noopener">YouTube</a>
         <a id="lnk-msp2" href="#" target="_blank" rel="noopener">MSP Mesh</a>
-        <a href="#contact">Contact the lab</a>
+        <a href="#comms">Contact the lab</a>
         <a href="/.well-known/security.txt">Security</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
       </div>
     </div>
     <p class="disclaimer">
@@ -924,6 +967,13 @@ footer{position:relative;z-index:1;padding:58px 0 40px;background:linear-gradien
     </div>
   </div>
 </footer>
+</div>
+
+<!-- Sticky mobile CTA (phones only). Hidden over the hero, which has its own
+     CTAs, and over the comms section it points at. See "sticky CTA" in WIRING. -->
+<div class="mcta" id="mcta" aria-hidden="true">
+  <span>New builds &amp; event alerts</span>
+  <a class="btn btn-primary" href="#comms" tabindex="-1">Subscribe</a>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1234,7 +1284,9 @@ $$('.embed[data-playlist-id],.embed[data-video-id]').forEach(box=>{
     f.src=src;f.title=box.dataset.title||'Video';
     f.allow='accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture';
     f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');f.setAttribute('allowfullscreen','');
-    box.innerHTML='';box.appendChild(f);});});
+    box.innerHTML='<div class="loading" role="status"><span class="spin" aria-hidden="true"></span>Loading video</div>';
+    f.addEventListener('load',()=>{const l=box.querySelector('.loading');if(l)l.remove();},{once:true});
+    box.appendChild(f);});});
 
 /* events + ICS (built-in reminders => user's own device notifies them) */
 const MO=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -1280,7 +1332,48 @@ const scal=$('#subscribe-cal');if(scal)scal.addEventListener('click',e=>{
   if(!EVENTS.length){e.preventDefault();toast('No events on the calendar yet.');}});
 
 /* forms */
-/* Both forms POST to Netlify Forms and land on /thanks.html — no JS needed. */
+/* Both forms POST to Netlify Forms and land on /thanks.html. They work with
+   no JS (native `required` / type=email validation). With JS, this swaps the
+   browser's bubbles for inline, screen-reader-linked error messages and shows
+   a "Sending..." state on the button so nobody double-submits. */
+$$('form[data-netlify]').forEach(f=>{
+  f.setAttribute('novalidate','');
+  const inputs=[...f.querySelectorAll('.field input, .field textarea')];
+  const msg=el=>{
+    if(el.validity.valueMissing)return el.type==='email'?'Enter your email address.':'This field is required.';
+    if(el.validity.typeMismatch)return "That doesn't look like an email address. Check for a typo.";
+    return el.validationMessage;};
+  const check=el=>{
+    const field=el.closest('.field');let e=field.querySelector('.err');
+    if(!e){e=document.createElement('p');e.className='err';e.id=el.id+'-err';e.setAttribute('aria-live','polite');field.appendChild(e);}
+    const ok=el.checkValidity();
+    field.classList.toggle('invalid',!ok);el.setAttribute('aria-invalid',String(!ok));
+    if(ok){el.removeAttribute('aria-describedby');e.textContent='';}
+    else{el.setAttribute('aria-describedby',e.id);e.textContent=msg(el);}
+    return ok;};
+  inputs.forEach(el=>{
+    el.addEventListener('blur',()=>{if(el.value||f.dataset.tried)check(el);});
+    el.addEventListener('input',()=>{if(el.closest('.field').classList.contains('invalid'))check(el);});});
+  f.addEventListener('submit',ev=>{
+    f.dataset.tried='1';
+    const bad=inputs.filter(el=>!check(el));
+    if(bad.length){ev.preventDefault();bad[0].focus();return;}
+    const b=f.querySelector('button[type=submit]');
+    if(b){b.dataset.label=b.textContent;b.textContent='Sending...';b.setAttribute('aria-busy','true');b.disabled=true;}});});
+/* Back button after submitting restores the page from cache: re-arm the buttons. */
+window.addEventListener('pageshow',e=>{if(!e.persisted)return;
+  $$('form[data-netlify] button[type=submit]').forEach(b=>{b.disabled=false;b.removeAttribute('aria-busy');if(b.dataset.label)b.textContent=b.dataset.label;});});
+
+/* sticky CTA (phones): show once the hero is gone, hide again over #comms
+   and the footer so it never covers the form it points to. */
+(function(){const bar=$('#mcta'),hero=$('#top'),comms=$('#comms'),foot=$('footer');
+  if(!bar||!hero||!comms||!('IntersectionObserver' in window))return;
+  const vis=new Map();
+  const io=new IntersectionObserver(es=>{es.forEach(x=>vis.set(x.target,x.isIntersecting));
+    const on=!vis.get(hero)&&!vis.get(comms)&&!vis.get(foot);
+    bar.classList.toggle('show',on);bar.setAttribute('aria-hidden',String(!on));
+    bar.querySelector('a').tabIndex=on?0:-1;document.body.classList.toggle('mcta-on',on);});
+  [hero,comms,foot].forEach(el=>el&&io.observe(el));})();
 
 /* preview build: tag integrations that still need CONFIG values */
 if(PREVIEW){
@@ -1296,7 +1389,12 @@ if(loadBtn)loadBtn.addEventListener('click',()=>{const g=C.giscus;
   s.setAttribute('data-repo',g.repo);s.setAttribute('data-repo-id',g.repoId);s.setAttribute('data-category',g.category);
   s.setAttribute('data-category-id',g.categoryId);s.setAttribute('data-mapping','pathname');s.setAttribute('data-theme','dark_dimmed');
   s.setAttribute('data-reactions-enabled','1');s.setAttribute('data-input-position','top');
-  const box=$('#giscus-box');box.innerHTML='';box.appendChild(s);});
+  const box=$('#giscus-box');
+  box.innerHTML='<div class="loading inline" role="status"><span class="spin" aria-hidden="true"></span>Loading discussion</div>';
+  /* giscus injects its own iframe next to the script; drop the placeholder once it has loaded */
+  new MutationObserver((_,mo)=>{const fr=box.querySelector('iframe');if(!fr)return;mo.disconnect();
+    fr.addEventListener('load',()=>{const l=box.querySelector('.loading');if(l)l.remove();},{once:true});}).observe(box,{childList:true,subtree:true});
+  box.appendChild(s);});
 
 /* menu */
 const mb=$('#menuBtn'),nv=$('#nav');

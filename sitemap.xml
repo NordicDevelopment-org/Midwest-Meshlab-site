@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- List every public, indexable page. Add a <url> when you publish a page;
+     leave out 404.html and thanks.html (both are noindex). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://midwestmeshlab.net/</loc></url>
+  <url><loc>https://midwestmeshlab.net/troubleshoot.html</loc></url>
+  <url><loc>https://midwestmeshlab.net/builds/solar-relay-v2.html</loc></url>
+  <url><loc>https://midwestmeshlab.net/manuals/flash-heltec-v3.html</loc></url>
+  <url><loc>https://midwestmeshlab.net/notes/height-beats-wattage.html</loc></url>
+  <url><loc>https://midwestmeshlab.net/notes/known-issues-before-you-flash.html</loc></url>
+  <url><loc>https://midwestmeshlab.net/notes/set-your-region-first.html</loc></url>
+  <url><loc>https://midwestmeshlab.net/notes/whats-new-in-2-7.html</loc></url>
+  <url><loc>https://midwestmeshlab.net/privacy.html</loc></url>
+  <url><loc>https://midwestmeshlab.net/terms.html</loc></url>
+</urlset>

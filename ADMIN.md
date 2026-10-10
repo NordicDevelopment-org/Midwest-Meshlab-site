@@ -20,6 +20,11 @@ index.html                  the site
 netlify.toml                deploy config: headers, CSP, redirects (single source of truth)
 events.ics                  the calendar people subscribe to (keep in sync with EVENTS)
 robots.txt
+sitemap.xml                 every public page; add a line when you publish one
+privacy.html / terms.html   legal pages, linked from every footer (bump "Last updated")
+favicon.ico / favicon.svg   icon set + apple-touch-icon.png, icon-192/512.png, site.webmanifest
+media/og-card.png           1200x630 link-preview image used by every page's og:image
+assets/analytics.js         cookieless GoatCounter loader, OFF until you set the code (§2)
 .well-known/security.txt    researcher contact (RFC 9116)
 tools/build-map.js          regenerates the Minnesota map geometry
 /manuals/  /builds/  /notes/  (you create) the pages the cards link to
@@ -42,6 +47,7 @@ tools/build-map.js          regenerates the Minnesota map geometry
 | `previewMode` | `true` while building out; `false` at launch (hides all *In progress* tags) |
 | `githubDiscussions` | already points at this repo's Discussions — enable them in repo Settings |
 | `giscus` | repo IDs from giscus.app once you enable Discussions (see §7) |
+| `GOATCOUNTER_CODE` (in `assets/analytics.js`, not CONFIG) | your site code from goatcounter.com. Empty = no analytics. Cookieless, so no cookie banner is needed; switching to a tool that sets cookies means adding a consent banner and updating `privacy.html` |
 
 **Video slots.** A YouTube *channel homepage cannot be embedded* — the player only accepts a video or
 a playlist ID, and channel pages refuse framing. So "feature this channel" is implemented as that
@@ -49,6 +55,11 @@ channel's uploads playlist. Each slot takes either:
 
 - `data-playlist-id="UU…"` — a channel's uploads playlist (auto-updates, no maintenance), or
 - `data-video-id="…"` — one specific video.
+
+**Publishing a new page.** Besides the steps in §3, add it to `sitemap.xml` and give its
+`<head>` the same block every page has: `canonical`, the `og:*` / `twitter:card` tags, the four
+icon/manifest links, and `<script src="/assets/analytics.js" defer>`. Copying an existing page as
+the template carries all of that over; just fix the canonical and og:url.
 
 Currently: Constellation Response's *Getting Started with Meshtastic* playlist, S2 Underground's
 uploads, and an Atlavox video on private channels. Nothing is requested from YouTube until a click.
